@@ -2,9 +2,16 @@ import * as vscode from 'vscode';
 import Groq from 'groq-sdk';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
 
+// Load environment variables from .env file
+dotenv.config();
+
+console.log('GROQ_API_KEY:', process.env.GROQ_API_KEY);
+
+// Access the API key from the environment variable
 const groq = new Groq({
-    apiKey: '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'  // Replace with your API key
+    apiKey: process.env.GROQ_API_KEY || ''  // Replace directly with the env variable
 });
 
 // Data model for chat items
@@ -17,6 +24,8 @@ class ChatItem extends vscode.TreeItem {
         super(label, collapsibleState);
     }
 }
+
+
 
 // Data provider for the sidebar chat view
 class ChatProvider implements vscode.TreeDataProvider<ChatItem> {
@@ -107,21 +116,73 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     // Command to load context from a file
-    const loadContextCommand = vscode.commands.registerCommand('aiChatbot.loadContext', async () => {
-        const fileUri = await vscode.window.showOpenDialog({
-            canSelectMany: false,
-            openLabel: 'Open File',
-            filters: { 'Text Files': ['txt', 'md', 'js', 'ts', 'json'] }
-        });
+    // const loadContextCommand = vscode.commands.registerCommand('aiChatbot.loadContext', async () => {
+    //     const fileUri = await vscode.window.showOpenDialog({
+    //         canSelectMany: false,
+    //         openLabel: 'Open File',
+    //         filters: { 'Text Files': ['txt', 'md', 'js', 'ts', 'json'] }
+    //     });
 
-        if (fileUri && fileUri[0]) {
-            const filePath = fileUri[0].fsPath;
-            const fileContent = fs.readFileSync(filePath, 'utf8');
-            chatProvider.addContext(fileContent);  // Add file content to context
-            vscode.window.showInformationMessage('Context loaded from file.');
+    //     if (fileUri && fileUri[0]) {
+    //         const filePath = fileUri[0].fsPath;
+    //         const fileContent = fs.readFileSync(filePath, 'utf8');
+    //         chatProvider.addContext(fileContent);  // Add file content to context
+    //         vscode.window.showInformationMessage('Context loaded from file.');
+    //     }
+    // });
+
+    const loadContextCommand = vscode.commands.registerCommand('aiChatbot.loadContext', async () => {
+        // Present options for selecting files or inputting custom context
+        const choice = await vscode.window.showQuickPick(['Select Files', 'Input Custom Context'], {
+            placeHolder: 'How would you like to provide the context?'
+        });
+    
+        if (choice === 'Select Files') {
+            // Show file selection dialog with multi-file selection enabled
+            const fileUris = await vscode.window.showOpenDialog({
+                canSelectMany: true,  // Allow selecting multiple files
+                openLabel: 'Open Files',
+                filters: { 'Text Files': ['txt', 'md', 'js', 'ts', 'json'] }
+            });
+    
+            if (fileUris && fileUris.length > 0) {
+                let combinedContext = '';
+    
+                // Loop through selected files and combine their content
+                for (const fileUri of fileUris) {
+                    const filePath = fileUri.fsPath;
+                    const fileContent = fs.readFileSync(filePath, 'utf8');
+                    combinedContext += `\n\n--- Content from ${path.basename(filePath)} ---\n${fileContent}`;
+                }
+    
+                chatProvider.addContext(combinedContext);  // Add combined file content to context
+                vscode.window.showInformationMessage('Context loaded from selected files.');
+            }
+    
+        } else if (choice === 'Input Custom Context') {
+            // Example structured context
+            const customContext = `
+                Requirements from project manager:
+                - Detailed project requirements
+    
+                Instructions from team lead:
+                - Technological choices and documentation
+    
+                Official tech stack docs and third-party docs:
+                - Links to official docs or descriptions of the tech stack
+    
+                Complete context of code in the project:
+                - Summary of the code or explanations of different parts of the codebase.
+            `;
+    
+            chatProvider.addContext(customContext);  
+            
+            // Add custom context
+            vscode.window.showInformationMessage('Custom context loaded !!!!!');
         }
     });
-
+    
+    
     context.subscriptions.push(askCommand, loadContextCommand);
 }
 
