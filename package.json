@@ -11,8 +11,10 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:aiChatbot.ask",
-    "onCommand:aiChatbot.loadContext"
+    "onCommand:aiChatbot.sendMessage",
+    "onCommand:aiChatbot.loadContext",
+    "onCommand:aiChatbot.showWebview",
+    "onView:aiChatbot.sidebar"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -26,8 +28,8 @@
         "title": "Load Context from File"
       },
       {
-        "command": "aiChatbot.sidebar",
-        "title": "AI Chatbot Sidebar"
+        "command": "aiChatbot.showWebview",
+        "title": "Show Chatbot Webview"
       }
     ],
     "views": {
@@ -66,6 +68,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "groq-sdk": "^0.7.0"
   }
