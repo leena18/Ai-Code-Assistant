@@ -16,7 +16,7 @@ suite('Extension Test Suite', () => {
 			workspaceState: {} as any,
 			globalState: {} as any,
 			extensionPath: '',
-			asAbsolutePath: (relativePath: string) => '',
+			asAbsolutePath: () => '',
 			storagePath: '',
 			globalStoragePath: '',
 			logPath: '',

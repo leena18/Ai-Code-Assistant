@@ -2,7 +2,7 @@
   "name": "chatbot",
   "displayName": "Chatbot",
   "description": "A chatbot extension for VS Code.",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "publisher": "skychat",
   "engines": {
     "vscode": "^1.93.0"
@@ -11,9 +11,10 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:aiChatbot.sendMessage",
+    "onCommand:aiChatbot.ask",
     "onCommand:aiChatbot.loadContext",
     "onCommand:aiChatbot.showWebview",
+    "onCommand:aiChatbot.fixCode",   
     "onView:aiChatbot.sidebar"
   ],
   "main": "./dist/extension.js",
@@ -30,13 +31,35 @@
       {
         "command": "aiChatbot.showWebview",
         "title": "Show Chatbot Webview"
+      },
+      {
+        "command": "aiChatbot.fixCode",  
+        "title": "Fix using Lask.AI",
+        "category": "AI Code Fix"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "chatbot",
+          "title": "Chatbot",
+          "icon": "media/chatbot-icon.svg"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "chatbot": [
         {
           "id": "aiChatbot.sidebar",
-          "name": "AI Chatbot"
+          "name": "LASK.ai"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "aiChatbot.fixCode",  
+          "when": "editorHasSelection"
         }
       ]
     }
@@ -68,6 +91,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@octokit/rest": "^21.0.2",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "groq-sdk": "^0.7.0"
