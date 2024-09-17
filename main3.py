@@ -13,6 +13,7 @@ app = FastAPI()
 # Define a request model for the POST request
 class CodePrompt(BaseModel):
     prompt: str
+    
 
 # Code generation class
 class CodeGen:
