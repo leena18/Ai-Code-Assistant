@@ -1,0 +1,49 @@
+{
+  "name": "experiment",
+  "displayName": "Experiment",
+  "description": "first extension",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:experiment.sidebarView"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "experiment-sidebar",
+          "title": "Experiment",
+          "icon": "resources/icon.png" 
+        }
+      ]
+    },
+    "views": {
+      "experiment-sidebar": [
+        {
+          "id": "experiment.sidebarView",
+          "name": "Experiment View",
+          "type": "webview"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.93.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "eslint": "^9.9.1",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
