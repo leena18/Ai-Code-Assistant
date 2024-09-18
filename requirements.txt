@@ -15,6 +15,10 @@ networkx
 node2vec 
 gensim 
 pinecone
-faiss
+faiss-cpu
 requests
-
+langchain-google-genai
+langchain
+langchain-community
+fastapi 
+uvicorn
