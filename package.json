@@ -1,0 +1,47 @@
+{
+  "name": "ai-chat",
+  "displayName": "AI Chat",
+  "version": "0.0.1",
+  "description": "An AI chat interface inside VS Code",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "activationEvents": [
+    "onCommand:ai-chat.openChat",  
+    "onCommand:ai-chat.openContext" 
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai-chat.openChat",
+        "title": "Open AI Chat"
+      },
+      {
+        "command": "ai-chat.openContext",
+        "title": "Open Context Panel"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.93.0",
+    "@types/node": "20.x",
+    "typescript": "^5.5.4",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
