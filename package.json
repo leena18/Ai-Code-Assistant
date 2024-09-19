@@ -7,16 +7,29 @@
     "vscode": "^1.93.0"
   },
   "activationEvents": [
-    "onCommand:ai-chat.openChat",  
-    "onCommand:ai-chat.openContext" 
+    "onView:aiChat.chatPanel"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aiChat",
+          "title": "AI Chat",
+          "icon": "resources/chaticon.svg"  
+        }
+      ]
+    },
+    "views": {
+      "aiChat": [
+        {
+          "id": "aiChat.chatPanel",
+          "name": "AI Chat Panel",
+          "type":"webview"
+        }
+      ]
+    },
     "commands": [
-      {
-        "command": "ai-chat.openChat",
-        "title": "Open AI Chat"
-      },
       {
         "command": "ai-chat.openContext",
         "title": "Open Context Panel"
