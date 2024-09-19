@@ -36,6 +36,11 @@
       }
     ]
   },
+  "files": [
+    "dist/**/*",
+    "media/**/*",
+    "resources/**/*"
+  ],
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",

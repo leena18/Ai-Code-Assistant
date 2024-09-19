@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
-import { groqChatAPI } from '../services/groqService'; // A separate file for handling Groq API requests
+import { groqChatAPI } from '../services/groqService'; // Groq API handler
+import * as path from 'path';
+import * as fs from 'fs';
 
 export class ChatPanel implements vscode.WebviewViewProvider {
     public static readonly viewType = 'aiChat.chatPanel';
@@ -16,21 +18,18 @@ export class ChatPanel implements vscode.WebviewViewProvider {
 
         webviewView.webview.options = {
             enableScripts: true,
-            localResourceRoots: [this._extensionUri]
+            localResourceRoots: [vscode.Uri.joinPath(this._extensionUri, 'media')]
         };
 
+        // Load HTML from external file
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
         webviewView.webview.onDidReceiveMessage(async (message) => {
             if (message.command === 'sendMessage') {
                 const userMessage = message.text;
-                // this.addMessageToWebview('Me', userMessage);
 
                 try {
-                    console.log('User Message:', userMessage);
-                    const response = await groqChatAPI(userMessage); // Send the message to Groq API
-                    console.log('AI Response:', response);
-                    
+                    const response = await groqChatAPI(userMessage);
                     this.addMessageToWebview('AI', response);
                 } catch (error) {
                     vscode.window.showErrorMessage('Error communicating with AI chatbot.');
@@ -41,101 +40,21 @@ export class ChatPanel implements vscode.WebviewViewProvider {
     }
 
     private _getHtmlForWebview(webview: vscode.Webview): string {
-        return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Chat</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-            }
-            .chat-container {
-                display: flex;
-                flex-direction: column;
-                height: 100vh;
-            }
-            .messages {
-                flex-grow: 1;
-                overflow-y: scroll;
-                padding: 10px;
-                border: 1px solid #ddd;
-            }
-            .input-container {
-                display: flex;
-                padding: 10px;
-                border-top: 1px solid #ddd;
-            }
-            input[type="text"] {
-                flex-grow: 1;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                margin-right: 10px;
-            }
-            button {
-                padding: 10px 20px;
-                background-color: #007ACC;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="chat-container">
-            <div class="messages" id="messages"></div>
-            <div class="input-container">
-                <input type="text" id="messageInput" placeholder="Type a message...">
-                <button id="sendButton">Send</button>
-            </div>
-        </div>
-        <script>
-            const vscode = acquireVsCodeApi();
+        const htmlPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'chat.html');
+        let htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf-8');
 
-            function sendMessage() {
-                const input = document.getElementById('messageInput');
-                const message = input.value;
-                if (message) {
-                    addMessage('Me', message);
-                    vscode.postMessage({ command: 'sendMessage', text: message });
-                    input.value = '';
-                }
-            }
+        const stylePath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'style.css'));
+        const scriptPath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
 
-            function addMessage(sender, text) {
-                const messagesDiv = document.getElementById('messages');
-                const messageElement = document.createElement('div');
-                messageElement.textContent = sender + ': ' + text;
-                messagesDiv.appendChild(messageElement);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
+        // Replace placeholders in HTML with actual URIs
+        htmlContent = htmlContent.replace('style.css', stylePath.toString());
+        htmlContent = htmlContent.replace('main.js', scriptPath.toString());
 
-            window.addEventListener('message', event => {
-                const message = event.data; // The JSON data sent from the extension
-                switch (message.command) {
-                    case 'addMessage':
-                        addMessage(message.sender, message.text);
-                        break;
-                }
-            });
-
-            // Add event listener in JavaScript to avoid multiple bindings
-            document.getElementById('sendButton').addEventListener('click', sendMessage);
-        </script>
-    </body>
-    </html>
-    `;
+        return htmlContent;
     }
 
     private addMessageToWebview(sender: string, message: string) {
-        
-        
         if (this._view) {
-            console.log('Adding message to webview:', sender, message);
             this._view.webview.postMessage({ command: 'addMessage', sender, text: message });
         }
     }
