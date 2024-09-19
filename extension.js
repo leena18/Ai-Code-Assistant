@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const dotenv = require('dotenv');
 const Groq = require('groq-sdk');
+const ContextManager = require('./contextManager'); // Adjust the path if necessary
 
 dotenv.config();
 
@@ -233,7 +234,9 @@ class ExperimentViewProvider {
 
         // Handle context buttons
         document.getElementById('addFileContext').addEventListener('click', () => {
-            vscode.postMessage({ command: 'addFileContext' });
+            
+            
+
         });
 
         document.getElementById('addCodeBlockContext').addEventListener('click', () => {
@@ -263,12 +266,23 @@ class ExperimentViewProvider {
 `;
     }
 
+
+ 
+    
+   
+   
     async callGroqAPI(userMessage) {
         try {
+            // Retrieve context from ContextManager
+            const context = ContextManager.getContext();
+            
+            // Combine context with user message
+            const combinedMessage = context ? `${context}\n\nUser: ${userMessage}` : `User: ${userMessage}`;
+    
             // Create a chat completion request
             const chatCompletion = await groq.chat.completions.create({
                 messages: [
-                    { role: 'user', content: userMessage }
+                    { role: 'user', content: combinedMessage }
                 ],
                 model: 'llama3-8b-8192',
                 temperature: 1,
@@ -277,16 +291,110 @@ class ExperimentViewProvider {
                 stream: false, // Adjust based on Groq SDK's capabilities
                 stop: null
             });
-
+    
             // Extract response text
             return chatCompletion.choices[0]?.message?.content || '';
-
+    
         } catch (error) {
             console.error('Error from Groq API:', error);
             return 'Sorry, there was an error communicating with the AI.';
         }
     }
 }
+
+
+  // Command to fix selected code using Lask.AI (Groq API)
+  const fixCodeCommand = vscode.commands.registerCommand('aiChatbot.fixCode', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+        const selectedText = editor.document.getText(editor.selection);
+
+        if (selectedText) {
+            try {
+                // Prompt template for fixing code
+                const fixPromptTemplate = `
+                    You are an AI assistant. fix the error in the code and rewrite the whole code with comments:
+                    ${selectedText}
+
+                    code:
+
+                    Your code is given above
+                    Return only the code without any explanations.
+                `;
+
+                const chatCompletion = await groq.chat.completions.create({
+                    messages: [
+                        {
+                            role: 'user',
+                            content: fixPromptTemplate
+                        }
+                    ],
+                    model: 'gemma-7b-it',
+                    temperature: 1,
+                    max_tokens: 1024,
+                    top_p: 1,
+                    stop: ["Your code is given above"]
+                });
+
+                let suggestedFix = chatCompletion.choices[0]?.message?.content || 'No fix suggested.';
+
+                // Generalized trimming for the first line and last line (removing ```language at start and ``` at end)
+                const lines = suggestedFix.split('\n'); // Split the content by new lines
+                
+                // Check if the first line starts with ```
+                if (lines[0].startsWith('```')) {
+                    lines.shift(); // Remove the first line
+                }
+                
+                // Check if the last line is ```
+                if (lines[lines.length - 1].startsWith('```')) {
+                    lines.pop(); // Remove the last line
+                }
+                
+                // Join the remaining lines back into a single string
+                const trimmedSuggestedFix = lines.join('\n').trim();
+
+                suggestedFix=trimmedSuggestedFix;
+                
+
+
+
+                // Show popup with suggested fix
+                const action = await vscode.window.showInformationMessage(
+                    `Suggested fix:\n${suggestedFix}`,
+                    'Accept', 'Reject'
+                );
+
+                if (action === 'Accept') {
+                    // Apply the fix in the editor
+                    editor.edit(editBuilder => {
+                        editBuilder.replace(editor.selection, suggestedFix); // Replace code with fix
+                    });
+                    vscode.window.showInformationMessage('Code fix applied.');
+                } else {
+                    vscode.window.showInformationMessage('Code fix rejected.');
+                }
+            } catch (error) {
+                vscode.window.showErrorMessage('Failed to get a fix from Lask.AI.');
+                console.error(error);
+            }
+        } else {
+            vscode.window.showErrorMessage('No code selected.');
+        }
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * @param {vscode.ExtensionContext} context

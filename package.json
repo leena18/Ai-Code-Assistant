@@ -10,10 +10,26 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:experiment.sidebarView"
+    "onView:experiment.sidebarView",
+    "onCommand:aiChatbot.fixCode"
   ],
   "main": "./extension.js",
   "contributes": {
+
+    "commands": [
+    
+      {
+        "command": "aiChatbot.fixCode",  
+        "title": "Fix using Lask.AI",
+        "category": "AI Code Fix"
+      }
+    ],
+
+
+
+
+
+
     "viewsContainers": {
       "activitybar": [
         {
@@ -23,6 +39,18 @@
         }
       ]
     },
+
+    "menus": {
+      "editor/context": [
+        {
+          "command": "aiChatbot.fixCode",  
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+
+
+
     "views": {
       "experiment-sidebar": [
         {
