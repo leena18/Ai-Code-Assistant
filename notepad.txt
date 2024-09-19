@@ -169,6 +169,71 @@ class ExperimentViewProvider {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Add custom focus outline */
 }
 
+/*------------------- Upload section container */
+h3 {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin-bottom: 1em;
+    
+    
+}
+
+/* Upload section container */
+.upload-section {
+    
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section headings */
+.upload-section h4 {
+    font-size: 1.4em;
+    font-weight: 500;
+    margin-bottom: 10px;
+    
+}
+
+/* Input file styling */
+.upload-section input[type="file"] {
+    display: block;
+ 
+    
+    margin-bottom: 15px;
+   
+    
+ 
+    
+    cursor: pointer;
+}
+
+/* Button styling */
+.upload-section button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: 30%;
+    margin-top: 10px;
+}
+
+.upload-section button:hover {
+    background-color: #45a049;
+}
+
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -196,7 +261,27 @@ class ExperimentViewProvider {
     <button class="context-button" id="addCodeBlockContext">+ Add Code Block Context</button>
     <button class="context-button" id="addDirectoryContext">+ Add Directory Context</button>
     <button class="context-button" id="addGitHubRepoContext">+ Add GitHub Repo Context</button>
+    
 </div>
+
+
+<!-- Documents Page (New) -->
+    <div id="documentsPage" class="hidden"> <!-- Initially hidden -->
+        
+        <div class="upload-section">
+            <h4> Technical Documents:</h4>
+            <input type="file" id="techDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
+            <button id="uploadTechDocumentButton">Upload</button>
+        </div>
+        <div class="upload-section">
+            <h4>Requirement Documents:</h4>
+            <input type="file" id="reqDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
+            <button id="uploadReqDocumentButton">Upload</button>
+        </div>
+    </div>
+
+
+
     </div>
     
     <script>
@@ -234,7 +319,13 @@ class ExperimentViewProvider {
 
         // Handle context buttons
         document.getElementById('addFileContext').addEventListener('click', () => {
-            vscode.postMessage({ command: 'addFileContext' });
+            
+            
+
+
+                   
+
+
         });
 
         document.getElementById('addCodeBlockContext').addEventListener('click', () => {
@@ -299,6 +390,180 @@ class ExperimentViewProvider {
         }
     }
 }
+
+
+  // ----------------------------------Command to fix selected code using Lask.AI (Groq API)
+  
+  const fixCodeCommand = vscode.commands.registerCommand('aiChatbot.fixCode', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+        const selectedText = editor.document.getText(editor.selection);
+
+        if (selectedText) {
+            try {
+                // Prompt template for fixing code
+                const fixPromptTemplate = `
+                    You are an AI assistant. fix the error in the code and rewrite the whole code with comments:
+                    ${selectedText}
+
+                    code:
+
+                    Your code is given above
+                    Return only the code without any explanations.
+                `;
+
+                const chatCompletion = await groq.chat.completions.create({
+                    messages: [
+                        {
+                            role: 'user',
+                            content: fixPromptTemplate
+                        }
+                    ],
+                    model: 'gemma-7b-it',
+                    temperature: 1,
+                    max_tokens: 1024,
+                    top_p: 1,
+                    stop: ["Your code is given above"]
+                });
+
+                let suggestedFix = chatCompletion.choices[0]?.message?.content || 'No fix suggested.';
+
+                // Generalized trimming for the first line and last line (removing ```language at start and ``` at end)
+                const lines = suggestedFix.split('\n'); // Split the content by new lines
+                
+                // Check if the first line starts with ```
+                if (lines[0].startsWith('```')) {
+                    lines.shift(); // Remove the first line
+                }
+                
+                // Check if the last line is ```
+                if (lines[lines.length - 1].startsWith('```')) {
+                    lines.pop(); // Remove the last line
+                }
+                
+                // Join the remaining lines back into a single string
+                const trimmedSuggestedFix = lines.join('\n').trim();
+
+                suggestedFix=trimmedSuggestedFix;
+
+
+
+
+                // Show popup with suggested fix
+                const action = await vscode.window.showInformationMessage(
+                    `Suggested fix:\n${suggestedFix}`,
+                    'Accept', 'Reject'
+                );
+
+                if (action === 'Accept') {
+                    // Apply the fix in the editor
+                    editor.edit(editBuilder => {
+                        editBuilder.replace(editor.selection, suggestedFix); // Replace code with fix
+                    });
+                    vscode.window.showInformationMessage('Code fix applied.');
+                } else {
+                    vscode.window.showInformationMessage('Code fix rejected.');
+                }
+            } catch (error) {
+                vscode.window.showErrorMessage('Failed to get a fix from Lask.AI.');
+                console.error(error);
+            }
+        } else {
+            vscode.window.showErrorMessage('No code selected.');
+        }
+    }
+});
+
+
+
+//-------------------------------commments feature 
+
+
+// Command to add comments to selected code using Lask.AI (Groq API)
+const addCommentsCommand = vscode.commands.registerCommand('aiChatbot.addComments', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+        const selectedText = editor.document.getText(editor.selection);
+
+        if (selectedText) {
+            try {
+                // Prompt template for adding comments to the selected code
+                const commentPromptTemplate = `
+                    You are an AI assistant. Your task is to add useful, precise, and beginner-friendly comments to the code provided below:
+                    
+                    ${selectedText}
+
+                    Code with comments:
+
+                    Return only the code with comments without any further explanation.
+                `;
+
+                const chatCompletion = await groq.chat.completions.create({
+                    messages: [
+                        {
+                            role: 'user',
+                            content: commentPromptTemplate
+                        }
+                    ],
+                    model: 'gemma-7b-it',  // Use an appropriate model
+                    temperature: 1,
+                    max_tokens: 1024,
+                    top_p: 1,
+                    stop: ["Code with comments:"]
+                });
+
+                let commentedCode = chatCompletion.choices[0]?.message?.content || 'No comments suggested.';
+
+                // Generalized trimming for the first line and last line (removing ```language at start and ``` at end)
+                const lines = commentedCode.split('\n'); // Split the content by new lines
+                
+                // Check if the first line starts with ```
+                if (lines[0].startsWith('```')) {
+                    lines.shift(); // Remove the first line
+                }
+                
+                // Check if the last line is ```
+                if (lines[lines.length - 1].startsWith('```')) {
+                    lines.pop(); // Remove the last line
+                }
+                
+                // Join the remaining lines back into a single string
+                const trimmedCommentedCode = lines.join('\n').trim();
+
+                commentedCode = trimmedCommentedCode;
+
+                // Show popup with the commented code
+                const action = await vscode.window.showInformationMessage(
+                    `Code with suggested comments:\n${commentedCode}`,
+                    'Accept', 'Reject'
+                );
+
+                if (action === 'Accept') {
+                    // Apply the commented code in the editor
+                    editor.edit(editBuilder => {
+                        editBuilder.replace(editor.selection, commentedCode); // Replace code with commented code
+                    });
+                    vscode.window.showInformationMessage('Comments added to code.');
+                } else {
+                    vscode.window.showInformationMessage('Comment suggestion rejected.');
+                }
+            } catch (error) {
+                vscode.window.showErrorMessage('Failed to get comments from Lask.AI.');
+                console.error(error);
+            }
+        } else {
+            vscode.window.showErrorMessage('No code selected.');
+        }
+    }
+});
+
+
+
+
+
+
+
+
 
 /**
  * @param {vscode.ExtensionContext} context

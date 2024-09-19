@@ -1,22 +1,41 @@
 const vscode = require('vscode');
-const ContextManager = require('./contextManager');
+const path = require('path');
 
-async function loadFilesFromWorkspace() {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (workspaceFolders) {
-        let context = '';
-        for (const folder of workspaceFolders) {
-            const files = await vscode.workspace.findFiles(new vscode.RelativePattern(folder, '**/*'));
-            for (const file of files) {
-                const document = await vscode.workspace.openTextDocument(file);
-                context += `\nFile: ${file.path}\nContent:\n${document.getText()}`;
+class FileSelector {
+    static async loadFilesFromWorkspace() {
+        try {
+            // Find files in the workspace
+            const files = await vscode.workspace.findFiles('**/*');
+
+            if (files.length > 0) {
+                // Map files to options for Quick Pick
+                const fileOptions = files.map(file => ({
+                    label: path.basename(file.fsPath),
+                    description: file.fsPath,
+                    fileUri: file
+                }));
+
+                // Show Quick Pick menu to the user
+                const selectedFiles = await vscode.window.showQuickPick(fileOptions, {
+                    canPickMany: true,
+                    placeHolder: 'Select files from the current workspace'
+                });
+
+                if (selectedFiles) {
+                    return selectedFiles.map(file => file.fileUri);
+                } else {
+                    vscode.window.showInformationMessage('No files selected.');
+                    return [];
+                }
+            } else {
+                vscode.window.showInformationMessage('No files found in the workspace.');
+                return [];
             }
+        } catch (error) {
+            vscode.window.showErrorMessage(`Error loading files: ${error.message}`);
+            return [];
         }
-        ContextManager.addContext(context);
-        vscode.window.showInformationMessage('File context added.');
-    } else {
-        vscode.window.showInformationMessage('No workspace folders found.');
     }
 }
 
-module.exports = { loadFilesFromWorkspace };
+module.exports = FileSelector;

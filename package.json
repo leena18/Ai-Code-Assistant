@@ -11,25 +11,23 @@
   ],
   "activationEvents": [
     "onView:experiment.sidebarView",
-    "onCommand:aiChatbot.fixCode"
+    "onCommand:aiChatbot.fixCode",
+    "onCommand:aiChatbot.addComments"
   ],
   "main": "./extension.js",
   "contributes": {
-
     "commands": [
-    
       {
-        "command": "aiChatbot.fixCode",  
+        "command": "aiChatbot.fixCode",
         "title": "Fix using Lask.AI",
         "category": "AI Code Fix"
+      },
+      {
+        "command": "aiChatbot.addComments",
+        "title": "Add Comments using Lask.AI",
+        "category": "AI Code Commenting"
       }
     ],
-
-
-
-
-
-
     "viewsContainers": {
       "activitybar": [
         {
@@ -39,18 +37,18 @@
         }
       ]
     },
-
     "menus": {
       "editor/context": [
         {
-          "command": "aiChatbot.fixCode",  
+          "command": "aiChatbot.fixCode",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "aiChatbot.addComments",
           "when": "editorHasSelection"
         }
       ]
     },
-
-
-
     "views": {
       "experiment-sidebar": [
         {

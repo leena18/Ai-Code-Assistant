@@ -1,6 +1,12 @@
 const vscode = require('vscode');
 const dotenv = require('dotenv');
 const Groq = require('groq-sdk');
+const fs = require('fs');
+const path = require('path');
+
+const FileSelector = require('./selectors/fileSelector'); // Adjust path as necessary
+
+
 const ContextManager = require('./contextManager'); // Adjust the path if necessary
 
 dotenv.config();
@@ -18,24 +24,33 @@ class ExperimentViewProvider {
         this.extensionUri = _extensionUri;
     }
 
+
     resolveWebviewView(webviewView, context, _token) {
         webviewView.webview.options = {
             enableScripts: true,
         };
-
+    
         webviewView.webview.html = this.getWebviewContent();
-
+    
         // Listen for messages from the webview
         webviewView.webview.onDidReceiveMessage(async (message) => {
-            if (message.command === 'sendMessage') {
-                const userMessage = message.text;
+            switch (message.command) {
+                case 'sendMessage':
 
+                const userMessage = message.text;
+             
                 // Call the Groq API with the user's message
                 try {
                     const response = await this.callGroqAPI(userMessage);
+    
+                    // Format response for CodeMirror
+                    const formattedResponse = response.replace(/```(\w*)\n([\s\S]*?)\n```/g, (match, language, code) => {
+                        return `<textarea class="CodeMirror" readonly>${code}</textarea>`;
+                    });
+    
                     webviewView.webview.postMessage({
                         command: 'showResponse',
-                        text: response
+                        text: formattedResponse
                     });
                 } catch (error) {
                     console.error('Error from Groq API:', error);
@@ -44,10 +59,63 @@ class ExperimentViewProvider {
                         text: 'Sorry, there was an error with the AI.'
                     });
                 }
+
+
+                case 'addCodeBlockContext':
+                // Handle adding code block context here
+                this.addCodeBlockContext();
+                break;
+
+
+
+
             }
+
+          
+           
+
+
+
+
         });
     }
+    
 
+    
+    async addCodeBlockContext() {
+    try {
+        // Use FileSelector to get the file URI
+        const selectedFiles = await FileSelector.loadFilesFromWorkspace();
+
+        if (selectedFiles.length > 0) {
+            const fileUri = selectedFiles[0]; // Assuming we are picking only one file
+            const filePath = fileUri.fsPath;
+
+            // Read the file content
+            fs.readFile(filePath, 'utf8', (err, data) => {
+                if (err) {
+                    vscode.window.showErrorMessage(`Error reading file: ${err.message}`);
+                    return;
+                }
+
+                // Store the content in the ContextManager
+                ContextManager.addContext(data);
+
+                // Show success message
+                vscode.window.showInformationMessage('Code block context added successfully.');
+
+                // Optionally, show a preview or further process the content
+                console.log(`Added Code Block Context: ${data.substring(0, 200)}...`); // Log a preview
+            });
+        } else {
+            vscode.window.showInformationMessage('No file selected.');
+        }
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error: ${error.message}`);
+    }
+}
+    
+    
     getWebviewContent() {
         return `<!DOCTYPE html>
 <html lang="en">
@@ -65,7 +133,7 @@ class ExperimentViewProvider {
             padding: 5px;
             border-bottom: 1px solid #ddd;
             display: flex;
-            justify-content:start;
+            justify-content:space-between;
         }
         .nav-button {
             background-color: #ddd;
@@ -76,16 +144,76 @@ class ExperimentViewProvider {
         .nav-button.active {
             background-color: #bbb;
         }
+
+
+
+        #profileMenu {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        #profileIcon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        #threeDotMenu {
+            position: relative;
+        }
+        
+        #menuButton {
+             background-color: transparent;
+             color:#ffff;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        #menuOptions {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        #menuOptions a {
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        
+        #menuOptions a:hover {
+            background-color: #f0f0f0;
+        }
+        
+        #menuOptions.hidden {
+    display: none; /* Hide the menu options */
+}
+
+
+
         #chatPage, #contextPage {
             display: none;
         }
         #chatPage.active, #contextPage.active {
             display: block;
+            height: 100%;
         }
         #chatOutput {
-            border: 1px solid #ddd;
+            // border: 1px solid #ddd;
             padding: 10px;
-            height: 300px;
+            height: 500px;
             overflow-y: scroll;
         }
        #userInput {
@@ -129,7 +257,7 @@ class ExperimentViewProvider {
         #contextOptions button {
             margin: 5px;
             padding: 5px;
-            font-size:15px;
+            font-size:12px;
             cursor: pointer;
         }
         #contextOptions button.active {
@@ -149,11 +277,11 @@ class ExperimentViewProvider {
 
 
 .context-button {
-    background-color: #007bff; /* Primary button color */
+    background-color: #156ca1 ; /* Primary button color */
     color: #fff; /* Text color */
     border: none; /* Remove default border */
-    padding: 10px 20px; /* Button padding */
-    border-radius: 8px; /* Rounded corners */
+    padding: 10px 15px; /* Button padding */
+    border-radius: 10px; /* Rounded corners */
     font-size: 10px; /* Font size */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
@@ -169,17 +297,132 @@ class ExperimentViewProvider {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Add custom focus outline */
 }
 
+/*------------------- Upload section container */
+h3 {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin-bottom: 1em;
+    
+    
+}
+
+/* Upload section container */
+.upload-section {
+    
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section headings */
+.upload-section h4 {
+    font-size: 1.4em;
+    font-weight: 500;
+    margin-bottom: 10px;
+    
+}
+
+/* Input file styling */
+.upload-section input[type="file"] {
+    display: block;
+ 
+    
+    margin-bottom: 15px;
+   
+    
+ 
+    
+    cursor: pointer;
+}
+
+/* Button styling */
+.upload-section button {
+    background-color: #098972;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    font-size: 1em;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: 30%;
+    margin-top: 10px;
+}
+
+.upload-section button:hover {
+    background-color: #45a049;
+}
+
+/* File list styling */
+.file-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    
+    font-size: 0.95em;
+}
+
+.remove-file {
+    color: #ff5c5c;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+.remove-file:hover {
+    color: #ff2c2c;
+}
+
+
+
+
+
+
     </style>
 </head>
 <body>
     <div id="navbar">
-        <button class="nav-button active" id="chatNav">Chat</button>
-        <button class="nav-button" id="contextNav">Context</button>
+
+
+    <div>  
+
+    <button class="nav-button active" id="chatNav">Chat</button>
+    <button class="nav-button" id="contextNav">Context</button>
+    
     </div>
+
+
+    <!-- Profile and Menu Section -->
+    <div id="profileMenu">
+             
+        <img src="https://i.pinimg.com/originals/07/66/d1/0766d183119ff92920403eb7ae566a85.png" alt="Profile" id="profileIcon" />
+        <div id="threeDotMenu">
+            <button id="menuButton">...</button>
+            <div id="menuOptions" class="hidden">
+                <a href="#settings">Settings</a>
+                <a href="#help">Help</a>
+                <a href="#login">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
     
     <!-- Chat Page -->
     <div id="chatPage" class="active">
-        <h3>Welcome to Lask.AI✨</h3>
+        <h2>Welcome to Lask.AI✨</h2>
         <div id="chatOutput"></div>
 
         <div class="chat-input-container">
@@ -190,16 +433,53 @@ class ExperimentViewProvider {
      </div>
     <!-- Context Page -->
     <div id="contextPage">
-        <h3>Context Management</h3>
+        <h3>🧠Context Management</h3>
        <div id="contextOptions">
     <button class="context-button" id="addFileContext">+ Add File Context</button>
     <button class="context-button" id="addCodeBlockContext">+ Add Code Block Context</button>
     <button class="context-button" id="addDirectoryContext">+ Add Directory Context</button>
     <button class="context-button" id="addGitHubRepoContext">+ Add GitHub Repo Context</button>
+    
 </div>
+
+<!-- Documents Page (Updated) -->
+<div id="documentsPage" class="hidden"> <!-- Initially hidden -->
+    <h3>📎Attach documents</h3>
+    
+    <!-- Technical Document Upload Section -->
+    <div class="upload-section">
+        <h4>Upload Technical Document:</h4>
+        <input type="file" id="techDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
+        <button id="uploadTechDocumentButton">Upload</button>
+
+        <!-- List of uploaded technical documents -->
+        <ul id="techDocumentsList" class="file-list"></ul>
+    </div>
+
+    <!-- Requirement Document Upload Section -->
+    <div class="upload-section">
+        <h4>Upload Requirement Document:</h4>
+        <input type="file" id="reqDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
+        <button id="uploadReqDocumentButton">Upload</button>
+
+        <!-- List of uploaded requirement documents -->
+        <ul id="reqDocumentsList" class="file-list"></ul>
+    </div>
+</div>
+
+
+
+
     </div>
     
     <script>
+
+
+
+
+    //--------------------main js 
+
+
         const vscode = acquireVsCodeApi();
         
         document.getElementById('chatNav').addEventListener('click', () => {
@@ -215,6 +495,9 @@ class ExperimentViewProvider {
             document.getElementById('chatNav').classList.remove('active');
             document.getElementById('contextNav').classList.add('active');
         });
+
+
+// ----------------------------------chat js 
 
         document.getElementById('sendButton').addEventListener('click', function() {
             const userMessage = document.getElementById('userInput').value;
@@ -232,10 +515,82 @@ class ExperimentViewProvider {
             }
         });
 
+// -------------handle menu 
+
+
+document.getElementById('menuButton').addEventListener('click', () => {
+    const menuOptions = document.getElementById('menuOptions');
+    menuOptions.classList.toggle('hidden');
+});
+
+document.getElementById('profileIcon').addEventListener('click', () => {
+    // Optionally handle profile icon click
+});
+
+
+
+
+
+
+//--------------------------------- handle the documents 
+
+
+
+// Function to handle uploading files
+function handleFileUpload(inputElement, fileListElement) {
+    const files = inputElement.files;
+
+    // Loop through each file and add to the list
+    Array.from(files).forEach(file => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('file-item');
+        listItem.textContent = file.name;
+
+        // Add remove button (cross sign)
+        const removeButton = document.createElement('span');
+        removeButton.textContent = '✖';
+        removeButton.classList.add('remove-file');
+        removeButton.addEventListener('click', () => {
+            fileListElement.removeChild(listItem);
+        });
+
+        listItem.appendChild(removeButton);
+        fileListElement.appendChild(listItem);
+    });
+}
+
+// Event listener for uploading technical documents
+document.getElementById('uploadTechDocumentButton').addEventListener('click', () => {
+    const techInput = document.getElementById('techDocumentUpload');
+    const techFileList = document.getElementById('techDocumentsList');
+    handleFileUpload(techInput, techFileList);
+});
+
+// Event listener for uploading requirement documents
+document.getElementById('uploadReqDocumentButton').addEventListener('click', () => {
+    const reqInput = document.getElementById('reqDocumentUpload');
+    const reqFileList = document.getElementById('reqDocumentsList');
+    handleFileUpload(reqInput, reqFileList);
+});
+
+
+
+
+
+
+
+
+
         // Handle context buttons
         document.getElementById('addFileContext').addEventListener('click', () => {
             
+             
             
+
+              vscode.postMessage({ command: 'addCodeBlockContext' });
+
+                   
+
 
         });
 
@@ -251,16 +606,45 @@ class ExperimentViewProvider {
             vscode.postMessage({ command: 'addGitHubRepoContext' });
         });
 
-        // Listen for messages from the extension
-        window.addEventListener('message', event => {
+       
+
+       window.addEventListener('message', event => {
             const message = event.data;
             if (message.command === 'showResponse') {
                 const botResponseElement = document.createElement('div');
-                botResponseElement.textContent = 'AI: ' + message.text;
+                botResponseElement.innerHTML = 'AI: <pre class="CodeMirror"><code>' + message.text + '</code></pre>';
                 document.getElementById('chatOutput').appendChild(botResponseElement);
+                
+                // Initialize CodeMirror
+                const codeBlocks = document.querySelectorAll('.CodeMirror');
+                codeBlocks.forEach(block => {
+                    CodeMirror.fromTextArea(block, {
+                        mode: 'javascript',
+                        theme: 'dracula',
+                        readOnly: true
+                    });
+                });
             }
         });
+
+
+
+
+
+
+
     </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+           <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/htmlmixed/htmlmixed.min.js"></script>
+
+
+
+
 </body>
 </html>
 `;
@@ -303,7 +687,8 @@ class ExperimentViewProvider {
 }
 
 
-  // Command to fix selected code using Lask.AI (Groq API)
+  // ----------------------------------Command to fix selected code using Lask.AI (Groq API)
+  
   const fixCodeCommand = vscode.commands.registerCommand('aiChatbot.fixCode', async () => {
     const editor = vscode.window.activeTextEditor;
     if (editor) {
@@ -355,7 +740,7 @@ class ExperimentViewProvider {
                 const trimmedSuggestedFix = lines.join('\n').trim();
 
                 suggestedFix=trimmedSuggestedFix;
-                
+
 
 
 
@@ -386,7 +771,86 @@ class ExperimentViewProvider {
 
 
 
+//-------------------------------commments feature 
 
+
+// Command to add comments to selected code using Lask.AI (Groq API)
+const addCommentsCommand = vscode.commands.registerCommand('aiChatbot.addComments', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+        const selectedText = editor.document.getText(editor.selection);
+
+        if (selectedText) {
+            try {
+                // Prompt template for adding comments to the selected code
+                const commentPromptTemplate = `
+                    You are an AI assistant. Your task is to add useful, precise, and beginner-friendly comments to the code provided below:
+                    
+                    ${selectedText}
+
+                    Code with comments:
+
+                    Return only the code with comments without any further explanation.
+                `;
+
+                const chatCompletion = await groq.chat.completions.create({
+                    messages: [
+                        {
+                            role: 'user',
+                            content: commentPromptTemplate
+                        }
+                    ],
+                    model: 'gemma-7b-it',  // Use an appropriate model
+                    temperature: 1,
+                    max_tokens: 1024,
+                    top_p: 1,
+                    stop: ["Code with comments:"]
+                });
+
+                let commentedCode = chatCompletion.choices[0]?.message?.content || 'No comments suggested.';
+
+                // Generalized trimming for the first line and last line (removing ```language at start and ``` at end)
+                const lines = commentedCode.split('\n'); // Split the content by new lines
+                
+                // Check if the first line starts with ```
+                if (lines[0].startsWith('```')) {
+                    lines.shift(); // Remove the first line
+                }
+                
+                // Check if the last line is ```
+                if (lines[lines.length - 1].startsWith('```')) {
+                    lines.pop(); // Remove the last line
+                }
+                
+                // Join the remaining lines back into a single string
+                const trimmedCommentedCode = lines.join('\n').trim();
+
+                commentedCode = trimmedCommentedCode;
+
+                // Show popup with the commented code
+                const action = await vscode.window.showInformationMessage(
+                    `Code with suggested comments:\n${commentedCode}`,
+                    'Accept', 'Reject'
+                );
+
+                if (action === 'Accept') {
+                    // Apply the commented code in the editor
+                    editor.edit(editBuilder => {
+                        editBuilder.replace(editor.selection, commentedCode); // Replace code with commented code
+                    });
+                    vscode.window.showInformationMessage('Comments added to code.');
+                } else {
+                    vscode.window.showInformationMessage('Comment suggestion rejected.');
+                }
+            } catch (error) {
+                vscode.window.showErrorMessage('Failed to get comments from Lask.AI.');
+                console.error(error);
+            }
+        } else {
+            vscode.window.showErrorMessage('No code selected.');
+        }
+    }
+});
 
 
 
