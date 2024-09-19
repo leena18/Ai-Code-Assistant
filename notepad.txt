@@ -1,0 +1,163 @@
+const vscode = require('vscode');
+const dotenv = require('dotenv');
+const Groq = require('groq-sdk');
+
+dotenv.config();
+
+// Hard-coded API Key
+const apiKey = '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';
+
+// Initialize the Groq API client with the hard-coded API key
+const groq = new Groq({
+    apiKey: apiKey
+});
+
+class ExperimentViewProvider {
+    constructor(_extensionUri) {
+        this.extensionUri = _extensionUri;
+    }
+
+    resolveWebviewView(webviewView, context, _token) {
+        webviewView.webview.options = {
+            enableScripts: true,
+        };
+
+        webviewView.webview.html = this.getWebviewContent();
+
+        // Listen for messages from the webview
+        webviewView.webview.onDidReceiveMessage(async (message) => {
+            if (message.command === 'sendMessage') {
+                const userMessage = message.text;
+
+                // Call the Groq API with the user's message
+                try {
+                    const response = await this.callGroqAPI(userMessage);
+                    webviewView.webview.postMessage({
+                        command: 'showResponse',
+                        text: response
+                    });
+                } catch (error) {
+                    console.error('Error from Groq API:', error);
+                    webviewView.webview.postMessage({
+                        command: 'showResponse',
+                        text: 'Sorry, there was an error with the AI.'
+                    });
+                }
+            }
+        });
+    }
+
+    getWebviewContent() {
+        return `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>AI Chatbot</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        padding: 20px;
+                    }
+                    #chatOutput {
+                        border: 1px solid #ddd;
+                        padding: 10px;
+                        height: 300px;
+                        overflow-y: scroll;
+                    }
+                    #userInput {
+                        width: 80%;
+                    }
+                    #sendButton {
+                        width: 18%;
+                    }
+                </style>
+            </head>
+            <body>
+                <h3>Welcome to Lask.AI</h3>
+                <div id="chatOutput"></div>  <!-- Display the conversation here -->
+                <input type="text" id="userInput" placeholder="Type your message..." />
+                <button id="sendButton">Send</button> 
+                <script>
+                    const vscode = acquireVsCodeApi();
+                    
+                    const chatOutput = document.getElementById('chatOutput');
+                    const userInput = document.getElementById('userInput');
+                    const sendButton = document.getElementById('sendButton');
+                    
+                    sendButton.addEventListener('click', function() {
+                        const userMessage = userInput.value;
+                        if (userMessage.trim() !== '') {
+                            const userMessageElement = document.createElement('div');
+                            userMessageElement.textContent = 'You: ' + userMessage;
+                            chatOutput.appendChild(userMessageElement);
+                            userInput.value = '';
+    
+                            // Send message to VS Code extension
+                            vscode.postMessage({
+                                command: 'sendMessage',
+                                text: userMessage
+                            });
+                        }
+                    });
+    
+                    // Listen for messages from the extension
+                    window.addEventListener('message', event => {
+                        const message = event.data;
+                        if (message.command === 'showResponse') {
+                            const botResponseElement = document.createElement('div');
+                            botResponseElement.textContent = 'AI: ' + message.text;
+                            chatOutput.appendChild(botResponseElement);
+                        }
+                    });
+                </script>
+            </body>
+            </html>`;
+    }
+
+    async callGroqAPI(userMessage) {
+        try {
+            // Create a chat completion request
+            const chatCompletion = await groq.chat.completions.create({
+                messages: [
+                    { role: 'user', content: userMessage }
+                ],
+                model: 'llama3-8b-8192',
+                temperature: 1,
+                max_tokens: 1024,
+                top_p: 1,
+                stream: false, // Adjust based on Groq SDK's capabilities
+                stop: null
+            });
+
+            // Extract response text
+            return chatCompletion.choices[0]?.message?.content || '';
+
+        } catch (error) {
+            console.error('Error from Groq API:', error);
+            return 'Sorry, there was an error communicating with the AI.';
+        }
+    }
+}
+
+/**
+ * @param {vscode.ExtensionContext} context
+ */
+function activate(context) {
+    console.log('Congratulations, your extension "experiment" is now active!');
+
+    const provider = new ExperimentViewProvider(context.extensionUri);
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(
+            "experiment.sidebarView",
+            provider
+        )
+    );
+}
+
+function deactivate() {}
+
+module.exports = {
+    activate,
+    deactivate,
+};
