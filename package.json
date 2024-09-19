@@ -16,7 +16,7 @@
         {
           "id": "aiChat",
           "title": "AI Chat",
-          "icon": "resources/chaticon.svg"  
+          "icon": "resources/chat-icon.svg"
         }
       ]
     },
@@ -25,7 +25,7 @@
         {
           "id": "aiChat.chatPanel",
           "name": "AI Chat Panel",
-          "type":"webview"
+          "type": "webview"
         }
       ]
     },
@@ -48,13 +48,17 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.0",
     "@types/node": "20.x",
-    "typescript": "^5.5.4",
-    "ts-loader": "^9.5.1",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4",
+    "@types/vscode": "^1.93.0",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.5.4",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "groq-sdk": "^0.7.0"
   }
 }
