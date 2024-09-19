@@ -29,7 +29,7 @@ export class ChatPanel implements vscode.WebviewViewProvider {
                 const userMessage = message.text;
 
                 try {
-                    const response = await groqChatAPI(userMessage);
+                    const response = await groqChatAPI(userMessage, 'general');
                     this.addMessageToWebview('AI', response);
                 } catch (error) {
                     vscode.window.showErrorMessage('Error communicating with AI chatbot.');

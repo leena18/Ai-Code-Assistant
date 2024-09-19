@@ -6,21 +6,55 @@ dotenv.config();
 
 // Initialize the Groq API
 const groq = new Groq({
-    apiKey: "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"
+    apiKey: process.env.GROQ_API_KEY || "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"
 });
 
-export async function groqChatAPI(userMessage: string): Promise<string> {
+export async function groqChatAPI(userMessage: string, commandType: string): Promise<string> {
     try {
-
         console.log('User Message Groq:', userMessage);
-        // Prompt template for code generation
-        const promptTemplate = `
-            You are an AI coding assistant. Answer the user queries and provide code if needed.
-            Question: ${userMessage}
-            code: 
-            Return only the code without any explanations or comments.
-        `;
+        
+        // Adjust prompt based on command type
+        let promptTemplate = '';
 
+        switch (commandType) {
+            case 'explainCode':
+                promptTemplate = `
+                    You are an AI coding assistant. Please explain the following code in detail:
+                    ${userMessage}
+                `;
+                break;
+            case 'fixCode':
+                promptTemplate = `
+                    You are an AI coding assistant. Fix any issues in the following code:
+                    ${userMessage}
+                    Return only the corrected code without any explanations or comments.
+                `;
+                break;
+            case 'writeDocstrings':
+                promptTemplate = `
+                    You are an AI coding assistant. Write proper docstrings for the following code:
+                    ${userMessage}
+                `;
+                break;
+            case 'generateTests':
+                promptTemplate = `
+                    You are an AI coding assistant. Generate unit tests for the following code:
+                    ${userMessage}
+                    Return only the test code.
+                `;
+                break;
+            case 'exploreCodebase':
+                promptTemplate = `
+                    You are an AI coding assistant. Provide a summary or exploration of the following codebase:
+                    ${userMessage}
+                `;
+                break;
+            default:
+                promptTemplate = userMessage; // Fallback for unrecognized commands
+                break;
+        }
+
+        // Chat completion API call
         const chatCompletion = await groq.chat.completions.create({
             messages: [
                 {
@@ -28,7 +62,7 @@ export async function groqChatAPI(userMessage: string): Promise<string> {
                     content: promptTemplate
                 }
             ],
-            model: 'gemma-7b-it',
+            model: 'gemma-7b-it', // Assuming this is the model you want to use
             temperature: 1,
             max_tokens: 1024,
             top_p: 1,
@@ -37,7 +71,7 @@ export async function groqChatAPI(userMessage: string): Promise<string> {
 
         console.log('Chat Completion:', chatCompletion);
 
-        // Extract and return the code from Groq API response
+        // Extract and return the response from the Groq API
         return chatCompletion.choices[0]?.message?.content || '';
     } catch (error) {
         console.error('Groq API Error:', error);

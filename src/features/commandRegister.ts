@@ -1,36 +1,43 @@
-export class CommandRegister {
-    private commands: { [key: string]: (args: string) => string };
+import * as vscode from 'vscode';
+import { groqChatAPI } from '../services/groqService'; 
 
-    constructor() {
-        this.commands = {
-            'help': this.helpCommand,
-            'clear': this.clearCommand,
-            'greet': this.greetCommand,
-            // Add more commands here
-        };
+export async function commandHandler(commandType: string) {
+    const editor = vscode.window.activeTextEditor;
+
+    if (!editor) {
+        vscode.window.showErrorMessage('No code editor is active.');
+        return;
     }
 
-    public registerCommand(command: string, callback: (args: string) => string) {
-        this.commands[command] = callback;
+    const code = editor.document.getText(editor.selection);
+    let userMessage = '';
+
+    switch (commandType) {
+        case 'explainCode':
+            userMessage = `Explain the following code: ${code}`;
+            break;
+        case 'fixCode':
+            userMessage = `Fix the following code: ${code}`;
+            break;
+        case 'writeDocstrings':
+            userMessage = `Write docstrings for the following code: ${code}`;
+            break;
+        case 'generateTests':
+            userMessage = `Generate tests for the following code: ${code}`;
+            break;
+        case 'exploreCodebase':
+            userMessage = `Explore the following codebase: ${code}`;
+            break;
+        default:
+            vscode.window.showErrorMessage('Unknown command.');
+            return;
     }
 
-    public executeCommand(command: string, args: string): string {
-        if (this.commands[command]) {
-            return this.commands[command](args);
-        } else {
-            return `Unknown command: ${command}`;
-        }
-    }
-
-    private helpCommand(): string {
-        return 'Available commands: help, clear, greet';
-    }
-
-    private clearCommand(): string {
-        return 'Chat cleared.';
-    }
-
-    private greetCommand(name: string): string {
-        return `Hello, ${name || 'user'}!`;
+    try {
+        const response = await groqChatAPI(userMessage, commandType);
+        vscode.window.showInformationMessage(`AI Response: ${response}`);
+    } catch (error) {
+        vscode.window.showErrorMessage('Error processing the command.');
+        console.error(error);
     }
 }
