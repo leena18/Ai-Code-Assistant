@@ -3,7 +3,6 @@ import { ChatPanel } from './panels/ChatPaneel';
 import { commandHandler } from './features/commandRegister'; // Import for handling commands
 
 export function activate(context: vscode.ExtensionContext) {
-    // Register the Chat Panel for the activity bar (in the sidebar)
     const chatProvider = new ChatPanel(context.extensionUri);
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(ChatPanel.viewType, chatProvider)

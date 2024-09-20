@@ -1,41 +1,73 @@
-const vscode = acquireVsCodeApi();
+import { groqChatAPI } from './groqService';
 
-// Function to handle sending messages to the chat panel
-function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const message = input.value.trim();  // Trim spaces
-    if (message) {
-        addMessage('Me', message);  // Display the user message in the chat panel
-        vscode.postMessage({ command: 'sendMessage', text: message });  // Send the message to VS Code extension API
-        input.value = '';  // Clear the input field
+document.addEventListener('DOMContentLoaded', () => {
+    const sendButton = document.getElementById('sendButton');
+    const messageInput = document.getElementById('messageInput');
+    const chatContainer = document.getElementById('chatContainer');
+    const initialView = document.getElementById('initialView');
+    const chatView = document.getElementById('chatView');
+
+    // Initially show the welcome message
+    initialView.style.display = 'block';
+    chatView.style.display = 'none';
+
+    // Event listener for "Send" button
+    sendButton.addEventListener('click', sendMessage);
+
+    // Event listener for pressing "Enter"
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Function to send a message
+    function sendMessage() {
+        const message = messageInput.value.trim();
+
+        if (!message) {
+            return;
+        }
+
+        // Hide the initial view and show the chat panel after the first message
+        if (initialView.style.display === 'block') {
+            initialView.style.display = 'none';
+            chatView.style.display = 'block';
+        }
+
+        // Display user's message in the chat
+        displayMessage(message, 'chat-message');
+
+        // Clear the input field
+        messageInput.value = '';
+
+        // Send the message to the AI service
+        sendToAI(message);
     }
-}
 
-// Function to display messages in the chat window
-function addMessage(sender, text) {
-    const messagesDiv = document.getElementById('messages');
-    const messageElement = document.createElement('div');
-    messageElement.textContent = `${sender}: ${text}`;
-    messagesDiv.appendChild(messageElement);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Scroll to the bottom to display the latest message
-}
-
-// Listen for messages from the extension
-window.addEventListener('message', event => {
-    const message = event.data;
-    switch (message.command) {
-        case 'addMessage':
-            addMessage(message.sender, message.text);
-            break;
+    // Function to display a message in the chat panel
+    function displayMessage(text, className) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add(className);
+        messageDiv.innerText = text;
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll to the bottom
     }
-});
 
-// Add an event listener for the send button
-document.getElementById('sendButton').addEventListener('click', sendMessage);
+    // Function to send the message to the AI and display its response
+    function sendToAI(message) {
+        // Display a loading message while waiting for the AI's response
+        displayMessage('AI is processing...', 'chat-response');
 
-// Allow sending messages via the "Enter" key
-document.getElementById('messageInput').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        sendMessage();
+        // Call the groqChatAPI to get the AI's response
+        groqChatAPI(message, 'chat')
+            .then(response => {
+                // Display the AI's response in the chat
+                displayMessage(`AI: ${response}`, 'chat-response');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                displayMessage('Error in getting AI response.', 'chat-response');
+            });
     }
 });

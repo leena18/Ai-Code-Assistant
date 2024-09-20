@@ -27,13 +27,15 @@ export class ChatPanel implements vscode.WebviewViewProvider {
         webviewView.webview.onDidReceiveMessage(async (message) => {
             if (message.command === 'sendMessage') {
                 const userMessage = message.text;
+                this.addMessageToWebview('You', userMessage, 'user-message');
 
                 try {
                     const response = await groqChatAPI(userMessage, 'general');
-                    this.addMessageToWebview('AI', response);
+                    this.addMessageToWebview('AI', response, 'ai-message');
                 } catch (error) {
                     vscode.window.showErrorMessage('Error communicating with AI chatbot.');
                     console.error(error);
+                    this.addMessageToWebview('AI', 'Sorry, something went wrong.', 'ai-message');
                 }
             }
         });
@@ -53,9 +55,9 @@ export class ChatPanel implements vscode.WebviewViewProvider {
         return htmlContent;
     }
 
-    private addMessageToWebview(sender: string, message: string) {
+    private addMessageToWebview(sender: string, message: string, className: string) {
         if (this._view) {
-            this._view.webview.postMessage({ command: 'addMessage', sender, text: message });
+            this._view.webview.postMessage({ command: 'addMessage', sender, text: message, className });
         }
     }
 }

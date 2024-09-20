@@ -3,17 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Tabnine Chat Panel</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-container">
-        <div class="messages" id="messages"></div>
-        <div class="input-container">
-            <input type="text" id="messageInput" placeholder="Type a message...">
-            <button id="sendButton">Send</button>
+    <div class="navbar">
+        <span class="navbar-icon">🔒</span>
+        <span class="navbar-title">Lask Ai</span>
+        <span class="navbar-chat-icon">💬</span>
+        <span class="navbar-test-icon">🧪</span>
+        <span class="navbar-settings-icon">⚙️</span>
+        <span class="navbar-hamburger-icon">☰</span>
+    </div>
+
+    <div id="initialView">
+        <div class="chat-welcome">
+            <h2>Welcome to Lask Ai Chat, your coding partner!</h2>
+            <p>Select the block of code that you’re focusing on. Then, you can either click on one of the actions listed below, type your request into the prompt area, or use the “/” command to quickly access specific actions. <a href="#">Check out the user guide</a></p>
+        </div>
+
+        <div class="commands-section">
+            <h3>Explore what Lask AI Chat can do</h3>
+            <button class="command-button" id="explainCode">Explain code ></button>
+            <button class="command-button" id="writeDocstrings">Write docstrings for code ></button>
+            <button class="command-button" id="fixCode">Fix code ></button>
+            <button class="command-button" id="generateTests">Generate tests for code ></button>
+            <button class="command-button" id="exploreCodebase">Explore codebase ></button>
         </div>
     </div>
+
+    <div id="chatView" style="display: none;">
+        <div class="chat-container" id="chatContainer">
+            <!-- Chat messages will be appended here -->
+        </div>
+    </div>
+
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Type '/' for commands, '@' for code snippets, or simply ask a question..." autofocus>
+        <button id="sendButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24">
+                <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
+            </svg>
+        </button>
+    </div>
+
     <script src="main.js"></script>
 </body>
 </html>

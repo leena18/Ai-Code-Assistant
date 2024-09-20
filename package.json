@@ -45,11 +45,11 @@
       },
       {
         "command": "aiChat.writeDocstrings",
-        "title": "Write Docstrings for Code"
+        "title": "Write Docstrings"
       },
       {
         "command": "aiChat.generateTests",
-        "title": "Generate Tests for Code"
+        "title": "Generate Tests"
       },
       {
         "command": "aiChat.exploreCodebase",
@@ -58,28 +58,11 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
-    "@types/node": "20.x",
-    "@types/vscode": "^1.93.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.5.4",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "groq-sdk": "^0.7.0"
+    "typescript": "^4.0.0",
+    "@types/vscode": "^1.49.0"
   }
 }
