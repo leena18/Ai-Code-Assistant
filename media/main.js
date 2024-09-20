@@ -11,37 +11,63 @@ function sendMessage() {
     }
 }
 
+// Function to safely create a text node or HTML elements for the message
+function createMessageHTML(message) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = message;  // Safely parse HTML
+    return tempDiv.childNodes;
+}
+
 // Function to display messages in the chat window
 function addMessage(sender, text, isAI = false) {
     const messagesDiv = document.getElementById('messages');
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', isAI ? 'ai-message' : 'user-message');
 
-    // Check if the text is too long (over 4 lines) and add "Read More" functionality
+    const fullTextNode = createMessageHTML(text);  // Properly handle HTML content
+
+    // Check if the text is too long (over 4 lines or 200 characters) and add "Read More" functionality
     const isLongMessage = text.split(/\r\n|\r|\n/).length > 4 || text.length > 200; // Adjust as needed
     if (isLongMessage) {
         const shortText = text.substring(0, 200); // Display first 200 characters
-        const fullText = document.createElement('span');
-        fullText.textContent = text;
-        fullText.style.display = 'none';
+        const shortTextNode = createMessageHTML(`${shortText}...`);  // Properly handle HTML content
 
         const shortTextElement = document.createElement('span');
-        shortTextElement.textContent = `${shortText}... `;
+        shortTextElement.append(...shortTextNode);
+
+        const fullTextElement = document.createElement('span');
+        fullTextElement.append(...fullTextNode);
+        fullTextElement.style.display = 'none';
 
         const readMoreLink = document.createElement('button');
         readMoreLink.textContent = 'Read More';
         readMoreLink.classList.add('read-more-button');
+
+        const readLessLink = document.createElement('button');
+        readLessLink.textContent = 'Read Less';
+        readLessLink.classList.add('read-more-button');
+        readLessLink.style.display = 'none';  // Initially hide the "Read Less" button
+
         readMoreLink.onclick = () => {
             shortTextElement.style.display = 'none';
             readMoreLink.style.display = 'none';
-            fullText.style.display = 'inline';
+            fullTextElement.style.display = 'inline';
+            readLessLink.style.display = 'inline';
+        };
+
+        readLessLink.onclick = () => {
+            shortTextElement.style.display = 'inline';
+            readMoreLink.style.display = 'inline';
+            fullTextElement.style.display = 'none';
+            readLessLink.style.display = 'none';
         };
 
         messageElement.appendChild(shortTextElement);
         messageElement.appendChild(readMoreLink);
-        messageElement.appendChild(fullText);
+        messageElement.appendChild(readLessLink);
+        messageElement.appendChild(fullTextElement);
     } else {
-        messageElement.textContent = `${sender}: ${text}`;
+        messageElement.append(...fullTextNode);  // Display the full message
     }
 
     messagesDiv.appendChild(messageElement);

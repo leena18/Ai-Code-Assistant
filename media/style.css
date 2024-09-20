@@ -20,30 +20,29 @@ body {
     padding: 10px;
     border-radius: 4px;
     max-width: 80%;
+    word-wrap: break-word;
 }
 
 /* Style for user messages */
 .user-message {
-    background-color: #007ACC;
+    background-color: #189af18d;
     color: white;
     align-self: flex-end;
     text-align: right;
-    word-wrap: break-word;
 }
 
 /* Style for AI messages */
 .ai-message {
-    background-color: #F1F1F1;
-    color: #333;
+    background-color: #363aba63;
+    color: #ffffff;
     align-self: flex-start;
     text-align: left;
-    word-wrap: break-word;
 }
 
-/* Read More button style */
+/* Read More and Read Less button style */
 .read-more-button {
     background: none;
-    color: #007ACC;
+    color: #04faf6;
     border: none;
     font-size: 14px;
     cursor: pointer;
