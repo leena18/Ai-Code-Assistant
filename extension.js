@@ -1,4 +1,6 @@
 const vscode = require('vscode');
+const path = require('path');
+const fs = require('fs');
 
 class ExperimentViewProvider {
     constructor(_extensionUri) {
@@ -16,54 +18,24 @@ class ExperimentViewProvider {
             enableScripts: true,
         };
 
-        webviewView.webview.html = this.getWebviewContent();
+        // Set the webview's HTML content
+        webviewView.webview.html = this.getWebviewContent(webviewView.webview);
     }
 
-    getWebviewContent() {
-        return `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Webview</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    padding: 20px;
-                }
-            </style>
-        </head>
-        <body>
-            <h1>Hello from the Full Sidebar!</h1>
-            <p>This is your custom HTML content displayed in the sidebar with a custom icon.</p>
-			<h1>AI Chatbot</h1>
-                    <div id="chatOutput"></div>  <!-- Display the conversation here -->
-                    <input type="text" id="userInput" placeholder="Type your message..."/> <!-- Input field for the chat -->
-                    <button id="sendButton">Send</button> <!-- Button to send the input -->
-            <script>
-				// adding input text in the window
-				const userInput = document.getElementById('userInput');
-					const sendButton = document.getElementById('sendButton');
-						const chatOutput = document.getElementById('chatOutput');
-							sendButton.addEventListener('click', function() {
-								const userMessage = userInput.value;
-									if (userMessage.trim() !== '') {
-										const userMessageElement = document.createElement('div');
-											userMessageElement.textContent = 'You: ' + userMessage;
-												chatOutput.appendChild(userMessageElement);
-													userInput.value = '';
-														// Simulate the chatbot's response
-														setTimeout(function() {
-															const botResponse = 'Chatbot: This is a sample response from the chatbot.';
-																const botResponseElement = document.createElement('div');
-																	botResponseElement.textContent = botResponse;
-																		chatOutput.appendChild(botResponseElement);
-																		}, 1000);
-															}
-														});
-			</script>
-        </body>
-        </html>`;
+    getWebviewContent(webview) {
+        // Resolve the paths to your HTML, CSS, and JavaScript files
+        const htmlPath = vscode.Uri.joinPath(this.extensionUri, 'media', 'webview.html');
+        const cssPath = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'styles.css'));
+        const jsPath = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'script.js'));
+
+        // Read the HTML file
+        let html = fs.readFileSync(htmlPath.fsPath, 'utf8');
+
+        // Inject the URIs into the HTML
+        html = html.replace('href="styles.css"', `href="${cssPath}"`);
+        html = html.replace('src="script.js"', `src="${jsPath}"`);
+
+        return html;
     }
 }
 

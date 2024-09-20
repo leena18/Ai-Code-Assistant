@@ -19,7 +19,7 @@
         {
           "id": "experiment-sidebar",
           "title": "Experiment",
-          "icon": "resources/icon.png" 
+          "icon": "resources/icon.png"
         }
       ]
     },
@@ -45,5 +45,15 @@
     "eslint": "^9.9.1",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1"
-  }
+  },
+  "icons": {
+    "48": "resources/icon.png",
+    "128": "resources/icon-large.png"
+  },
+  "files": [
+    "media/webview.html",
+    "media/styles.css",
+    "media/script.js",
+    "extension.js"
+  ]
 }
