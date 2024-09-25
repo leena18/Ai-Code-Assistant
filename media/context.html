@@ -31,73 +31,50 @@
         <button class="tab" id="context-view-tab">Context View</button>
     </div>
 
-
-
-    
-    <!-- Chat Page
-    <div id="chatPage" class="active">
-          
-       
-<h2>Welcome to Lask.AI✨</h2>
-<p>🚀 Experience the power of AI-driven coding with seamless automation and smart suggestions.</p>
-
-    
-        
-        <div id="chatOutput"></div>
-
-        <div class="chat-input-container">
-          
-        <input type="text" id="userInput" placeholder="Type your message..." />
-        <button id="sendButton">
-                <img src="https://cdn-icons-png.freepik.com/512/10023/10023096.png?ga=GA1.1.1511077226.1726807959" alt="Profile" id="profileIcon" />
-
-        
-        </button>
-   
-        </div>
-     </div> -->
     <!-- Context Page -->
     <div id="contextPage">
         <h3>🧠Context Management</h3>
        <div id="contextOptions">
+        <div class="github-link">
+            <input type="text" id="githubLink" placeholder="Enter GitHub link" />
+            <button class="context-button" id="loadContextButton">Load Github Repo Context</button>
+        </div>
     <button class="context-button" id="addFileContext">+ Add File Context</button>
     <button class="context-button" id="addCodeBlockContext">+ Add Code Block Context</button>
     <button class="context-button" id="addDirectoryContext">+ Add Directory Context</button>
-    <button class="context-button" id="addGitHubRepoContext">+ Add GitHub Repo Context</button>
-    
-
+    <button class="context-button" id="addTechDoc">+ Add Technical Documents</button>
+    <button class="context-button" id="addReqDoc">+ Add Requiremnt Documents</button>
 </div>
 
-<!-- Documents Page (Updated) -->
-<div id="documentsPage" class="hidden"> <!-- Initially hidden -->
+<!-- Documents Page (Updated) 
+<div id="documentsPage" class="hidden"> Initially hidden
     <h3>📎Attach documents</h3>
     
-    <!-- Technical Document Upload Section -->
+    <!-- Technical Document Upload Section 
     <div class="upload-section">
         <h4>Upload Technical Document:</h4>
         <input type="file" id="techDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
         <button id="uploadTechDocumentButton">Upload</button>
 
-        <!-- List of uploaded technical documents -->
+        <!-- List of uploaded technical documents 
         <ul id="techDocumentsList" class="file-list"></ul>
     </div>
 
-    <!-- Requirement Document Upload Section -->
+    <!-- Requirement Document Upload Section 
     <div class="upload-section">
         <h4>Upload Requirement Document:</h4>
         <input type="file" id="reqDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
         <button id="uploadReqDocumentButton">Upload</button>
 
-        <!-- List of uploaded requirement documents -->
+        <!-- List of uploaded requirement documents 
         <ul id="reqDocumentsList" class="file-list"></ul>
     </div>
-</div>
-
-
-
-
+</div> 
+-->
     </div>
     <script src="context.js"></script>
+    <script src="tab.js"></script>
+
     
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -106,6 +83,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/xml/xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 
 
 

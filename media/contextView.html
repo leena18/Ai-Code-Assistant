@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context View</title>
+    <link rel="stylesheet" href="contextView.css">
+</head>
+<body>
+    <div class="header">
+        <span class="logo">LASK .ai</span>
+        <div class="icons">
+            <img src="${profileIconUri}" alt="Profile" class="icon" />
+            <img src="${infoIconUri}" alt="Info" class="icon" />
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" id="chat-tab">Chat</button>
+        <button class="tab" id="context-tab">Add Context</button>
+        <button class="tab" id="context-view-tab">Context View</button>
+    </div>
+
+    
+    <div class="container">
+        <h1>Uploaded Contexts</h1>
+
+        <!-- Tech Documents Section -->
+        <div class="context-category" id="techDocuments">
+            <h2>Tech Documents</h2>
+            <ul id="techDocumentsList">
+                <!-- Uploaded tech documents will be listed here -->
+            </ul>
+        </div>
+
+        <!-- Requirement Documents Section -->
+        <div class="context-category" id="requirementDocuments">
+            <h2>Requirement Documents</h2>
+            <ul id="reqDocumentsList">
+                <!-- Uploaded requirement documents will be listed here -->
+            </ul>
+        </div>
+
+        <!-- GitHub Repository Links Section -->
+        <div class="context-category" id="githubRepositories">
+            <h2>GitHub Repositories</h2>
+            <ul id="githubRepoList">
+                <!-- Uploaded GitHub repository links will be listed here -->
+            </ul>
+        </div>
+
+        <!-- Folders Section -->
+        <div class="context-category" id="uploadedFolders">
+            <h2>Uploaded Folders</h2>
+            <ul id="folderList">
+                <!-- Uploaded folders will be listed here -->
+            </ul>
+        </div>
+
+        <!-- Context Files Section -->
+        <div class="context-category" id="contextFiles">
+            <h2>Context Files</h2>
+            <ul id="contextFilesList">
+                <!-- Uploaded context files will be listed here -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="contextView.js"></script>
+    <script src="tab.js"></script>
+
+</body>
+</html>

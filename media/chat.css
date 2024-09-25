@@ -22,7 +22,11 @@ body {
     max-width: 80%;
     word-wrap: break-word;
 }
-
+.send-buttons {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
 /* Style for user messages */
 .user-message {
     background-color: #189af18d;

@@ -40,6 +40,9 @@ export class ChatPanel implements vscode.WebviewViewProvider {
             } else if (message.command === 'switchToChat') {
                 webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
             }
+            else if (message.command === 'switchToContextView') {
+                webviewView.webview.html = this._getHtmlForContextviewView(webviewView.webview);
+            }
         });
     }
 
@@ -70,6 +73,22 @@ export class ChatPanel implements vscode.WebviewViewProvider {
         // Replace placeholders in HTML with actual URIs
         htmlContent = htmlContent.replace('context.css', stylePath.toString());
         htmlContent = htmlContent.replace('context.js', scriptPath.toString());
+
+        return htmlContent;
+    }
+    private _getHtmlForContextviewView(webview: vscode.Webview): string {
+        const htmlPath = vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'contextView.html'));
+        let htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf-8');
+
+        const stylePath = webview.asWebviewUri(vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'contextView.css')));
+        const scriptPath = webview.asWebviewUri(vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'contextView.js')));
+
+        console.log("Style Path:", stylePath.toString()); // Log the CSS path
+    console.log("Script Path:", scriptPath.toString()); // Log the JS path
+
+        // Replace placeholders in HTML with actual URIs
+        htmlContent = htmlContent.replace('contextView.css', stylePath.toString());
+        htmlContent = htmlContent.replace('contextView.js', scriptPath.toString());
 
         return htmlContent;
     }

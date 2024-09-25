@@ -1,51 +1,23 @@
 const vscode = acquireVsCodeApi();
 
+// Tab switching logic
+document.getElementById('context-tab').addEventListener('click', function() {
+    vscode.postMessage({ command: 'switchToContext' }); // Send message to switch to context view
+});
+
+
 document.getElementById('chat-tab').addEventListener('click', function() {
     vscode.postMessage({ command: 'switchToChat' }); // Send message to switch to chat view
 });
-// Event listener for the Add Context tab
-document.getElementById('context-tab').addEventListener('click', function() {
-    // Since this is the current page, you can simply scroll to the context section if needed
-    document.getElementById('contextPage').scrollIntoView();
-});
 
-// Event listener for the Context View tab
+// i want to switch to the context view
 document.getElementById('context-view-tab').addEventListener('click', function() {
-    // Logic to switch to context view can go here, e.g., show/hide content
-    document.getElementById('documentsPage').classList.remove('hidden'); // Unhide documents section
-    document.getElementById('contextPage').classList.add('hidden');      // Hide the context section
+    vscode.postMessage({ command: 'switchToContextView' });
 });
 
-// ---------------------------------- Chat JS
-document.getElementById('sendButton').addEventListener('click', function() {
-    const userMessage = document.getElementById('userInput').value;
-    if (userMessage.trim() !== '') {
-        const userMessageElement = document.createElement('div');
-        userMessageElement.textContent = 'You: ' + userMessage;
-        document.getElementById('chatOutput').appendChild(userMessageElement);
-        document.getElementById('userInput').value = '';
+// --------------------------------- Handle the Documents 
 
-        // Send message to VS Code extension
-        vscode.postMessage({
-            command: 'sendMessage',
-            text: userMessage
-        });
-    }
-});
-
-// ------------- Handle Menu 
-document.getElementById('menuButton').addEventListener('click', () => {
-    const menuOptions = document.getElementById('menuOptions');
-    menuOptions.classList.toggle('hidden');
-});
-
-document.getElementById('profileIcon').addEventListener('click', () => {
-    // Optionally handle profile icon click
-});
-
-//--------------------------------- Handle the Documents 
-
-// Function to handle uploading files
+// Function to handle file upload
 function handleFileUpload(inputElement, fileListElement) {
     const files = inputElement.files;
 
@@ -65,56 +37,64 @@ function handleFileUpload(inputElement, fileListElement) {
 
         listItem.appendChild(removeButton);
         fileListElement.appendChild(listItem);
+
+        // Show success message
+        alert(`${file.name} uploaded successfully!`);
     });
 }
 
-// Event listener for uploading technical documents
-document.getElementById('uploadTechDocumentButton').addEventListener('click', () => {
-    const techInput = document.getElementById('techDocumentUpload');
-    const techFileList = document.getElementById('techDocumentsList');
-    handleFileUpload(techInput, techFileList);
-});
+// Function to create and handle file input for a given button
+function createFileInputAndHandleUpload(buttonId, fileListId) {
+    document.getElementById(buttonId).addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.multiple = true; // Allow multiple file uploads
 
-// Event listener for uploading requirement documents
-document.getElementById('uploadReqDocumentButton').addEventListener('click', () => {
-    const reqInput = document.getElementById('reqDocumentUpload');
-    const reqFileList = document.getElementById('reqDocumentsList');
-    handleFileUpload(reqInput, reqFileList);
+        fileInput.addEventListener('change', function() {
+            const fileListElement = document.getElementById(fileListId);
+            handleFileUpload(fileInput, fileListElement);
+        });
+
+        fileInput.click(); // Trigger the file selection dialog
+    });
+}
+
+// Add file upload logic for the respective buttons
+createFileInputAndHandleUpload('addTechDoc', 'techDocumentsList'); // Tech Document Upload
+createFileInputAndHandleUpload('addReqDoc', 'reqDocumentsList');   // Requirement Document Upload
+createFileInputAndHandleUpload('addFileContext', 'contextFilesList'); // Context File Upload
+
+
+// Handle directory upload (upload as zip)
+document.getElementById('addDirectoryContext').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.webkitdirectory = true; // Allow directory selection
+    input.addEventListener('change', (event) => {
+        const files = event.target.files;
+        const zip = new JSZip(); // Using JSZip library to create zip file
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            zip.file(file.webkitRelativePath, file); // Store the file in the zip
+        }
+
+        // Generate the zip file
+        zip.generateAsync({ type: "blob" }).then((content) => {
+            // Create a link to download the zip
+            const blobUrl = URL.createObjectURL(content);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = 'uploaded_directory.zip'; // Name for the downloaded zip
+            a.click();
+            alert('Directory uploaded successfully as a zip file!');
+        });
+    });
+
+    input.click(); // Trigger the directory selection dialog
 });
 
 // Handle context buttons
-document.getElementById('addFileContext').addEventListener('click', () => {
-    vscode.postMessage({ command: 'addCodeBlockContext' });
-});
-
 document.getElementById('addCodeBlockContext').addEventListener('click', () => {
     vscode.postMessage({ command: 'addCodeBlockContext' });
-});
-
-document.getElementById('addDirectoryContext').addEventListener('click', () => {
-    vscode.postMessage({ command: 'addDirectoryContext' });
-});
-
-document.getElementById('addGitHubRepoContext').addEventListener('click', () => {
-    vscode.postMessage({ command: 'addGitHubRepoContext' });
-});
-
-// Message handling
-window.addEventListener('message', event => {
-    const message = event.data;
-    if (message.command === 'showResponse') {
-        const botResponseElement = document.createElement('div');
-        botResponseElement.innerHTML = 'Lask: <pre class="CodeMirror"><code>' + message.text + '</code></pre>';
-        document.getElementById('chatOutput').appendChild(botResponseElement);
-        
-        // Initialize CodeMirror
-        const codeBlocks = document.querySelectorAll('.CodeMirror');
-        codeBlocks.forEach(block => {
-            CodeMirror.fromTextArea(block, {
-                mode: 'javascript',
-                theme: 'dracula',
-                readOnly: true
-            });
-        });
-    }
 });

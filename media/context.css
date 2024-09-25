@@ -3,7 +3,8 @@
     height: 100%;
     margin: 0; /* Ensure there's no default margin */
 
-    background-color:#262c45;
+    /* background-color:#262c45; */
+    font-family: Arial, sans-serif;
     }
         
 .header {
@@ -48,109 +49,6 @@
     background-color: #222;
     border-bottom: 2px solid #fff;
 }
-
-
-        #profileMenu {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        
-        #profileIcon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-        
-        #threeDotMenu {
-            position: relative;
-        }
-        
-        #menuButton {
-             background-color: transparent;
-             color:#ffff;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        #menuOptions {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        #menuOptions a {
-            padding: 10px;
-            text-decoration: none;
-            color: #333;
-            display: block;
-        }
-        
-        #menuOptions a:hover {
-            background-color: #f0f0f0;
-        }
-        
-        #menuOptions.hidden {
-    display: none; /* Hide the menu options */
-}
-
-
-        #chatPage.active, #contextPage.active {
-            display: block;
-            height: 100%;
-        }
-        #chatOutput {
-         border: 1px solid #ddd;
-            padding: 10px;
-            height: 500px;
-            overflow-y: scroll;
-        }
-       #userInput {
-    width: 80%;
-    padding: 8px;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
-    transition: border-color 0.3s ease;
-}
-
-#userInput:focus {
-    border-color: #007acc; /* Change border color on focus */
-    outline: none; /* Remove default focus outline */
-}
-
-#sendButton {
-    width: 25%;
-    
-   
-    border: none;
-    
-    background:transparent; /* Blue background */
-    
-    font-size: 14px;
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease;
-}
-
-#sendButton img {
-    
-height:40px;
-width:40px;
-
-}
-
-
 
         #contextOptions {
             margin-top: 20px;
@@ -207,85 +105,9 @@ h3 {
     
 }
 
-/* Upload section container */
-.upload-section {
-    
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    max-width: 600px;
-    margin: 20px auto;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Section headings */
-.upload-section h4 {
-    font-size: 1.4em;
-    font-weight: 500;
-    margin-bottom: 10px;
-    
-}
-
-/* Input file styling */
-.upload-section input[type="file"] {
-    display: block;
- 
-    
-    margin-bottom: 15px;
-   
-    
- 
-    
-    cursor: pointer;
-}
-
-/* Button styling */
-.upload-section button {
-    background-color: #098972;
-    color: white;
-    border: none;
-    padding: 5px 15px;
-    font-size: 1em;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    display: block;
-    width: 30%;
-    margin-top: 10px;
-}
-
-.upload-section button:hover {
-    background-color: #45a049;
-}
-
-/* File list styling */
-.file-list {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 10px;
-}
-
-.file-item {
+.github-link{
     display: flex;
-    justify-content: space-between;
-    
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    
-    font-size: 0.95em;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
-
-.remove-file {
-    color: #ff5c5c;
-    cursor: pointer;
-    font-size: 1.2em;
-    margin-left: 10px;
-}
-
-.remove-file:hover {
-    color: #ff2c2c;
-}
-
-
-
-
