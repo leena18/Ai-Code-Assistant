@@ -1,0 +1,171 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 0vh;
+}
+
+.messages {
+    flex-grow: 1;
+    overflow-y: scroll;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+/* Style for user messages */
+.user-message {
+    background-color: #189af18d;
+    color: white;
+    align-self: flex-end;
+    text-align: right;
+}
+
+/* Style for AI messages */
+.ai-message {
+    background-color: #363aba63;
+    color: #ffffff;
+    align-self: flex-start;
+    text-align: left;
+}
+
+/* Read More and Read Less button style */
+.read-more-button {
+    background: none;
+    color: #04faf6;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.input-container {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007ACC;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    cursor: pointer;
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.icons {
+    display: flex;
+    gap: 10px;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.tabs {
+    display: flex;
+    background-color: #444;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.tab.active {
+    background-color: #222;
+    border-bottom: 2px solid #fff;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+}
+
+.action {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.welcome-content {
+    padding: 20px;
+}
+
+.welcome-content h1 {
+    font-size: 1.25em;
+}
+
+.action-list {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.action-item {
+    margin: 5px 0;
+    padding: 10px;
+    background-color: #555;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+.shortcut-buttons {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.shortcut {
+    margin: 0 5px;
+    padding: 5px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}

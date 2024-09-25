@@ -80,6 +80,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "groq-sdk": "^0.7.0"
+    "groq-sdk": "^0.7.0",
+    "vscode": "^1.1.37"
   }
 }

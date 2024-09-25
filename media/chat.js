@@ -1,5 +1,16 @@
 const vscode = acquireVsCodeApi();
 
+// Show the .messages class only when the user clicks on send button
+document.getElementById('sendButton').addEventListener('click', function() {
+    document.querySelector('.messages').style.display = 'block';
+});
+
+// Hide the .to-hide class and increase chat container height on send button click
+document.getElementById('sendButton').addEventListener('click', function() {
+    document.querySelector('.to-hide').style.display = 'none';
+    document.querySelector('.chat-container').style.height = '100vh';
+});
+
 // Function to handle sending messages to the chat panel
 function sendMessage() {
     const input = document.getElementById('messageInput');
@@ -85,12 +96,19 @@ window.addEventListener('message', event => {
     }
 });
 
-// Add an event listener for the send button
+// Add event listeners for the send button and allow sending messages via the "Enter" key
 document.getElementById('sendButton').addEventListener('click', sendMessage);
-
-// Allow sending messages via the "Enter" key
 document.getElementById('messageInput').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         sendMessage();
     }
+});
+
+// Tab switching logic
+document.getElementById('context-tab').addEventListener('click', function() {
+    vscode.postMessage({ command: 'switchToContext' }); // Send message to switch to context view
+});
+
+document.getElementById('chat-tab').addEventListener('click', function() {
+    vscode.postMessage({ command: 'switchToChat' }); // Send message to switch to chat view
 });

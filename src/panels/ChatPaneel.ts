@@ -18,7 +18,7 @@ export class ChatPanel implements vscode.WebviewViewProvider {
 
         webviewView.webview.options = {
             enableScripts: true,
-            localResourceRoots: [vscode.Uri.joinPath(this._extensionUri, 'media')]
+            localResourceRoots: [vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media'))]
         };
 
         // Load HTML from external file
@@ -35,20 +35,41 @@ export class ChatPanel implements vscode.WebviewViewProvider {
                     vscode.window.showErrorMessage('Error communicating with AI chatbot.');
                     console.error(error);
                 }
+            } else if (message.command === 'switchToContext') {
+                webviewView.webview.html = this._getHtmlForContextView(webviewView.webview);
+            } else if (message.command === 'switchToChat') {
+                webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
             }
         });
     }
 
     private _getHtmlForWebview(webview: vscode.Webview): string {
-        const htmlPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'chat.html');
+        const htmlPath = vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'chat.html'));
         let htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf-8');
 
-        const stylePath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'style.css'));
-        const scriptPath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
+        const stylePath = webview.asWebviewUri(vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'chat.css')));
+        const scriptPath = webview.asWebviewUri(vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'chat.js')));
 
         // Replace placeholders in HTML with actual URIs
-        htmlContent = htmlContent.replace('style.css', stylePath.toString());
-        htmlContent = htmlContent.replace('main.js', scriptPath.toString());
+        htmlContent = htmlContent.replace('chat.css', stylePath.toString());
+        htmlContent = htmlContent.replace('chat.js', scriptPath.toString());
+
+        return htmlContent;
+    }
+
+    private _getHtmlForContextView(webview: vscode.Webview): string {
+        const htmlPath = vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'context.html'));
+        let htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf-8');
+
+        const stylePath = webview.asWebviewUri(vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'context.css')));
+        const scriptPath = webview.asWebviewUri(vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'context.js')));
+
+        console.log("Style Path:", stylePath.toString()); // Log the CSS path
+    console.log("Script Path:", scriptPath.toString()); // Log the JS path
+
+        // Replace placeholders in HTML with actual URIs
+        htmlContent = htmlContent.replace('context.css', stylePath.toString());
+        htmlContent = htmlContent.replace('context.js', scriptPath.toString());
 
         return htmlContent;
     }

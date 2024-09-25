@@ -59,11 +59,11 @@ class ChatPanel {
     _getHtmlForWebview(webview) {
         const htmlPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'chat.html');
         let htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf-8');
-        const stylePath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'style.css'));
-        const scriptPath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
+        const stylePath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'chat.css'));
+        const scriptPath = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'chat.js'));
         // Replace placeholders in HTML with actual URIs
-        htmlContent = htmlContent.replace('style.css', stylePath.toString());
-        htmlContent = htmlContent.replace('main.js', scriptPath.toString());
+        htmlContent = htmlContent.replace('chat.css', stylePath.toString());
+        htmlContent = htmlContent.replace('chat.js', scriptPath.toString());
         return htmlContent;
     }
     addMessageToWebview(sender, message) {

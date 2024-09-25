@@ -4,16 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"  href="chat.css">
 </head>
 <body>
-    <div class="chat-container">
-        <div class="messages" id="messages"></div>
-        <div class="input-container">
-            <input type="text" id="messageInput" placeholder="Type a message...">
-            <button id="sendButton">Send</button>
+    <div class="header">
+        <span class="logo">LASK .ai</span>
+        <div class="icons">
+            <img src="${profileIconUri}" alt="Profile" class="icon" />
+            <img src="${infoIconUri}" alt="Info" class="icon" />
         </div>
     </div>
-    <script src="main.js"></script>
+
+    <div class="tabs">
+        <button class="tab active" id="chat-tab">Chat</button>
+        <button class="tab" id="context-tab">Add Context</button>
+        <button class="tab" id="context-view-tab">Context View</button>
+    </div>
+
+    <div class="to-hide">
+        <div class="action-buttons">
+            <button class="action">+ New</button>
+            <button class="action">History</button>
+        </div>
+
+        <div class="welcome-content">
+            <h1>Welcome to Lask AI Chat, your coding partner!</h1>
+            <p>Select the block of code that you're focusing on.</p>
+            <p>Then, you can either click on one of the actions listed below, type your request into the prompt area, or use the "/" command to quickly access specific actions.</p>
+            <p><a href="#">Check out the user guide</a></p>
+        </div>
+
+        <div class="action-list">
+            <button class="action-item" id="explain-code">Explain Code</button>
+            <button class="action-item" id="write-docstrings">Write docstrings for code</button>
+            <button class="action-item" id="generate-tests">Generate Test cases</button>
+            <button class="action-item" id="explore-codebase">Explore Codebase</button>
+            <button class="action-item" id="fix-code">Fix code</button>
+        </div>
+    </div>
+    
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <div class="messages" id="messages"></div>
+        <div class="input-container">
+            <button id="/">/</button>
+            <button id="@">@</button>
+            <input type="text" id="messageInput" placeholder="Type a message...">
+        </div>
+        <div class="send-buttons">
+            <button id="sendButton">Ask AI</button>
+            <button id="generateCodeButton">Generate Code</button>
+        </div>
+    </div>
+    
+    <!-- Context Container -->
+    <div class="context-container" id="contextContainer" style="display:none;">
+        <!-- Context content goes here -->
+        <h1>Context View</h1>
+        <p>This is the context view where you can add context-related information.</p>
+        <!-- Additional context-related elements can be added here -->
+    </div>
+
+    <script src="chat.js"></script>
 </body>
 </html>

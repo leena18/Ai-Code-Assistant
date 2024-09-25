@@ -3,11 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Context Panel</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AI Chatbot</title>
+    <link rel="stylesheet" href="context.css">
+    
 </head>
 <body>
-    <h1>Context Information</h1>
-    <!-- Add content here -->
+    <!-- <div id="navbar">
+
+
+    <div>  
+   
+    <button class="nav-button active" id="chatNav">Chat</button>
+    <button class="nav-button" id="contextNav">Context</button>
+    
+    </div> -->
+    <div class="header">
+        <span class="logo">LASK .ai</span>
+        <div class="icons">
+            <img src="${profileIconUri}" alt="Profile" class="icon" />
+            <img src="${infoIconUri}" alt="Info" class="icon" />
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" id="chat-tab">Chat</button>
+        <button class="tab" id="context-tab">Add Context</button>
+        <button class="tab" id="context-view-tab">Context View</button>
+    </div>
+
+
+
+    
+    <!-- Chat Page
+    <div id="chatPage" class="active">
+          
+       
+<h2>Welcome to Lask.AI✨</h2>
+<p>🚀 Experience the power of AI-driven coding with seamless automation and smart suggestions.</p>
+
+    
+        
+        <div id="chatOutput"></div>
+
+        <div class="chat-input-container">
+          
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button id="sendButton">
+                <img src="https://cdn-icons-png.freepik.com/512/10023/10023096.png?ga=GA1.1.1511077226.1726807959" alt="Profile" id="profileIcon" />
+
+        
+        </button>
+   
+        </div>
+     </div> -->
+    <!-- Context Page -->
+    <div id="contextPage">
+        <h3>🧠Context Management</h3>
+       <div id="contextOptions">
+    <button class="context-button" id="addFileContext">+ Add File Context</button>
+    <button class="context-button" id="addCodeBlockContext">+ Add Code Block Context</button>
+    <button class="context-button" id="addDirectoryContext">+ Add Directory Context</button>
+    <button class="context-button" id="addGitHubRepoContext">+ Add GitHub Repo Context</button>
+    
+
+</div>
+
+<!-- Documents Page (Updated) -->
+<div id="documentsPage" class="hidden"> <!-- Initially hidden -->
+    <h3>📎Attach documents</h3>
+    
+    <!-- Technical Document Upload Section -->
+    <div class="upload-section">
+        <h4>Upload Technical Document:</h4>
+        <input type="file" id="techDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
+        <button id="uploadTechDocumentButton">Upload</button>
+
+        <!-- List of uploaded technical documents -->
+        <ul id="techDocumentsList" class="file-list"></ul>
+    </div>
+
+    <!-- Requirement Document Upload Section -->
+    <div class="upload-section">
+        <h4>Upload Requirement Document:</h4>
+        <input type="file" id="reqDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
+        <button id="uploadReqDocumentButton">Upload</button>
+
+        <!-- List of uploaded requirement documents -->
+        <ul id="reqDocumentsList" class="file-list"></ul>
+    </div>
+</div>
+
+
+
+
+    </div>
+    <script src="context.js"></script>
+    
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+           <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/htmlmixed/htmlmixed.min.js"></script>
+
+
+
+
 </body>
 </html>
