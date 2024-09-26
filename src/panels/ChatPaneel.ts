@@ -41,11 +41,45 @@ export class ChatPanel implements vscode.WebviewViewProvider {
                 webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
             }
             else if (message.command === 'switchToContextView') {
+                this.loadContextData(webviewView.webview);
                 webviewView.webview.html = this._getHtmlForContextviewView(webviewView.webview);
+            } else if (message.command === 'addContext') {
+                const { fileListId, files } = message;
+                console.log("File List ID:", files ); // Log the fileListId
+                
+                // Path to store the JSON file
+                const filePath = path.join(__dirname, 'contextFiles.json');
+        
+                // Read the existing file or create a new object if the file does not exist
+                let jsonData:any= {};
+                if (fs.existsSync(filePath)) {
+                    const fileData = fs.readFileSync(filePath, 'utf-8'); // Specify 'utf-8' encoding to read as a string
+                    jsonData = JSON.parse(fileData);
+                }
+        
+                // Add or update the data for the fileListId
+                jsonData[fileListId] = files;
+                console.log("JSON Data:", jsonData); // Log the updated JSON data
+                // Write the updated data back to the file
+                fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 4));
+        
+                vscode.window.showInformationMessage(`Context added for ${fileListId}`);
             }
         });
     }
-
+    private loadContextData(webview: vscode.Webview) {
+        const filePath = path.join(__dirname, 'contextFiles.json');
+    
+        if (fs.existsSync(filePath)) {
+            const fileData = fs.readFileSync(filePath, 'utf-8');
+            const jsonData = JSON.parse(fileData);
+            
+            // Send the JSON data to the webview
+            webview.postMessage({ command: 'loadContextData', data: jsonData });
+        } else {
+            vscode.window.showErrorMessage('Context data file not found.');
+        }
+    }
     private _getHtmlForWebview(webview: vscode.Webview): string {
         const htmlPath = vscode.Uri.file(path.join(this._extensionUri.fsPath, 'media', 'chat.html'));
         let htmlContent = fs.readFileSync(htmlPath.fsPath, 'utf-8');

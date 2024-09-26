@@ -17,42 +17,25 @@ document.getElementById('context-view-tab').addEventListener('click', function()
 
 // --------------------------------- Handle the Documents 
 
-// Function to handle file upload
-function handleFileUpload(inputElement, fileListElement) {
-    const files = inputElement.files;
 
-    // Loop through each file and add to the list
-    Array.from(files).forEach(file => {
-        const listItem = document.createElement('li');
-        listItem.classList.add('file-item');
-        listItem.textContent = file.name;
-
-        // Add remove button (cross sign)
-        const removeButton = document.createElement('span');
-        removeButton.textContent = '✖';
-        removeButton.classList.add('remove-file');
-        removeButton.addEventListener('click', () => {
-            fileListElement.removeChild(listItem);
-        });
-
-        listItem.appendChild(removeButton);
-        fileListElement.appendChild(listItem);
-
-        // Show success message
-        alert(`${file.name} uploaded successfully!`);
-    });
-}
 
 // Function to create and handle file input for a given button
-function createFileInputAndHandleUpload(buttonId, fileListId) {
+function createFileInputAndHandleUpload(buttonId, fileListId, command) {
     document.getElementById(buttonId).addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.multiple = true; // Allow multiple file uploads
 
-        fileInput.addEventListener('change', function() {
+        fileInput.addEventListener('change', function () {
             const fileListElement = document.getElementById(fileListId);
-            handleFileUpload(fileInput, fileListElement);
+            const selectedFiles = Array.from(fileInput.files).map(file => file.name); // Get the file names
+
+            // Send the list of file names and the fileListId to VS Code
+            vscode.postMessage({
+                command: 'addContext', 
+                fileListId: fileListId, 
+                files: selectedFiles // File names
+            });
         });
 
         fileInput.click(); // Trigger the file selection dialog
@@ -98,3 +81,6 @@ document.getElementById('addDirectoryContext').addEventListener('click', () => {
 document.getElementById('addCodeBlockContext').addEventListener('click', () => {
     vscode.postMessage({ command: 'addCodeBlockContext' });
 });
+
+
+

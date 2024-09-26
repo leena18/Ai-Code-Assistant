@@ -12,7 +12,11 @@
     "onCommand:aiChat.fixCode",
     "onCommand:aiChat.writeDocstrings",
     "onCommand:aiChat.generateTests",
-    "onCommand:aiChat.exploreCodebase"
+    "onCommand:aiChat.exploreCodebase",
+    "onCommand:aiChatbot.addComments",
+    "onCommand:aiChatbot.fixCode",
+    "onCommand:extension.removeComments" 
+  
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -34,6 +38,35 @@
         }
       ]
     },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "aiChatbot.fixCode",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "aiChatbot.addComments",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "extension.removeComments",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+
+    "keybindings": [
+      {
+        "command": "aiChatbot.nlpGenerateCode",
+        "key": "alt+b",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "insertCodeSuggestion",
+        "key": "tab",
+        "when": "editorTextFocus"
+    }
+    ],
     "commands": [
       {
         "command": "aiChat.explainCode",
@@ -42,6 +75,16 @@
       {
         "command": "aiChat.fixCode",
         "title": "Fix Code"
+      },
+      {
+        "command": "aiChatbot.fixCode",
+        "title": "Fix using Lask.AI",
+        "category": "AI Code Fix"
+      },
+      {
+        "command": "aiChatbot.addComments",
+        "title": "Add Comments using Lask.AI",
+        "category": "AI Code Commenting"
       },
       {
         "command": "aiChat.writeDocstrings",
@@ -54,7 +97,11 @@
       {
         "command": "aiChat.exploreCodebase",
         "title": "Explore Codebase"
-      }
+      },
+      {
+        "command": "extension.removeComments",
+        "title": "Remove Comments from Selection"
+    }
     ]
   },
   "scripts": {

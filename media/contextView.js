@@ -16,62 +16,63 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('context-view-tab').addEventListener('click', function() {
         vscode.postMessage({ command: 'switchToContextView' });
     });
-    // Simulated storage for uploaded contexts (in a real application, this can come from backend or local storage)
-    let contexts = {
-        techDocuments: [],
-        reqDocuments: [],
-        githubRepos: [],
-        folders: [],
-        contextFiles: []
-    };
 
-    // Functions to add items to the respective categories
-    function addContext(category, name) {
-        const categoryList = document.getElementById(category);
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `<span>${name}</span> <button class="remove-btn" onclick="removeContext(this, '${category}')">Remove</button>`;
-        categoryList.appendChild(listItem);
-    }
 
-    // Load the contexts (from backend, memory, or local storage)
-    function loadContexts() {
-        // Example data to simulate previously uploaded contexts
-        contexts = {
-            techDocuments: ['Tech Doc 1.pdf', 'Tech Doc 2.docx'],
-            reqDocuments: ['Requirements 1.docx', 'Requirements 2.pdf'],
-            githubRepos: ['https://github.com/user/repo1', 'https://github.com/user/repo2'],
-            folders: ['Folder 1.zip', 'Folder 2.zip'],
-            contextFiles: ['Context File 1.txt', 'Context File 2.docx']
-        };
+        // Listen for the file path from the extension
+        window.addEventListener('message', (event) => {
+            const message = event.data;
+    
+            switch (message.command) {
+                case 'loadContextData':
+                    const contextData = message.data;
+                    console.log('Received context data:', contextData);
+                    loadContexts(contextData); // Call loadContexts with the received data
+                    break;
+            }
+        });
 
-        // Load tech documents
-        contexts.techDocuments.forEach(doc => addContext('techDocumentsList', doc));
+        function loadContexts(contextData) {
+            // Load Tech Documents
+            const techDocumentsList = document.getElementById('techDocumentsList');
+            if (contextData.contextFilesList) {
+                contextData.contextFilesList.forEach(file => {
+                    const li = document.createElement('li');
+                    li.textContent = file;
+                    techDocumentsList.appendChild(li);
+                });
+            }
+    
+            // Load Requirement Documents
+            const reqDocumentsList = document.getElementById('reqDocumentsList');
+            if (contextData.reqDocumentsList) {
+                contextData.reqDocumentsList.forEach(file => {
+                    const li = document.createElement('li');
+                    li.textContent = file;
+                    reqDocumentsList.appendChild(li);
+                });
+            }
+    
+            // Add logic for GitHub Repositories and Uploaded Folders if you have data for those
+            // For example:
+            // if (contextData.githubRepoList) {
+            //     contextData.githubRepoList.forEach(repo => {
+            //         const li = document.createElement('li');
+            //         li.textContent = repo;
+            //         githubRepoList.appendChild(li);
+            //     });
+            // }
+            //
+            // if (contextData.folderList) {
+            //     contextData.folderList.forEach(folder => {
+            //         const li = document.createElement('li');
+            //         li.textContent = folder;
+            //         folderList.appendChild(li);
+            //     });
+            // }
+        }
 
-        // Load requirement documents
-        contexts.reqDocuments.forEach(doc => addContext('reqDocumentsList', doc));
 
-        // Load GitHub repositories
-        contexts.githubRepos.forEach(repo => addContext('githubRepoList', repo));
-
-        // Load folders
-        contexts.folders.forEach(folder => addContext('folderList', folder));
-
-        // Load context files
-        contexts.contextFiles.forEach(file => addContext('contextFilesList', file));
-    }
-
-    // Remove context function
-    window.removeContext = function(button, category) {
-        const listItem = button.parentNode;
-        listItem.remove();
-
-        // Optionally: remove from the data storage as well
-        const contextName = listItem.querySelector('span').textContent;
-        contexts[category] = contexts[category].filter(item => item !== contextName);
-
-        alert(`Removed ${contextName} from ${category}!`);
-    };
 
     // Initially load all contexts on page load
-    loadContexts();
+    
 });

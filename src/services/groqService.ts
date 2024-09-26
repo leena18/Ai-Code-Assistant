@@ -49,6 +49,29 @@ export async function groqChatAPI(userMessage: string, commandType: string): Pro
                     ${userMessage}
                 `;
                 break;
+            
+                case 'nlpCode':
+                    promptTemplate = `${userMessage}`;
+                    
+                    break;
+            
+                    case 'addComments':
+                        promptTemplate = `
+                            You are an AI assistant. Your task is to add useful, precise, and beginner-friendly comments to the code provided below:
+                            
+                            ${userMessage}
+        
+                            Code with comments:
+        
+                            Return only the code with comments without any further explanation.
+                        `;
+                        break;
+
+
+
+
+
+
             default:
                 promptTemplate = userMessage; // Fallback for unrecognized commands
                 break;
