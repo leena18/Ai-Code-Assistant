@@ -20,27 +20,61 @@ document.getElementById('context-view-tab').addEventListener('click', function()
 
 
 // Function to create and handle file input for a given button
+// function createFileInputAndHandleUpload(buttonId, fileListId, command) {
+//     document.getElementById(buttonId).addEventListener('click', () => {
+//         const fileInput = document.createElement('input');
+//         fileInput.type = 'file';
+//         fileInput.multiple = true; // Allow multiple file uploads
+
+//         fileInput.addEventListener('change', function () {
+//             const fileListElement = document.getElementById(fileListId);
+//             const selectedFiles = Array.from(fileInput.files).map(file => file.name); // Get the file names
+
+//             // Send the list of file names and the fileListId to VS Code
+//             vscode.postMessage({
+//                 command: 'addContext', 
+//                 fileListId: fileListId, 
+//                 files: selectedFiles // File names
+//             });
+//         });
+
+//         fileInput.click(); // Trigger the file selection dialog
+//     });
+// }
+
 function createFileInputAndHandleUpload(buttonId, fileListId, command) {
     document.getElementById(buttonId).addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.multiple = true; // Allow multiple file uploads
+        fileInput.accept = '.zip'; // Only accept .zip files
+        fileInput.multiple = false; // Single file upload only for ZIP
 
         fileInput.addEventListener('change', function () {
             const fileListElement = document.getElementById(fileListId);
-            const selectedFiles = Array.from(fileInput.files).map(file => file.name); // Get the file names
+            const selectedFile = fileInput.files[0]; // Get the first selected file
 
-            // Send the list of file names and the fileListId to VS Code
+            // Send the list of file names and the fileListId to VS Code (if needed for context)
             vscode.postMessage({
                 command: 'addContext', 
                 fileListId: fileListId, 
-                files: selectedFiles // File names
+                files: [selectedFile.name] // Single ZIP file name
             });
+
+            // Check if a file is selected
+            if (selectedFile) {
+                // Call the uploadZipFile function
+                uploadZipFile(fileInput, "string");
+            } else {
+                alert("No file selected. Please select a ZIP file.");
+            }
         });
 
         fileInput.click(); // Trigger the file selection dialog
     });
 }
+
+
+
 
 // Add file upload logic for the respective buttons
 createFileInputAndHandleUpload('addTechDoc', 'techDocumentsList'); // Tech Document Upload
@@ -55,6 +89,7 @@ document.getElementById('addDirectoryContext').addEventListener('click', () => {
     input.webkitdirectory = true; // Allow directory selection
     input.addEventListener('change', (event) => {
         const files = event.target.files;
+        
         const zip = new JSZip(); // Using JSZip library to create zip file
 
         for (let i = 0; i < files.length; i++) {
@@ -82,5 +117,37 @@ document.getElementById('addCodeBlockContext').addEventListener('click', () => {
     vscode.postMessage({ command: 'addCodeBlockContext' });
 });
 
+async function uploadZipFile(fileInput, projectName) {
+    // Get the selected file from the file input element
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    
+    // Append the file and project name to the form data
+    formData.append("file", file);
+    formData.append("project_name", projectName);
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/upload-file/", {
+            method: "POST",
+            body: formData,
+        });
+
+        // Check if the response is OK
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error:", errorData.message);
+            alert(`Error: ${errorData.message}`);
+            return;
+        }
+
+        // Get the response data
+        const data = await response.json();
+        console.log("Success:", data);
+        
+    } catch (error) {
+        console.error("Error:", error);
+       
+    }
+}
 
 
