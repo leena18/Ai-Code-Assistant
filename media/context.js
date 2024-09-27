@@ -18,30 +18,6 @@ document.getElementById('context-view-tab').addEventListener('click', function()
 // --------------------------------- Handle the Documents 
 
 
-
-// Function to create and handle file input for a given button
-// function createFileInputAndHandleUpload(buttonId, fileListId, command) {
-//     document.getElementById(buttonId).addEventListener('click', () => {
-//         const fileInput = document.createElement('input');
-//         fileInput.type = 'file';
-//         fileInput.multiple = true; // Allow multiple file uploads
-
-//         fileInput.addEventListener('change', function () {
-//             const fileListElement = document.getElementById(fileListId);
-//             const selectedFiles = Array.from(fileInput.files).map(file => file.name); // Get the file names
-
-//             // Send the list of file names and the fileListId to VS Code
-//             vscode.postMessage({
-//                 command: 'addContext', 
-//                 fileListId: fileListId, 
-//                 files: selectedFiles // File names
-//             });
-//         });
-
-//         fileInput.click(); // Trigger the file selection dialog
-//     });
-// }
-
 function createFileInputAndHandleUpload(buttonId, fileListId, command) {
     document.getElementById(buttonId).addEventListener('click', () => {
         const fileInput = document.createElement('input');

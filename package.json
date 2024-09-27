@@ -15,8 +15,7 @@
     "onCommand:aiChat.exploreCodebase",
     "onCommand:aiChatbot.addComments",
     "onCommand:aiChatbot.fixCode",
-    "onCommand:extension.removeComments" 
-  
+    "onCommand:extension.removeComments"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -54,7 +53,6 @@
         }
       ]
     },
-
     "keybindings": [
       {
         "command": "aiChatbot.nlpGenerateCode",
@@ -65,7 +63,7 @@
         "command": "insertCodeSuggestion",
         "key": "tab",
         "when": "editorTextFocus"
-    }
+      }
     ],
     "commands": [
       {
@@ -101,7 +99,7 @@
       {
         "command": "extension.removeComments",
         "title": "Remove Comments from Selection"
-    }
+      }
     ]
   },
   "scripts": {
@@ -116,6 +114,8 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/highlight.js": "^10.1.0",
+    "@types/marked": "^6.0.0",
     "@types/node": "20.x",
     "@types/vscode": "^1.93.0",
     "@vscode/test-cli": "^0.0.10",
@@ -128,6 +128,8 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "groq-sdk": "^0.7.0",
+    "highlight.js": "^11.10.0",
+    "marked": "^14.1.2",
     "vscode": "^1.1.37"
   }
 }

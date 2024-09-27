@@ -22,6 +22,18 @@ function sendMessage() {
     }
 }
 
+function generateCode() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();  // Trim spaces
+    if (message) {
+        addMessage('Me', message, false);  // Display the user message in the chat panel
+        vscode.postMessage({ command: 'generateCode', text: message });  // Send the message to VS Code extension API
+        input.value = '';  // Clear the input field
+    }
+}
+
+
+
 // Function to safely create a text node or HTML elements for the message
 function createMessageHTML(message) {
     const tempDiv = document.createElement('div');
@@ -98,6 +110,9 @@ window.addEventListener('message', event => {
 
 // Add event listeners for the send button and allow sending messages via the "Enter" key
 document.getElementById('sendButton').addEventListener('click', sendMessage);
+
+//code button
+document.getElementById('generateCodeButton').addEventListener('click', generateCode);
 document.getElementById('messageInput').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         sendMessage();
@@ -118,3 +133,4 @@ document.getElementById('chat-tab').addEventListener('click', function() {
 document.getElementById('context-view-tab').addEventListener('click', function() {
     vscode.postMessage({ command: 'switchToContextView' });
 });
+

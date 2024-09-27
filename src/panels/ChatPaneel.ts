@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { groqChatAPI } from '../services/groqService'; // Groq API handler
 import * as path from 'path';
 import * as fs from 'fs';
+// Importing the marked library
+
 
 export class ChatPanel implements vscode.WebviewViewProvider {
     public static readonly viewType = 'aiChat.chatPanel';
@@ -30,6 +32,16 @@ export class ChatPanel implements vscode.WebviewViewProvider {
 
                 try {
                     const response = await generalChat(userMessage, 'string'); // Call the generalChat function
+                    this.addMessageToWebview('AI', response);
+                } catch (error) {
+                    vscode.window.showErrorMessage('Error communicating with AI chatbot.');
+                    console.error(error);
+                }
+            } else if(message.command === 'generateCode'){
+                const userMessage = message.text;
+
+                try {
+                    const response = await generateCode(userMessage, 'string'); // Call the generalChat function
                     this.addMessageToWebview('AI', response);
                 } catch (error) {
                     vscode.window.showErrorMessage('Error communicating with AI chatbot.');
@@ -163,12 +175,47 @@ async function generalChat(question: string, projectName: string): Promise<strin
             const errorData:any = await response.json();
             throw new Error(`Error: ${errorData.detail}`);
         }
-
+        
+        
         // Parse the response data
         const data:any = await response.json();
+        
         return data.response; // Extract the 'response' field from the API response
     } catch (error:any) {
         console.error("Error occurred while calling generalChat API:", error);
         return `Error: ${error.message}`;
     }
 }
+async function generateCode(question: string, projectName: string): Promise<string> {
+    const url = "http://127.0.0.1:8000/api/ask-question/";
+
+    // Create the request body based on the API's expected input
+    const requestBody: QuestionRequest = {
+        question: question,
+        project_name: projectName
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody) // Convert the request body to JSON
+        });
+
+        // Check if the response is OK (status 200-299)
+        if (!response.ok) {
+            const errorData:any = await response.json();
+            throw new Error(`Error: ${errorData.detail}`);
+        }
+
+        // Parse the response data
+        const data:any = await response.json();
+        return data.answer; // Extract the 'response' field from the API response
+    } catch (error:any) {
+        console.error("Error occurred while calling generalChat API:", error);
+        return `Error: ${error.message}`;
+    }
+}
+
