@@ -134,3 +134,4 @@ document.getElementById('context-view-tab').addEventListener('click', function()
     vscode.postMessage({ command: 'switchToContextView' });
 });
 
+

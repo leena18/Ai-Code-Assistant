@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { groqChatAPI } from '../services/groqService'; // Adjust the path to your Groq service file
+import { generateComments } from '../services/apiSerivce'; // Adjust the path to your API service file
 
 export async function handleAddCommentsCommand(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
@@ -10,9 +10,8 @@ export async function handleAddCommentsCommand(): Promise<void> {
         if (selectedText) {
             try {
               
-
                 // Use the groqChatAPI service to generate code with comments
-                const commentedCode = await groqChatAPI(selectedText, 'addComments');
+                const commentedCode = await generateComments(selectedText);
 
                 // Generalized trimming to remove any unnecessary lines (like ``` tags)
                 const lines = commentedCode.split('\n');
@@ -36,7 +35,7 @@ export async function handleAddCommentsCommand(): Promise<void> {
                     vscode.window.showInformationMessage('Comment suggestion rejected.');
                 }
             } catch (error) {
-                vscode.window.showErrorMessage('Failed to get comments from Groq API.');
+                vscode.window.showErrorMessage('Failed to get comments for code.');
                 console.error(error);
             }
         } else {

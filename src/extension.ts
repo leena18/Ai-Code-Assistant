@@ -13,9 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(ChatPanel.viewType, chatProvider)
     );
-
-
-    
+        
     const codeGenerator = new CodeGenerator(context.extensionUri);
      
 

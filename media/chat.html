@@ -75,5 +75,57 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 
     <script src="chat.js"></script>
+    <!-- Inside chat.html -->
+<script>
+    const messageInput = document.getElementById('messageInput');
+    const commandSuggestions = document.getElementById('commandSuggestions');
+
+    // Show command suggestions when "/" is typed
+    messageInput.addEventListener('input', function () {
+        const text = messageInput.value;
+        if (text.startsWith('/')) {
+            commandSuggestions.style.display = 'block'; // Show suggestions
+            const commandList = ['explain', 'generateCode', 'fix']; // List of slash commands
+            const matchingCommands = commandList.filter(cmd => cmd.startsWith(text.slice(1)));
+            commandSuggestions.innerHTML = matchingCommands.map(cmd => `<li>${cmd}</li>`).join('');
+        } else {
+            commandSuggestions.style.display = 'none'; // Hide suggestions
+        }
+    });
+
+    // Handle suggestion click
+    commandSuggestions.addEventListener('click', function (event) {
+        const command = event.target.textContent;
+        messageInput.value = `/${command} `;
+        commandSuggestions.style.display = 'none'; // Hide suggestions
+    });
+
+    // Submit message (Slash command)
+    document.getElementById('sendMessageButton').addEventListener('click', function () {
+        const message = messageInput.value.trim();
+        if (message.startsWith('/')) {
+            const command = message.split(' ')[0].slice(1);
+            const args = message.split(' ').slice(1).join(' ');
+
+            // Post the slash command message to the extension
+            vscode.postMessage({
+                command: command,
+                args: args
+            });
+        } else {
+            // Normal chat message handling
+            vscode.postMessage({
+                command: 'sendMessage',
+                text: message
+            });
+        }
+        messageInput.value = '';
+    });
+</script>
+
+<ul id="commandSuggestions" style="display:none; position:absolute; background:#fff;">
+    <!-- Slash command suggestions appear here -->
+</ul>
+
 </body>
 </html>
