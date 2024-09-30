@@ -1,32 +1,38 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Courier New', Courier, monospace; /* Monospace font for coder vibes */
+    background-color: #1e1e1e; /* Dark background */
+    color: #ffffff; /* White text color */
 }
 
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 0vh;
+    height: 100vh; /* Adjusted to fill the viewport */
 }
 
 .messages {
     flex-grow: 1;
-    overflow-y: scroll;
-    padding: 10px;
-    border: 1px solid #ddd;
+    overflow-y: auto; /* Changed to auto for a better experience */
+    padding: 15px;
+    border: 1px solid #444; /* Darker border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #2a2a2a; /* Container background */
 }
 
 .message {
     margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 5px;
     max-width: 80%;
     word-wrap: break-word;
 }
+
 .send-buttons {
     display: flex;
     justify-content: center;
     padding: 10px;
 }
+
 /* Style for user messages */
 .user-message {
     background-color: #189af18d;
@@ -57,68 +63,85 @@ body {
 .input-container {
     display: flex;
     padding: 10px;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #444; /* Darker border */
 }
 
 input[type="text"] {
     flex-grow: 1;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #555; /* Darker border */
+    border-radius: 5px; /* Consistent border radius */
     margin-right: 10px;
+    background-color: #2a2a2a; /* Input background */
+    color: #ffffff; /* Input text color */
 }
 
 button {
     padding: 10px 20px;
-    background-color: #007ACC;
+    background-color: #007ACC; /* Accent color */
     color: white;
     border: none;
-    border-radius: 4px;
-    display: flex;
+    border-radius: 5px; /* Consistent border radius */
     cursor: pointer;
+    transition: background-color 0.3s; /* Transition effect */
 }
 
+button:hover {
+    background-color: #005a9c; /* Darker shade on hover */
+}
 
+/* Unified Header Styles */
 .header {
+    width: 100%;
+    background-color: #2a2a2a;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #333;
+    border-bottom: 2px solid #007ACC;
 }
 
 .logo {
-    font-size: 1.5em;
+    font-size: 24px;
     font-weight: bold;
+    color: #007ACC; /* Accent color for logo */
 }
 
 .icons {
     display: flex;
-    gap: 10px;
 }
 
 .icon {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
+    margin-left: 15px;
     cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.icon:hover {
+    transform: scale(1.1); /* Scale up on hover */
 }
 
 .tabs {
+    width: 100%;
     display: flex;
-    background-color: #444;
+    justify-content: center;
+    margin: 10px 0; display: flex;
+    background-color: #444; /* Tab background */
 }
 
 .tab {
     flex: 1;
     padding: 10px;
-    background-color: #444;
-    color: #fff;
+    background-color: #3a3a3a; /* Tab background */
+    color: #ffffff;
     border: none;
     cursor: pointer;
 }
 
 .tab.active {
-    background-color: #222;
+    background-color: #007ACC; /* Active tab color */
     border-bottom: 2px solid #fff;
 }
 
@@ -131,7 +154,7 @@ button {
 .action {
     margin-left: 10px;
     padding: 5px 10px;
-    background-color: #555;
+    background-color: #555; /* Action button background */
     color: #fff;
     border: none;
     cursor: pointer;
@@ -154,11 +177,12 @@ button {
 .action-item {
     margin: 5px 0;
     padding: 10px;
-    background-color: #555;
+    background-color: #555; /* Action item background */
     border: none;
     color: #fff;
     cursor: pointer;
 }
+
 .shortcut-buttons {
     display: flex;
     justify-content: center;
@@ -168,7 +192,7 @@ button {
 .shortcut {
     margin: 0 5px;
     padding: 5px;
-    background-color: #555;
+    background-color: #555; /* Shortcut button background */
     color: #fff;
     border: none;
     cursor: pointer;

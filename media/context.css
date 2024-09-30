@@ -1,113 +1,148 @@
+/* Global Styles */
+body {
+    font-family: 'Courier New', Courier, monospace; /* Monospace font for coder vibes */
+    background-color: #1e1e1e; /* Dark background */
+    color: #ffffff; /* White text color */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-       html, body {
-    height: 100%;
-    margin: 0; /* Ensure there's no default margin */
-
-    /* background-color:#262c45; */
-    font-family: Arial, sans-serif;
-    }
-        
+/* Unified Header Styles */
 .header {
+    width: 100%;
+    background-color: #2a2a2a; /* Slightly lighter background for header */
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #333;
+    border-bottom: 2px solid #007ACC; /* Accent color for border */
 }
 
 .logo {
-    font-size: 1.5em;
+    font-size: 24px;
     font-weight: bold;
+    color: #007ACC; /* Accent color for logo */
 }
 
 .icons {
     display: flex;
-    gap: 10px;
 }
 
 .icon {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
+    margin-left: 15px;
     cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.icon:hover {
+    transform: scale(1.1); /* Scale up on hover */
 }
 
 .tabs {
+    width: 100%;
     display: flex;
-    background-color: #444;
+    justify-content: center;
+    margin: 10px 0;
 }
 
 .tab {
-    flex: 1;
-    padding: 10px;
-    background-color: #444;
-    color: #fff;
+    background-color: #3a3a3a; /* Tab background */
+    color: #ffffff;
     border: none;
+    padding: 10px 20px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .tab.active {
-    background-color: #222;
-    border-bottom: 2px solid #fff;
+    background-color: #007ACC; /* Active tab color */
+    color: #ffffff; /* Active tab text color */
 }
 
-        #contextOptions {
-            margin-top: 20px;
-        }
-        #contextOptions button {
-            margin: 5px;
-            padding: 5px;
-            font-size:12px;
-            cursor: pointer;
-        }
-        #contextOptions button.active {
-            background-color: #ddd;
-        }
-            #contextOptions {
-    display: flex;
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 10px; /* Space between buttons */
+.tab:hover {
+    background-color: #005a9c; /* Darker shade on hover */
 }
 
-.chat-input-container {
-    display: flex;
-    gap: 5px;
-    margin-top: 10px; 
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #2a2a2a; /* Container background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
-
 
 .context-button {
-    background-color: #156ca1 ; /* Primary button color */
-    color: #fff; /* Text color */
-    border: none; /* Remove default border */
-    padding: 10px 15px; /* Button padding */
-    border-radius: 10px; /* Rounded corners */
-    font-size: 10px; /* Font size */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    background-color: #007ACC; /* Button background */
+    color: #ffffff; /* Button text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    width: 100%;
 }
 
 .context-button:hover {
-    background-color: #0056b3; /* Darker background on hover */
-    transform: scale(1.05); /* Slight zoom effect */
+    background-color: #005a9c; /* Darker shade on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
 }
 
-.context-button:focus {
-    outline: none; /* Remove default focus outline */
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Add custom focus outline */
+.dropdown {
+    display: none; /* Initially hidden */
+    flex-direction: column;
+    margin: 10px 0;
 }
 
-/*------------------- Upload section container */
-h3 {
-    font-size: 1.8em;
-    font-weight: 600;
-    margin-bottom: 1em;
-    
-    
+.dropdown button {
+    background-color: #3a3a3a; /* Dropdown button background */
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.github-link{
+.dropdown button:hover {
+    background-color: #005a9c; /* Darker shade on hover */
+}
+
+.context-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.context-list li {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    background-color: #3a3a3a; /* List item background */
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+    transition: background-color 0.3s;
+}
+
+.context-list li:hover {
+    background-color: #005a9c; /* Darker shade on hover */
+}
+
+.context-list img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px; /* Spacing between icon and text */
+}
+
+.remove-context {
+    margin-left: auto; /* Push remove button to the right */
+    color: #ff3b30; /* Remove button color */
+    cursor: pointer;
 }

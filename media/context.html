@@ -1,22 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot</title>
-    <link rel="stylesheet" href="context.css">
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Uploader</title>
+  <link rel="stylesheet" href="context.css">
 </head>
 <body>
-    <!-- <div id="navbar">
 
-
-    <div>  
-   
-    <button class="nav-button active" id="chatNav">Chat</button>
-    <button class="nav-button" id="contextNav">Context</button>
-    
-    </div> -->
     <div class="header">
         <span class="logo">LASK .ai</span>
         <div class="icons">
@@ -28,66 +19,35 @@
     <div class="tabs">
         <button class="tab active" id="chat-tab">Chat</button>
         <button class="tab" id="context-tab">Add Context</button>
-        <button class="tab" id="context-view-tab">Context View</button>
     </div>
 
-    <!-- Context Page -->
-    <div id="contextPage">
-        <h3>🧠Context Management</h3>
-       <div id="contextOptions">
-        <div class="github-link">
-            <input type="text" id="githubLink" placeholder="Enter GitHub link" />
-            <button class="context-button" id="loadContextButton">Load Github Repo Context</button>
-        </div>
-    <button class="context-button" id="addFileContext">+ Add File Context</button>
-    <button class="context-button" id="addCodeBlockContext">+ Add Code Block Context</button>
-    <button class="context-button" id="addDirectoryContext">+ Add Directory Context</button>
-    <button class="context-button" id="addTechDoc">+ Add Technical Documents</button>
-    <button class="context-button" id="addReqDoc">+ Add Requiremnt Documents</button>
-</div>
-
-<!-- Documents Page (Updated) 
-<div id="documentsPage" class="hidden"> Initially hidden
-    <h3>📎Attach documents</h3>
-    
-    <!-- Technical Document Upload Section 
-    <div class="upload-section">
-        <h4>Upload Technical Document:</h4>
-        <input type="file" id="techDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
-        <button id="uploadTechDocumentButton">Upload</button>
-
-        <!-- List of uploaded technical documents 
-        <ul id="techDocumentsList" class="file-list"></ul>
+  <div class="container">
+    <button id="addCodeContextButton" class="context-button">Add Code Context +</button>
+    <div id="codeContextDropdown" class="dropdown">
+      <button id="addFileContext">Add File</button>
+      <button id="addDirectoryContext">Add Directory</button>
+      <button id="addCodeBlockContext">Add Code Block</button>
     </div>
 
-    <!-- Requirement Document Upload Section 
-    <div class="upload-section">
-        <h4>Upload Requirement Document:</h4>
-        <input type="file" id="reqDocumentUpload" multiple accept=".pdf, .doc, .docx, .txt" />
-        <button id="uploadReqDocumentButton">Upload</button>
-
-        <!-- List of uploaded requirement documents 
-        <ul id="reqDocumentsList" class="file-list"></ul>
+    <button id="addDocumentContextButton" class="context-button">Add Document Context +</button>
+    <div id="documentContextDropdown" class="dropdown">
+      <button id="addTechDocContext">Add Technical Document</button>
+      <button id="addReqDocContext">Add Requirement Document</button>
     </div>
-</div> 
--->
-    </div>
-    <script src="context.js"></script>
-    <script src="tab.js"></script>
 
-    
+    <ul id="fileList" class="context-list"></ul>
+  </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-           <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/xml/xml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/css/css.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.3/mode/htmlmixed/htmlmixed.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="context.js"></script>
 
-
-
-
-
+  <script>
+    // Receive message from the extension to set the resource URI base
+    window.addEventListener('message', (event) => {
+      const message = event.data;
+      if (message.command === 'setResourceUriBase') {
+        setResourceUriBase(message.resourceUriBase);
+      }
+    });
+  </script>
 </body>
 </html>

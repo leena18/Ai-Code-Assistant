@@ -129,9 +129,5 @@ document.getElementById('chat-tab').addEventListener('click', function() {
     vscode.postMessage({ command: 'switchToChat' }); // Send message to switch to chat view
 });
 
-// i want to switch to the context view
-document.getElementById('context-view-tab').addEventListener('click', function() {
-    vscode.postMessage({ command: 'switchToContextView' });
-});
 
 
