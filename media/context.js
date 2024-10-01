@@ -96,7 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (file) {
                 contexts.push({ name: file.name, type: 'file' });
                 saveContextsToJson();
+                uploadZipFile(input, "string");
                 renderContexts();
+            }else {
+                alert("No file selected. Please select a ZIP file.");
             }
         };
         input.click();
@@ -159,3 +162,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial render
     renderContexts();
 });
+
+async function uploadZipFile(fileInput, projectName) {
+    // Get the selected file from the file input element
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    
+    // Append the file and project name to the form data
+    formData.append("file", file);
+    formData.append("project_name", projectName);
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/upload-file/", {
+            method: "POST",
+            body: formData,
+        });
+
+        // Check if the response is OK
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error:", errorData.message);
+            alert(`Error: ${errorData.message}`);
+            return;
+        }
+
+        // Get the response data
+        const data = await response.json();
+        console.log("Success:", data);
+        
+    } catch (error) {
+        console.error("Error:", error);
+       
+    }
+}

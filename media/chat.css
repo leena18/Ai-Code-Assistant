@@ -27,12 +27,6 @@ body {
     word-wrap: break-word;
 }
 
-.send-buttons {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-}
-
 /* Style for user messages */
 .user-message {
     background-color: #189af18d;
@@ -127,7 +121,7 @@ button:hover {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 10px 0; display: flex;
+    margin: 10px 0;
     background-color: #444; /* Tab background */
 }
 
@@ -196,4 +190,40 @@ button:hover {
     color: #fff;
     border: none;
     cursor: pointer;
+}
+
+/* Chat History Section */
+.chat-history {
+    background-color: #3a3a3a; /* History background */
+    border: 1px solid #444; /* Darker border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px;
+    margin: 10px 0; /* Margin for spacing */
+    max-height: 300px; /* Limit height */
+    overflow-y: auto; /* Scroll if content exceeds */
+}
+
+.chat-history-title {
+    font-size: 18px; /* Title font size */
+    margin-bottom: 10px; /* Space below title */
+    color: #007ACC; /* Accent color for title */
+}
+
+.chat-history-list {
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+.chat-history-item {
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: #444; /* Background for history item */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor for hover effect */
+    transition: background-color 0.3s; /* Transition effect */
+}
+
+.chat-history-item:hover {
+    background-color: #007ACC; /* Highlight on hover */
 }
