@@ -3,7 +3,7 @@ import { ChatPanel } from './panels/ChatPaneel';
 import { commandHandler } from './features/commandRegister';
 import { handleAddCommentsCommand } from './features/comment';
 import { handleFixCode } from './features/fix-code';
-import CodeGenerator from './features/generate-code-nlp';
+import CodeGenerator from './features/nlp/code-generator';
 import { activateCodeSuggestionListener } from './features/predict-code';
 import { removeCommentsFromSelection } from './features/removeComments';
 

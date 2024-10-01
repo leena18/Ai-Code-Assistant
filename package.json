@@ -63,7 +63,33 @@
         "command": "insertCodeSuggestion",
         "key": "tab",
         "when": "editorTextFocus"
-      }
+      },
+      {
+        "command": "insertCodeSuggestion",
+        "key": "tab",
+        "when": "editorTextFocus"
+    },
+    {
+      "command": "codeGenerator.acceptCode",
+      "key": "ctrl+shift+a",
+      "when": "editorTextFocus"
+  },
+  
+  {
+      "command": "codeGenerator.nextSuggestion",
+      "key": "alt+]",
+      "when": "editorTextFocus"
+  },
+  {
+      "command": "codeGenerator.previousSuggestion",
+      "key": "alt+[",
+      "when": "editorTextFocus"
+  },
+  {
+      "command": "codeGenerator.openSuggestionBox",
+      "key": "alt+shift+s",
+      "when": "editorTextFocus"
+  }
     ],
     "commands": [
       {
@@ -99,7 +125,23 @@
       {
         "command": "extension.removeComments",
         "title": "Remove Comments from Selection"
-      }
+      },
+      {
+        "command": "codeGenerator.acceptCode",
+        "title": "Accept Code"
+    },
+    {
+        "command": "codeGenerator.nextSuggestion",
+        "title": "Next Suggestion"
+    },
+    {
+        "command": "codeGenerator.previousSuggestion",
+        "title": "Previous Suggestion"
+    },
+    {
+        "command": "codeGenerator.openSuggestionBox",
+        "title": "Open Suggestion Box"
+    }
     ]
   },
   "scripts": {

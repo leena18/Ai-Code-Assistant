@@ -51,7 +51,11 @@ export async function groqChatAPI(userMessage: string, commandType: string): Pro
                 break;
             
                 case 'nlpCode':
-                    promptTemplate = `${userMessage}`;
+                    promptTemplate = `
+    ${userMessage}
+    
+            Please provide only the code without any explanation or surrounding text. Do not include language-specific formatting like \\\javascript or \\\. Only provide the raw code as output.
+                `;
                     
                     break;
             
