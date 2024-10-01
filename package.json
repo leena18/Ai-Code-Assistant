@@ -68,28 +68,27 @@
         "command": "insertCodeSuggestion",
         "key": "tab",
         "when": "editorTextFocus"
-    },
-    {
-      "command": "codeGenerator.acceptCode",
-      "key": "ctrl+shift+a",
-      "when": "editorTextFocus"
-  },
-  
-  {
-      "command": "codeGenerator.nextSuggestion",
-      "key": "alt+]",
-      "when": "editorTextFocus"
-  },
-  {
-      "command": "codeGenerator.previousSuggestion",
-      "key": "alt+[",
-      "when": "editorTextFocus"
-  },
-  {
-      "command": "codeGenerator.openSuggestionBox",
-      "key": "alt+shift+s",
-      "when": "editorTextFocus"
-  }
+      },
+      {
+        "command": "codeGenerator.acceptCode",
+        "key": "ctrl+shift+a",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeGenerator.nextSuggestion",
+        "key": "alt+]",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeGenerator.previousSuggestion",
+        "key": "alt+[",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeGenerator.openSuggestionBox",
+        "key": "alt+shift+s",
+        "when": "editorTextFocus"
+      }
     ],
     "commands": [
       {
@@ -129,19 +128,19 @@
       {
         "command": "codeGenerator.acceptCode",
         "title": "Accept Code"
-    },
-    {
+      },
+      {
         "command": "codeGenerator.nextSuggestion",
         "title": "Next Suggestion"
-    },
-    {
+      },
+      {
         "command": "codeGenerator.previousSuggestion",
         "title": "Previous Suggestion"
-    },
-    {
+      },
+      {
         "command": "codeGenerator.openSuggestionBox",
         "title": "Open Suggestion Box"
-    }
+      }
     ]
   },
   "scripts": {
@@ -171,6 +170,7 @@
     "dotenv": "^16.4.5",
     "groq-sdk": "^0.7.0",
     "highlight.js": "^11.10.0",
+    "jszip": "^3.10.1",
     "marked": "^14.1.2",
     "vscode": "^1.1.37"
   }

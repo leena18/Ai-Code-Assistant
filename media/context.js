@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         vscode.postMessage({ command: 'switchToChat' });
     });
 
-
     // Constants and elements
     const addCodeContextButton = document.getElementById('addCodeContextButton');
     const addDocumentContextButton = document.getElementById('addDocumentContextButton');
@@ -98,23 +97,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveContextsToJson();
                 uploadZipFile(input, "string");
                 renderContexts();
-            }else {
+            } else {
                 alert("No file selected. Please select a ZIP file.");
             }
         };
         input.click();
     });
 
-    document.getElementById('addDirectoryContext').addEventListener('click', () => {
+    document.getElementById('addDirectoryContext').addEventListener('click', async () => {
         const input = document.createElement('input');
         input.type = 'file';
         input.webkitdirectory = true; // Allows directory selection
-        input.onchange = (e) => {
-            const directoryName = e.target.files[0].webkitRelativePath.split('/')[0];
-            if (directoryName) {
+        input.onchange = async (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                const directoryName = files[0].webkitRelativePath.split('/')[0];
                 contexts.push({ name: directoryName, type: 'directory' });
+                console.log('Directory:', directoryName);
+
+                // Create a ZIP file from the directory
+                const zip = await createZipFromDirectory(files);
+                console.log('ZIP:', zip);
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                console.log('ZIP blob:', zipBlob);  
+                const zipFile = new File([zipBlob], `${directoryName}.zip`, { type: 'application/zip' });
+                console.log('ZIP file:', zipFile);
+
+                // Upload the ZIP file
+                uploadZipFile(zipFile, directoryName);
+                console.log('ZIP file uploaded');
+
                 saveContextsToJson();
+                console.log('Contexts saved to JSON', contexts);
                 renderContexts();
+                console.log('Contexts rendered', contexts);
             }
         };
         input.click();
@@ -163,12 +179,19 @@ document.addEventListener('DOMContentLoaded', () => {
     renderContexts();
 });
 
-async function uploadZipFile(fileInput, projectName) {
-    // Get the selected file from the file input element
-    const file = fileInput.files[0];
+async function createZipFromDirectory(files) {
+    const zip = new JSZip();
+
+    Array.from(files).forEach(file => {
+        const relativePath = file.webkitRelativePath;
+        zip.file(relativePath, file);
+    });
+
+    return zip;
+}
+
+async function uploadZipFile(file, projectName) {
     const formData = new FormData();
-    
-    // Append the file and project name to the form data
     formData.append("file", file);
     formData.append("project_name", projectName);
 
@@ -178,7 +201,6 @@ async function uploadZipFile(fileInput, projectName) {
             body: formData,
         });
 
-        // Check if the response is OK
         if (!response.ok) {
             const errorData = await response.json();
             console.error("Error:", errorData.message);
@@ -186,12 +208,10 @@ async function uploadZipFile(fileInput, projectName) {
             return;
         }
 
-        // Get the response data
         const data = await response.json();
         console.log("Success:", data);
-        
+
     } catch (error) {
         console.error("Error:", error);
-       
     }
 }
