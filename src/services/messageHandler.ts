@@ -16,7 +16,8 @@ export async function handleWebviewMessage(message: any, webviewView: vscode.Web
         const userMessage = message.text;
         try {
             const response = await generateCode(userMessage, 'string');
-            panel.addMessageToWebview('AI', response);
+            const formattedCode = extractCodeFromResponse(response);
+            panel.addMessageToWebview('AI', formattedCode);
         } catch (error) {
             vscode.window.showErrorMessage('Error communicating with AI chatbot.');
             console.error(error);
@@ -30,4 +31,9 @@ export async function handleWebviewMessage(message: any, webviewView: vscode.Web
         const { fileListId, files } = message;
         panel.addContextData(fileListId, files);
     }
+}
+function extractCodeFromResponse(response: string): string {
+    // Remove any backticks and language-specific code fences (```python or ```js, etc.)
+    const code = response.replace(/```[a-z]*|```/g, '');
+    return code.trim(); // Trim any extra whitespace around the code
 }

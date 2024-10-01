@@ -44,7 +44,7 @@ export async function generalChat(question: string, projectName: string): Promis
     }
 }
 export async function generateCode(question: string, projectName: string): Promise<string> {
-    const url = "http://127.0.0.1:8000/api/ask-question/";
+    const url = "http://127.0.0.1:8000/api/generate-code/";
 
     // Create the request body based on the API's expected input
     const requestBody: QuestionRequest = {

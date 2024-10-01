@@ -92,7 +92,7 @@ function addMessage(sender, text, isAI = false) {
     } else {
         messageElement.append(...fullTextNode);  // Display the full message
     }
-
+    
     messagesDiv.appendChild(messageElement);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;  // Scroll to the bottom to display the latest message
 }
@@ -103,6 +103,10 @@ window.addEventListener('message', event => {
     switch (message.command) {
         case 'addMessage':
             // Mark AI responses with isAI = true
+            if(message.sender==='AI'){
+                message.text = "<pre><code>"+message.text+"</code></pre>";
+                Prism.highlightAll();
+            }
             addMessage(message.sender, message.text, message.sender === 'AI');
             break;
     }
