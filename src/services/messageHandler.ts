@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { generalChatWebSocket, generateCode, generateComments } from '../services/apiSerivce'; // Import API services
+import { generalChatWebSocket, generateCodeWebSocket, generateComments } from '../services/apiSerivce'; // Import API services
 
 // Handle Webview Messages
 export async function handleWebviewMessage(message: any, webviewView: vscode.WebviewView, panel: any) {
@@ -30,17 +30,30 @@ export async function handleWebviewMessage(message: any, webviewView: vscode.Web
             console.error(error);
         }
     } 
-    else if (message.command === 'generateCode') {
-        const userMessage = message.text;
+    else if (message.command === 'generateCodeWebSocket') {
+        const userMessage = message.text; // Get the user's code generation request
         try {
-            const response = await generateCode(userMessage, 'string');
-            const formattedCode = extractCodeFromResponse(response);
-            panel.addMessageToWebview('AI', formattedCode);
+            // Use the new WebSocket function for code generation
+            await generateCodeWebSocket(
+                message.projectName="BlogApp", // Pass the project name if needed
+                userMessage, // Pass the user message
+                (response: string) => {
+                    // Handle the AI's response and format the code
+                    const formattedCode = extractCodeFromResponse(response);
+                    panel.addMessageToWebview('AI', formattedCode);
+                },
+                (error: string) => {
+                    // Handle errors from the WebSocket
+                    vscode.window.showErrorMessage('Error generating code from AI through WebSocket.');
+                    console.error(error);
+                }
+            );
         } catch (error) {
-            vscode.window.showErrorMessage('Error generating code from AI.');
+            vscode.window.showErrorMessage('Error communicating with AI for code generation.');
             console.error(error);
         }
-    } 
+    }
+    
     else if (message.command === 'generateComments') {
         const code = message.code;
         try {

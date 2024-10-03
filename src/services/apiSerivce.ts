@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+
 interface QuestionRequest {
     question: string;
     project_name: string;
@@ -6,6 +7,64 @@ interface QuestionRequest {
 
 interface CommentRequest {
     code: string;
+}
+
+// Function to utilize the WebSocket API for generating code
+export async function generateCodeWebSocket(
+    projectName: string,
+    question: string,
+    onMessageCallback: (response: string) => void,
+    onErrorCallback?: (error: string) => void
+): Promise<void> {
+    const websocketUrl = "ws://127.0.0.1:8000/api/ws/generate-code/"; // WebSocket URL
+
+    // Create a new WebSocket connection
+    const socket = new WebSocket(websocketUrl);
+
+    // WebSocket event handlers
+
+    // When the WebSocket connection is open
+    socket.onopen = function () {
+        console.log("generate code WebSocket connection opened");
+
+        // Prepare and send the question request to the backend
+        const requestData = {
+            project_name: projectName,
+            question: question
+        };
+
+        socket.send(JSON.stringify(requestData));
+        console.log("Question sent:", requestData);
+    };
+
+    // When a message is received from the server (AI response or errors)
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data.toString());
+
+        // Check if there's an error
+        if (data.error) {
+            console.error("Error from server:", data.error);
+            if (onErrorCallback) {
+                onErrorCallback(data.error);
+            }
+        } else if (data.answer) {
+            // If there's a valid answer, handle it (call the callback function)
+            onMessageCallback(data.answer);
+        }
+    };
+
+    // When the WebSocket connection is closed
+    socket.onclose = function () {
+        console.log("WebSocket connection closed");
+    };
+
+    // When a WebSocket error occurs
+    socket.onerror = function (error) {
+        console.error("WebSocket error:", error);
+        if (onErrorCallback) {
+            onErrorCallback("WebSocket connection error");
+        }
+    };
 }
 
 // Function to utilize the WebSocket API for general chat
@@ -71,40 +130,6 @@ export async function generalChatWebSocket(
             onErrorCallback("WebSocket connection error");
         }
     };
-}
-
-// Regular API POST request for generating code
-export async function generateCode(question: string, projectName: string): Promise<string> {
-    const url = "http://127.0.0.1:8000/api/generate-code/";
-
-    // Create the request body based on the API's expected input
-    const requestBody: QuestionRequest = {
-        question: question,
-        project_name: projectName
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody) // Convert the request body to JSON
-        });
-
-        // Check if the response is OK (status 200-299)
-        if (!response.ok) {
-            const errorData: any = await response.json();
-            throw new Error(`Error: ${errorData.detail}`);
-        }
-
-        // Parse the response data
-        const data: any = await response.json();
-        return data.answer; // Extract the 'response' field from the API response
-    } catch (error: any) {
-        console.error("Error occurred while calling generateCode API:", error);
-        return `Error: ${error.message}`;
-    }
 }
 
 // Regular API POST request for generating comments based on code
