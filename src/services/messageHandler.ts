@@ -11,8 +11,8 @@ export async function handleWebviewMessage(message: any, webviewView: vscode.Web
         try {
             // Initialize WebSocket communication using the provided sessionId and projectName
             await generalChatWebSocket(
-                sessionId="6",
-                projectName="BlogApp",
+                sessionId="13",
+                projectName="string",
                 userMessage,
                 (response: string) => {
                     // Handle the AI's response from the WebSocket and send it back to the webview
