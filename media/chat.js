@@ -27,7 +27,7 @@ function generateCode() {
     const message = input.value.trim();  // Trim spaces
     if (message) {
         addMessage('Me', message, false);  // Display the user message in the chat panel
-        vscode.postMessage({ command: 'generateCode', text: message });  // Send the message to VS Code extension API
+        vscode.postMessage({ command: 'generateCodeWebSocket', text: message });  // Send the message to VS Code extension API
         input.value = '';  // Clear the input field
     }
 }

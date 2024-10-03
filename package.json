@@ -68,28 +68,27 @@
         "command": "insertCodeSuggestion",
         "key": "tab",
         "when": "editorTextFocus"
-    },
-    {
-      "command": "codeGenerator.acceptCode",
-      "key": "ctrl+shift+a",
-      "when": "editorTextFocus"
-  },
-  
-  {
-      "command": "codeGenerator.nextSuggestion",
-      "key": "alt+]",
-      "when": "editorTextFocus"
-  },
-  {
-      "command": "codeGenerator.previousSuggestion",
-      "key": "alt+[",
-      "when": "editorTextFocus"
-  },
-  {
-      "command": "codeGenerator.openSuggestionBox",
-      "key": "alt+shift+s",
-      "when": "editorTextFocus"
-  }
+      },
+      {
+        "command": "codeGenerator.acceptCode",
+        "key": "ctrl+shift+a",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeGenerator.nextSuggestion",
+        "key": "alt+]",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeGenerator.previousSuggestion",
+        "key": "alt+[",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeGenerator.openSuggestionBox",
+        "key": "alt+shift+s",
+        "when": "editorTextFocus"
+      }
     ],
     "commands": [
       {
@@ -129,19 +128,19 @@
       {
         "command": "codeGenerator.acceptCode",
         "title": "Accept Code"
-    },
-    {
+      },
+      {
         "command": "codeGenerator.nextSuggestion",
         "title": "Next Suggestion"
-    },
-    {
+      },
+      {
         "command": "codeGenerator.previousSuggestion",
         "title": "Previous Suggestion"
-    },
-    {
+      },
+      {
         "command": "codeGenerator.openSuggestionBox",
         "title": "Open Suggestion Box"
-    }
+      }
     ]
   },
   "scripts": {
@@ -160,6 +159,7 @@
     "@types/marked": "^6.0.0",
     "@types/node": "20.x",
     "@types/vscode": "^1.93.0",
+    "@types/ws": "^8.5.12",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "ts-loader": "^9.5.1",
@@ -171,7 +171,9 @@
     "dotenv": "^16.4.5",
     "groq-sdk": "^0.7.0",
     "highlight.js": "^11.10.0",
+    "jszip": "^3.10.1",
     "marked": "^14.1.2",
-    "vscode": "^1.1.37"
+    "vscode": "^1.1.37",
+    "ws": "^8.18.0"
   }
 }
