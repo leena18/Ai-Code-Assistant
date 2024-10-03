@@ -1,5 +1,35 @@
 import * as vscode from 'vscode';
-import { groqChatAPI } from '../services/groqService'; // Import the common Groq service
+import  baseURL  from '../baseURL';
+
+
+interface FixCodeRequest {
+    project_name: string;
+    instruction: string;
+    faulty_code: string;
+}
+
+interface FixCodeResponse {
+    fixed_code: string;
+}
+
+async function fixCode(request: FixCodeRequest): Promise<FixCodeResponse> {
+    const response:any = await fetch(baseURL+'/fix-code-instuction/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+        const errorDetail = await response.json();
+        throw new Error(`Error: ${errorDetail.detail}`);
+    }
+
+    return response.json();
+}
+
+
 
 export async function handleFixCode(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
@@ -10,7 +40,13 @@ export async function handleFixCode(): Promise<void> {
         if (selectedText) {
             try {
                 // Use the shared service with the 'fixCode' command
-                let suggestedFix = await groqChatAPI(selectedText, 'fixCode');
+                const requestData: FixCodeRequest = {
+                    project_name: "string",
+                    instruction: "",
+                    faulty_code: selectedText
+                };
+                const response = await fixCode(requestData)
+                let suggestedFix = response.fixed_code;
 
                 // Trimming unnecessary characters (like ``` at the start and end)
                 const lines = suggestedFix.split('\n');

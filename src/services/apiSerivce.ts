@@ -1,9 +1,9 @@
-interface QuestionRequest {
+export interface QuestionRequest {
     question: string;
     project_name: string;
 }
 
-interface CommentRequest {
+export interface CommentRequest {
     code: string;
 }
 

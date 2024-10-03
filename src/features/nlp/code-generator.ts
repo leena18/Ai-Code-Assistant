@@ -1,6 +1,15 @@
 import * as vscode from 'vscode';
 import { groqChatAPI } from '../../services/groqService'; // Import the common Groq service
 import { SuggestionBox } from '../nlp/suggestion'; // Import the SuggestionBox class
+import baseURL from '../../baseURL';
+import { generateCode, QuestionRequest } from '../../services/apiSerivce';
+
+
+interface QuestionResponse {
+    answer: string;
+}
+
+
 
 class CodeGenerator {
     private extensionUri: vscode.Uri;
@@ -42,7 +51,9 @@ class CodeGenerator {
     private async generateCode(prompt: string): Promise<void> {
         try {
             const codePrompt = this.createCodePrompt(prompt);
-            const suggestedCode = await this.fetchSuggestedCode(codePrompt);
+
+            const suggestedCode =  await generateCode(codePrompt, 'string');
+
             console.log('Suggested Code from API:', suggestedCode); // Debug log to check API response
           this.suggestions = this.parseSuggestions(suggestedCode);
             console.log('Parsed Suggestions:', this.suggestions); // Debug log for parsed suggestions
@@ -186,5 +197,7 @@ class CodeGenerator {
         vscode.window.showErrorMessage(message);
     }
 }
+
+
 
 export default CodeGenerator;
