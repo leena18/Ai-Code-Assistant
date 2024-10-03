@@ -37,27 +37,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // Determine which GIF icon to use based on the context type
             switch (context.type) {
                 case 'file':
-                    iconSrc = 'resources/file.gif';
+                    iconSrc = '../resources/file.gif';
                     break;
                 case 'directory':
-                    iconSrc = 'resources/directory.gif';
+                    iconSrc = '../resources/directory.gif';
                     break;
                 case 'code-block':
-                    iconSrc = 'resources/code-block.gif';
+                    iconSrc = '../resources/code-block.gif';
                     break;
                 case 'tech-doc':
-                    iconSrc = 'resources/tech-doc.gif';
+                    iconSrc = '../resources/tech-doc.gif';
                     break;
                 case 'req-doc':
-                    iconSrc = 'resources/req-doc.gif';
+                    iconSrc = '../resources/req-doc.gif';
                     break;
                 default:
-                    iconSrc = 'resources/default.gif';
+                    iconSrc = '../resources/default.gif';
             }
 
             const listItem = document.createElement('li');
             listItem.innerHTML = `
-                <img src="${iconSrc}" alt="${context.type} icon" style="width: 20px;">
+                <img src="" alt="✕" style="width: 20px;">
                 ${context.name}
                 <span class="remove-context" data-index="${index}">✕</span>
             `;

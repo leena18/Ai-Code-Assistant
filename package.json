@@ -159,6 +159,7 @@
     "@types/marked": "^6.0.0",
     "@types/node": "20.x",
     "@types/vscode": "^1.93.0",
+    "@types/ws": "^8.5.12",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "ts-loader": "^9.5.1",
@@ -172,6 +173,7 @@
     "highlight.js": "^11.10.0",
     "jszip": "^3.10.1",
     "marked": "^14.1.2",
-    "vscode": "^1.1.37"
+    "vscode": "^1.1.37",
+    "ws": "^8.18.0"
   }
 }
