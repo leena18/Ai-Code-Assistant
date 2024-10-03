@@ -41,6 +41,7 @@ body {
     color: #ffffff;
     align-self: flex-start;
     text-align: left;
+    width:fit-content;
 }
 
 /* Read More and Read Less button style */
