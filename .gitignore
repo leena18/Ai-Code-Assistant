@@ -1,0 +1,8 @@
+env/
+.env
+blog-server/
+venv/
+gda-ceificate-b9ebe5f8a889.json
+node_modules/
+BERTEmbedding/TreeSitter.ipynb
+BERTEmbedding/repoFetch.py
