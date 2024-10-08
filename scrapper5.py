@@ -10,7 +10,7 @@ import time
 API_ENDPOINT = "https://api.stackexchange.com/2.3/search/advanced"
 
 # Your Stack Exchange API key
-API_KEY = 'rl_sREru6z4a3TJ2birSmg1TVrR6'  # Replace with your actual API key
+API_KEY = ''  # Replace with your actual API key
 
 # Parameters for fetching questions
 QUESTIONS_PARAMS = {
