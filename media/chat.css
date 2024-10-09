@@ -1,154 +1,428 @@
+
 body {
-    font-family: 'Courier New', Courier, monospace; /* Monospace font for coder vibes */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-width:250px;
+    flex-direction: column;
+    align-items: center;
+    
+    font-family: 'Roboto', sans-serif;
+
     background-color: #1e1e1e; /* Dark background */
-    color: #ffffff; /* White text color */
+    color: #c0c0c0; /* White text color */
 }
 
-.chat-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Adjusted to fill the viewport */
-}
+
+
 
 .messages {
     flex-grow: 1;
+    display: none;
+    flex-direction: column;
+    gap: 20px;
     overflow-y: auto; /* Changed to auto for a better experience */
-    padding: 15px;
-    border: 1px solid #444; /* Darker border */
-    border-radius: 8px; /* Rounded corners */
-    background-color: #2a2a2a; /* Container background */
-}
+  
+    align-items: flex-start; /* Default alignment to the left */
+    padding: 10px;
+    background-color: #171717; /* Container background */
 
-.message {
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 5px;
-    max-width: 80%;
+    width: 100%;
+    height: 70vh;
+  
     word-wrap: break-word;
-}
 
+   
+
+}
 /* Style for user messages */
 .user-message {
-    background-color: #189af18d;
+    background-color: #5b5959; /* Light gray background color */
     color: white;
-    align-self: flex-end;
-    text-align: right;
+    text-align: left;
+    word-wrap: break-word; /* Ensures long words are wrapped */
+    overflow-wrap: break-word; /* Wraps text if it overflows */
+    max-width: fit-content; /* Optional: Limits the width of the message bubble */
+    padding: 5px;
+    border-radius: 5px 0 5px 5px; /* Rounded corners */
+    margin: 5px 20px; /* Margin around the message */
+    align-self: flex-end; /* Align user messages to the right */
 }
 
 /* Style for AI messages */
 .ai-message {
-    background-color: #363aba63;
+    background-color: #5b5959; /* Dark gray background color */
     color: #ffffff;
-    align-self: flex-start;
     text-align: left;
+    word-wrap: break-word; /* Ensures long words are wrapped */
+    overflow-wrap: break-word; /* Wraps text if it overflows */
+    max-width: fit-content; /* Optional: Limits the width of the message bubble */
+    padding: 5px;
+    border-radius: 0 5px 5px 5px; /* Rounded corners */
+    margin: 5px 20px; /* Margin around the message */
+    align-self: flex-start; /* Align AI messages to the left */
+    position: relative;
+}
+
+
+
+
+
+
+.ai-message pre {
+
+
+  margin-top: 30px;
+  border-radius: 5px;
+
+    font-size: small;
+    white-space: pre-wrap; /* Allow line breaks within code */
+    word-wrap: break-word; /* Break long lines */
+    overflow: auto; /* Add scrollbars if the code is too wide */
+    padding: 10px; /* Optional: Padding for code block */
+    font-family: Arial, Helvetica, sans-serif;
+    background-color:#171717; /* Remove any background highlight */
+     color: #e4e2e2;/* Change text color to gray */
+}
+
+
+
+.ai-message code {
+    color: inherit; /* Ensure the code inherits the gray color from the pre */
+    background: transparent; /* Make sure code background is transparent */
+}
+
+
+
+.copy-button,
+.insert-button {
+    font-size: 12px;
+    color: #e4e2e2;
+    padding: 2px 6px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: absolute; /* Allows positioning within the .ai-message container */
+}
+
+.copy-button {
+    top: 10px; /* Position from the top */
+    right: 50px; /* Position from the right */
+}
+
+.insert-button {
+    top: 10px; /* Position from the top */
+    right: 10px; /* Position from the right */
+}
+
+.ai-icon{
+
+    top: 6px;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    margin: 0 10px; /* Space between the icon and the message */
+    border-radius: 50%; /* Make it circular if using profile-like icons */
+    position: absolute;
+
+
+}
+.user-icon{
+
+   
+    width: 20px;
+    height: 20px;
+    margin: 0 10px; /* Space between the icon and the message */
+    border-radius: 50%; /* Make it circular if using profile-like icons */
+   
+
+
+}
+
+/* copy andinsert  */
+.action-button {
+    margin-left: 10px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 /* Read More and Read Less button style */
 .read-more-button {
-    background: none;
-    color: #04faf6;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
+    background: none; /* No background */
+    color: #7db3ed; /* Standard blue color for visibility and engagement */
+    border: none; /* No border */
+    font-size: 12px; /* Adequate size for readability */
+    cursor: pointer; /* Pointer cursor to indicate it's clickable */
+    text-decoration: underline; /* Underline text for emphasis */
+    padding: 0; /* No padding */
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for hover effects */
 }
+
+.read-less-button{
+     
+    margin-top: 30px;
+    background: none; /* No background */
+    color: #7db3ed; /* Standard blue color for visibility and engagement */
+    border: none; /* No border */
+    font-size: 12px; /* Adequate size for readability */
+    cursor: pointer; /* Pointer cursor to indicate it's clickable */
+    text-decoration: underline; /* Underline text for emphasis */
+    padding: 0; /* No padding */
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Hover effect */
+.read-more-button:hover {
+    color: #d1d1d1; /* Darker shade of blue on hover for visual feedback */
+    text-decoration: none; /* Remove underline on hover for a cleaner look */
+}
+
+
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Adjusted to fill the viewport */
+    
+}
+
+
+
 
 .input-container {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid #444; /* Darker border */
-}
-
-input[type="text"] {
     flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #555; /* Darker border */
-    border-radius: 5px; /* Consistent border radius */
-    margin-right: 10px;
-    background-color: #2a2a2a; /* Input background */
-    color: #ffffff; /* Input text color */
-}
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    padding: 5px;
+    border-top: 1px solid #444; /* Darker border for separation */
+    background-color: #1e1e1e; /* Dark background for contrast */
+    border-radius: 8px; /* Rounded container */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+    height: 60px;
+    max-height: 60px;
 
-button {
-    padding: 10px 20px;
-    background-color: #007ACC; /* Accent color */
+   }
+
+
+.input-container button.action {
+    padding: 8px 12px;
+    margin-right: 8px;
+    background-color: #3a3a3a; /* Darker background for buttons */
     color: white;
     border: none;
-    border-radius: 5px; /* Consistent border radius */
+    border-radius: 5px;
+    font-size: 12px; /* Larger, clear text */
     cursor: pointer;
-    transition: background-color 0.3s; /* Transition effect */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition effects */
 }
 
-button:hover {
-    background-color: #005a9c; /* Darker shade on hover */
+.input-container button.action:hover {
+    background-color: #505050; /* Slightly lighter on hover */
+    transform: translateY(-2px); /* Subtle lift effect */
 }
+
+
+
+textarea#messageInput {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #555;
+    border-radius: 5px 5px 5px 5px; /* Apply border-radius only to top-right, bottom-right, and bottom-left */
+    background-color: #2a2a2a;
+    color: #ffffff;
+    font-size: 12px;
+    margin-left: 10px;
+    outline: none;
+    resize: none; /* Disable resizing */
+    overflow-wrap: break-word; /* Wrap long words */
+    min-height: 13px; /* Minimum height */
+    max-height: 60px; /* Set a maximum height if needed */
+    transition: border-color 0.3s, background-color 0.3s;
+    font-family: 'Roboto', sans-serif;
+
+}
+
+textarea#messageInput:focus {
+    border-color: #0056b3; /* Green accent on focus */
+    background-color: #1f1f1f; /* Slightly darker input on focus */
+}
+
+
+
+
+
+
+
+ .send-buttons button {
+    margin-top: 6px;
+    padding: 8px 12px;
+    background-color:#4f7bbc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+ .send-buttons button:hover {
+    background-color: #6191d7; /* Darker green on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.send-buttons button:active {
+    transform: translateY(1px); /* Slight press-down effect */
+}
+
+
+#sendButton {
+    background-color: transparent; /* Make button background transparent */
+    border: none; /* Remove the default border */
+    padding: 0; /* Remove padding */
+    cursor: pointer;
+    display: flex;
+    align-items: center; /* Center the image vertically */
+    justify-content: center; /* Center the image horizontally */
+}
+
+#sendButton img {
+    width: 35px; /* Set width of the image */
+    height: 35px; /* Set height of the image */
+    margin-left: 15px;
+}
+
+#sendButton img:hover {
+    opacity: 0.8; /* Add hover effect */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Unified Header Styles */
 .header {
+    
     width: 100%;
     background-color: #2a2a2a;
-    padding: 10px 20px;
+    padding: 6px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #007ACC;
+    /* border-bottom: 2px solid #007ACC; */
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #007ACC; /* Accent color for logo */
+    font-size: 14px;
+    
+    color: honeydew;
+    margin-left: 8px;
 }
+
+
 
 .icons {
     display: flex;
-}
+    width: 25px;
+    height: 25px;
+    margin-right: 15px;
+   
 
-.icon {
-    width: 30px;
-    height: 30px;
-    margin-left: 15px;
     cursor: pointer;
     transition: transform 0.3s;
 }
 
-.icon:hover {
-    transform: scale(1.1); /* Scale up on hover */
+.icons img{
+
+    margin: 5px;
 }
 
 .tabs {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 10px 0;
-    background-color: #444; /* Tab background */
+   
+  
 }
 
 .tab {
     flex: 1;
     padding: 10px;
-    background-color: #3a3a3a; /* Tab background */
+    background-color: #292929; /* Tab background */
     color: #ffffff;
     border: none;
     cursor: pointer;
 }
 
 .tab.active {
-    background-color: #007ACC; /* Active tab color */
-    border-bottom: 2px solid #fff;
+    
+    border-bottom: 2px solid #d8d8d8;
+}
+
+.tab:hover {
+    background-color: #6798e1; /* Darker shade on hover */
 }
 
 .action-buttons {
     display: flex;
     justify-content: flex-end;
-    padding: 10px 20px;
+    padding: 5px 10px;
 }
+
+.action-buttons .history {
+    display: flex;
+    align-items: center;
+    gap: 2px; /* Optional: You can adjust or remove this */
+    background-color: #1e1e1e;
+    color: #c0c0c0;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action-buttons .action {
+    background-color: #1e1e1e;
+    color: #c0c0c0;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action-buttons img {
+    width: 15px;
+    height: 15px;
+    filter: brightness(0) invert(1);
+    margin-right: 0; /* Remove any margin */
+}
+
+
+
+
 
 .action {
     margin-left: 10px;
     padding: 5px 10px;
-    background-color: #555; /* Action button background */
+    font-size: small;
+    /* Action button background */
     color: #fff;
     border: none;
     cursor: pointer;
@@ -161,21 +435,43 @@ button:hover {
 .welcome-content h1 {
     font-size: 1.25em;
 }
+.welcome-content a{
 
-.action-list {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+
+    color: #83B4FF;
 }
 
-.action-item {
-    margin: 5px 0;
-    padding: 10px;
-    background-color: #555; /* Action item background */
-    border: none;
-    color: #fff;
+.action-listt {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    gap: 15px; /* Space between grid items */
+    padding: 15px;
+    margin-bottom: 40px;
+}
+
+.action-itemm {
+    padding: 15px;
+    text-align: center;
+    color: #83B4FF;
     cursor: pointer;
+    background-color: #363636;
+    border-radius: 8px; /* Rounded corners */
+    border:#363636 1px solid; ;
+ /* Border color */
+    font-size: 14px;
+    height: 60px; /* Fixed height for rectangular size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    
 }
+
+
+.action-itemm:hover {
+    background-color: #3a3a3a;
+}
+
 
 .shortcut-buttons {
     display: flex;
@@ -186,11 +482,35 @@ button:hover {
 .shortcut {
     margin: 0 5px;
     padding: 5px;
-    background-color: #555; /* Shortcut button background */
+    background-color: #555; 
     color: #fff;
     border: none;
     cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Chat History Section */
 .chat-history {
@@ -227,3 +547,7 @@ button:hover {
 .chat-history-item:hover {
     background-color: #007ACC; /* Highlight on hover */
 }
+
+
+
+

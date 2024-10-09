@@ -1,10 +1,16 @@
+import * as vscode from 'vscode';
 export interface QuestionRequest {
     question: string;
     project_name: string;
+    project_id: string;
+    user_id:string,
+    curr_file_context:string
 }
 
 export interface CommentRequest {
     code: string;
+    user_id: string;
+    project_id: string;
 }
 
 
@@ -12,10 +18,16 @@ export interface CommentRequest {
 export async function generalChat(question: string, projectName: string): Promise<string> {
     const url = "http://127.0.0.1:8000/api/general-chat/";
 
+    const curr_file_code = await getCurrentFileCode()
+    console.log(curr_file_code);
+    
     // Create the request body based on the API's expected input
     const requestBody: QuestionRequest = {
         question: question,
-        project_name: projectName
+        project_name: projectName,
+        project_id: "project1",
+        user_id: "user1",
+        curr_file_context: curr_file_code
     };
 
     try {
@@ -43,13 +55,34 @@ export async function generalChat(question: string, projectName: string): Promis
         return `Error: ${error.message}`;
     }
 }
+
+async function getCurrentFileCode(): Promise<string> {
+    const editor = vscode.window.activeTextEditor; // Get the active text editor
+
+    if (editor) {
+        const document = editor.document; // Get the document from the editor
+        const code = document.getText(); // Get the full text of the document
+        return code; // Return the code
+    } else {
+        vscode.window.showErrorMessage('No active editor is open.'); // Handle case when no editor is open
+        return ""; // Return undefined if no editor is active
+    }
+}
+
+
 export async function generateCode(question: string, projectName: string): Promise<string> {
     const url = "http://127.0.0.1:8000/api/generate-code/";
+
+    const curr_file_code = await getCurrentFileCode()
+    console.log(curr_file_code);
 
     // Create the request body based on the API's expected input
     const requestBody: QuestionRequest = {
         question: question,
-        project_name: projectName
+        project_name: projectName,
+        user_id:"user1",
+        project_id:"project1",
+        curr_file_context:curr_file_code
     };
 
     try {
@@ -81,7 +114,9 @@ export async function generateComments(code: string): Promise<string> {
 
     // Create the request body based on the API's expected input
     const requestBody: CommentRequest = {
-        code: code
+        code: code,
+        user_id: "user1",
+        project_id: "project1"
     };
 
 

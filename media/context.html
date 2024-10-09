@@ -8,18 +8,21 @@
 </head>
 <body>
 
-    <div class="header">
-        <span class="logo">LASK .ai</span>
-        <div class="icons">
-            <img src="${profileIconUri}" alt="Profile" class="icon" />
-            <img src="${infoIconUri}" alt="Info" class="icon" />
-        </div>
+  <div class="header">
+    <span class="logo">LASK.ai</span>
+    <div class="icons">
+        <img src="https://i.pinimg.com/originals/07/66/d1/0766d183119ff92920403eb7ae566a85.png" alt="Profile" id="profileIcon" alt="Profile" class="icon" />
+        <img src="https://cdn-icons-png.flaticon.com/512/4873/4873245.png" alt="Info" class="icon" />
     </div>
+</div>
 
     <div class="tabs">
-        <button class="tab active" id="chat-tab">Chat</button>
-        <button class="tab" id="context-tab">Add Context</button>
+        <button class="tab " id="chat-tab">Chat</button>
+        <button class="tab active" id="context-tab">Add Context</button>
     </div>
+
+   
+
 
   <div class="container">
     <button id="addCodeContextButton" class="context-button">Add Code Context +</button>
@@ -27,13 +30,59 @@
       <button id="addFileContext">Add File</button>
       <button id="addDirectoryContext">Add Directory</button>
       <button id="addCodeBlockContext">Add Code Block</button>
-      <button id="addGithubRepoLink">Add Github Repo Link </button>
+      <button id="addGitLabRepoLink">Add GitLab Repo Link</button> 
+    
     </div>
 
+  <!-- Collapsible Input Box -->
+<div id="gitLabInputBox" class="input-box">
+ 
+  <div style="display: none;" id="loader" class="loader"></div>
+  <div class="input-box-content">
+      <span  style="display: none;" class="close">&times;</span>
+      <h3>Add GitLab Repo Link</h3>
+      <form>
+        <div id="errorMessage" style="color: red; display: none; margin-bottom: 10px;"></div>
+
+          <label for="repoLink">GitLab Repo Link:</label>
+          <input type="text" id="repoLink" placeholder="Enter GitLab Repo Link">
+          
+          <label for="authToken">Auth Token:</label>
+          <input type="text" id="authToken" placeholder="Enter Auth Token">
+          
+          <button type="button" id="submitRepoLink">Submit</button>
+      </form>
+
+
+       
+    
+  </div>
+</div>
+
+
+<!-- File List Box -->
+<div id="fileListBox" class="file-box" style="display: none;">
+  
+  <div class="file-box-content">
+      <span class="close" onclick="closeFileBox()" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">&times;</span>
+      <h3>Select Files for Context</h3>
+      <div id="fileListContainer">
+        <!-- Checkboxes for files will be inserted here -->
+      </div>
+      <button type="button" id="confirmSelection">Done</button>
+  </div>
+ 
+</div>
+
+
+      
+
+ 
     <button id="addDocumentContextButton" class="context-button">Add Document Context +</button>
+   
     <div id="documentContextDropdown" class="dropdown">
-      <button id="addTechDocContext">Add Technical Document</button>
-      <button id="addReqDocContext">Add Requirement Document</button>
+      <button id="addTechDocContext">Technical Document</button>
+      <button id="addReqDocContext">Requirement Document</button>
       
     </div>
 
@@ -41,6 +90,9 @@
   </div>
 
   <script src="context.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
   <script>
     // Receive message from the extension to set the resource URI base

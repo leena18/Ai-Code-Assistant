@@ -5,19 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet"  href="chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
 </head>
 <body>
+
     <div class="header">
-        <span class="logo">LASK .ai</span>
+        <span class="logo">
+            <img src="" alt="">LASK.ai</span>
         <div class="icons">
-            <img src="${profileIconUri}" alt="Profile" class="icon" />
-            <img src="${infoIconUri}" alt="Info" class="icon" />
+            <img src="https://i.pinimg.com/originals/07/66/d1/0766d183119ff92920403eb7ae566a85.png" alt="Profile" id="profileIcon" alt="Profile" class="icon" />
+            <img src="https://cdn-icons-png.flaticon.com/512/4873/4873245.png" alt="Info" class="icon" />
         </div>
     </div>
 
     <div class="tabs">
         <button class="tab active" id="chat-tab">Chat</button>
-        <button class="tab" id="context-tab">Add Context</button>
+        <button class="tab " id="context-tab">Add Context</button>
     </div>
 
     
@@ -25,35 +29,45 @@
     <div class="to-hide">
         <div class="action-buttons">
             <button class="action">+ New</button>
-            <button class="action">History</button>
+            <button class="action history">
+                <img src="https://cdn-icons-png.flaticon.com/512/14131/14131560.png" alt="">
+                History
+            </button>
         </div>
-
+        
         <div class="welcome-content">
-            <h1>Welcome to Lask AI Chat, your coding partner!</h1>
-            <p>Select the block of code that you're focusing on.</p>
-            <p>Then, you can either click on one of the actions listed below, type your request into the prompt area, or use the "/" command to quickly access specific actions.</p>
-            <p><a href="#">Check out the user guide</a></p>
+            <h1>Welcome to Lask AI Chat!</h1>
+
+            <p> Code Smarter, Not Harder</p>
+            <!-- <p>Then, you can either click on one of the actions listed below, type your request into the prompt area, or use the "/" command to quickly access specific actions.</p> -->
+            <p><a href="#">User Guide</a></p>
         </div>
 
-        <div class="action-list">
-            <button class="action-item" id="explain-code">Explain Code</button>
-            <button class="action-item" id="write-docstrings">Write docstrings for code</button>
-            <button class="action-item" id="generate-tests">Generate Test cases</button>
-            <button class="action-item" id="explore-codebase">Explore Codebase</button>
-            <button class="action-item" id="fix-code">Fix code</button>
+        <div class="action-listt">
+            <button class="action-itemm" id="explain-code">/explain Code</button>
+            <button class="action-itemm" id="write-docstrings">/write docstrings for code</button>
+            <button class="action-itemm" id="generate-tests">/generate Test cases</button>
+            <button class="action-itemm" id="explore-codebase">/explore Codebase</button>
+            <button class="action-itemm" id="fix-code">/fix code</button>
         </div>
     </div>
     
+    <div class="messages" id="messages"></div>
     <!-- Chat Container -->
     <div class="chat-container" id="chatContainer">
-        <div class="messages" id="messages"></div>
+       
         <div class="input-container">
             <button class="action" id="/">/</button>
             <button class="action" id="@">@</button>
-            <input type="text" id="messageInput" placeholder="Type a message...">
+            <textarea id="messageInput" placeholder="Ask me anything..."></textarea>     
+            <button id="sendButton">
+                <img src="https://cdn-icons-png.freepik.com/512/10023/10023342.png?ga=GA1.1.1597380606.1728277263" alt="Ask AI" />
+            </button>
+            
+        
         </div>
         <div class="send-buttons">
-            <button id="sendButton">Ask AI</button>
+            
             <button id="generateCodeButton">Generate Code</button>
         </div>
     </div>
@@ -67,6 +81,12 @@
     </div>
 
 
+    
+    <!-- code mirror -->
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/meta.min.js"></script> <!-- For auto-detect -->
     
     <!-- Load marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

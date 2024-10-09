@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Setup</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* background-color: #1e1e1e; */
+            background-color: #000000;
+            color: #c0c0c0;
+        }
+
+        .setup-container {
+            width: 250px;
+            background-color: #000000;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            /* border: #c0c0c0 1px solid; */
+        }
+
+
+        .welcome-message {
+            margin: 20px 0;
+            font-size: 24px;
+        }
+
+        .gif-container {
+            margin-bottom: 15px;
+        }
+
+        .gif-container img {
+            width: 100%;
+            max-width: 150px;
+            border-radius: 8px;
+        }
+
+        .instruction {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        input,
+        button {
+            width: 100%;
+            padding: 8px;
+            font-size: 12px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            margin-top: 5px;
+
+        }
+
+        input {
+
+            width: 90%;
+            background-color: #333;
+            /* Change this to your desired color */
+            color: #f0f0f0;
+            /* Text color */
+            border: 1px solid #5A72A0;
+            /* Initial border color */
+        }
+
+        input {
+
+            border-color: #5A72A0;
+            /* Blue border color when focused */
+            outline: none;
+            /* Removes default outline */
+        }
+
+
+        button {
+            background-color: #5A72A0;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #455779;
+        }
+
+        #folder-path {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #5A72A0;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 15px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Basic styling for the input group */
+        .files {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            /* Reduced margin */
+
+            font-size: 12px;
+            /* Smaller font size */
+        }
+
+        /* Styling the label */
+        .files label {
+            margin-right: 8px;
+            /* Reduced margin */
+            font-size: 12px;
+            /* Smaller font size */
+            color: #c0c0c0;
+            /* Lighter weight for small size */
+        }
+
+        /* Styling the dropdown */
+        .files select {
+            height: 20px;
+            width: 70px;
+            padding: 3px;
+            /* Reduced padding */
+            font-size: 12px;
+            /* Smaller font size */
+            border-radius: 3px;
+            /* Smaller border radius */
+            border: 1px solid #5A72A0;
+            background-color: #000000;
+
+            color: #cbcaca;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* Dropdown focus/hover state for better appearance */
+        .files select:focus,
+        .files select:hover {
+            border-color: #007bff;
+            box-shadow: 0 0 3px rgba(0, 123, 255, 0.2);
+            /* Lighter shadow */
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="setup-container">
+
+
+        <div class="gif-container">
+            <!-- Add your GIF URL here -->
+            <img src="https://i.gifer.com/LCPT.gif" alt="Welcome GIF">
+        </div>
+
+        <div class="welcome-message">
+            LASK.AI™
+        </div>
+
+
+        <div class="input-group">
+            <label for="project-name">Project Name:</label>
+            <input type="text" id="project-name" placeholder="Enter project name" required>
+        </div>
+        <div class="input-group">
+            <label for="user-name">User Name: </label>
+            <input type="text" id="user-name" placeholder="Enter user name" required>
+        </div>
+        <div class="input-group">
+            <span class="files">
+                <label for="folder-dropdown">Existing Projects:</label>
+                <select id="folder-dropdown" required></select>
+            </span>
+            <button id="select-folder">-- Select new --</button>
+            <p id="folder-path">No folder selected</p>
+        </div>
+
+        <button id="submit">Start</button>
+        <div class="loader" id="loader"></div>
+    </div>
+    <script>
+        const vscode = acquireVsCodeApi();
+
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Array of folder options
+            const folderArray = await getProjectIds();
+
+            async function getProjectIds() {
+                try {
+                    // Call the API to retrieve the projects
+                    const response = await fetch('http://127.0.0.1:8000/api/projects');
+                    const data = await response.json();
+
+                    // Extract the project_ids from the response
+                    const projectIds = data.projects.map(project => project.project_id);
+
+                    console.log(projectIds);
+                    return projectIds;
+                } catch (error) {
+                    console.error("Error fetching projects:", error);
+                }
+            }
+
+
+            // Get the dropdown element
+            const dropdown = document.getElementById('folder-dropdown');
+
+            // Populate dropdown with options from folderArray
+            folderArray.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder;
+                option.textContent = folder;
+                dropdown.appendChild(option);
+            });
+
+            dropdown.style.display = 'inline-block';
+        });
+
+
+        // Handle folder selection
+        document.getElementById('select-folder').addEventListener('click', () => {
+            vscode.postMessage({ command: 'selectFolder' });
+        });
+
+        document.getElementById('folder-dropdown').addEventListener('change', function () {
+            const selectedFolder = this.value;
+            document.getElementById('folder-path').textContent = `Selected folder: ${selectedFolder}`;
+        });
+        // Handle submit button
+        document.getElementById('submit').addEventListener('click', () => {
+            const projectName = document.getElementById('project-name').value;
+            const folderPath = document.getElementById('folder-path').textContent;
+            const userName = document.getElementById('user-name').value;
+
+
+            if (userName && projectName && folderPath !== 'No folder selected') {
+                // Show the loader
+                document.getElementById('loader').style.display = 'block';
+
+                vscode.postMessage({
+                    command: 'submitProject',
+                    projectName: projectName,
+                    folderPath: folderPath,
+                    userName: userName
+                });
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+
+        // Listen for folder path response
+        window.addEventListener('message', event => {
+            const message = event.data;
+            if (message.command === 'selectedFolder') {
+                document.getElementById('folder-path').textContent = message.folderPath;
+            }
+        });
+    </script>
+</body>
+
+</html>

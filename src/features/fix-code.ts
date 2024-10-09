@@ -6,6 +6,8 @@ interface FixCodeRequest {
     project_name: string;
     instruction: string;
     faulty_code: string;
+    user_id:string;
+    project_id:string;
 }
 
 interface FixCodeResponse {
@@ -30,7 +32,6 @@ async function fixCode(request: FixCodeRequest): Promise<FixCodeResponse> {
 }
 
 
-
 export async function handleFixCode(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
 
@@ -39,16 +40,20 @@ export async function handleFixCode(): Promise<void> {
 
         if (selectedText) {
             try {
-                // Use the shared service with the 'fixCode' command
+                // Prepare the request data for fixing the code
                 const requestData: FixCodeRequest = {
                     project_name: "string",
                     instruction: "",
-                    faulty_code: selectedText
+                    faulty_code: selectedText,
+                    user_id: "user1",
+                    project_id: "heart-vb"
                 };
-                const response = await fixCode(requestData)
+
+                // Get the suggested fix
+                const response = await fixCode(requestData);
                 let suggestedFix = response.fixed_code;
 
-                // Trimming unnecessary characters (like ``` at the start and end)
+                // Trim unnecessary characters (like ``` at the start and end)
                 const lines = suggestedFix.split('\n');
                 if (lines[0].startsWith('```')) lines.shift();
                 if (lines[lines.length - 1].startsWith('```')) lines.pop();
@@ -56,21 +61,12 @@ export async function handleFixCode(): Promise<void> {
                 const trimmedSuggestedFix = lines.join('\n').trim();
                 suggestedFix = trimmedSuggestedFix;
 
-                // Show popup with suggested fix
-                const action = await vscode.window.showInformationMessage(
-                    `Suggested fix:\n${suggestedFix}`,
-                    'Accept', 'Reject'
-                );
+                // Directly apply the fix to the selected code in the editor
+                await editor.edit(editBuilder => {
+                    editBuilder.replace(editor.selection, suggestedFix);
+                });
 
-                if (action === 'Accept') {
-                    // Apply the fix in the editor
-                    editor.edit(editBuilder => {
-                        editBuilder.replace(editor.selection, suggestedFix);
-                    });
-                    vscode.window.showInformationMessage('Code fix applied.');
-                } else {
-                    vscode.window.showInformationMessage('Code fix rejected.');
-                }
+                vscode.window.showInformationMessage('Code fix applied.');
             } catch (error) {
                 vscode.window.showErrorMessage('Failed to get a fix from Groq AI.');
                 console.error(error);
