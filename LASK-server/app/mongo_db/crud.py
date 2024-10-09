@@ -34,3 +34,5 @@ async def load_chat_history(session_id: str) -> Optional[ChatHistory]:
             updated_at=chat_data.get("updated_at")
         )
     return None
+
+

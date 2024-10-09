@@ -1,12 +1,8 @@
 # main.py
 from fastapi import FastAPI
-from app.routers import question_router, upload_router , upload_doc_router, fetch_repo
+from app.routers import question_router, upload_router , upload_doc_router, fetch_repo, initialize_project, sync_repo
 from app.mongo_db.database import startup_event
 from fastapi.middleware.cors import CORSMiddleware
-
-
-
-
 
 app = FastAPI(
     title="Code Embedding and Q&A API",
@@ -27,6 +23,8 @@ app.include_router(question_router.router, prefix="/api", tags=["Questions"])
 app.include_router(upload_router.router, prefix="/api", tags=["Uploads Repo"])
 app.include_router(upload_doc_router.router, prefix="/api", tags=["Uploads Doc"])
 app.include_router(fetch_repo.router, prefix="/api", tags=["Fetch Repo"])
+app.include_router(initialize_project.router, prefix="/api", tags=["Initialize Project"])
+app.include_router(sync_repo.router, prefix="/api", tags=["Sync Repo"])
 
 # Root endpoint
 @app.get("/")
