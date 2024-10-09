@@ -278,6 +278,6 @@ def load_text_context(text_context_path: str) -> str:
             content = file.read()
         return content
     except FileNotFoundError:
-        raise Exception(f"File not found at path: {text_context_path}")
+        return ""
     except Exception as e:
         raise Exception(f"Error reading the file: {str(e)}")

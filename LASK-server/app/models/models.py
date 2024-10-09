@@ -14,6 +14,8 @@ class QuestionRequest(BaseModel):
     project_name: str
     user_id: str
     project_id: str
+    curr_file_context: str
+    
     
     
 class ProjectModel(BaseModel):

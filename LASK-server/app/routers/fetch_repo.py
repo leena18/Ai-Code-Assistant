@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from app.models.models import RepoRequest, FilePaths
 from app.github_fetch.github_fetch import fetch_github_repo_structure, load_json_from_file
 from app.github_fetch.fetch_code_from_filepath import fetch_code_from_paths, save_code_to_file
+from app.github_fetch.gitlab_fetch import fetch_gitlab_repo_structure
 from fastapi import APIRouter
 
 
@@ -13,6 +14,16 @@ allowed_extensions = [".java", ".xml",".php",".js",".py",".info.yml",".yml",".tw
 @router.post("/fetch_repo_structure/")
 async def fetch_repo_structure_endpoint(repo_request: RepoRequest):
     try:
+        if "gitlab.valuebound.net" in repo_request.repo_url:
+            repo_structure = fetch_gitlab_repo_structure(
+                repo_request.repo_url,
+                repo_request.access_token,
+                allowed_extensions,
+                repo_request.user_id,
+                repo_request.project_id
+            )
+            return {"repository_structure": repo_structure}
+        
         repo_structure = fetch_github_repo_structure(
             repo_request.repo_url,
             repo_request.access_token,
@@ -41,7 +52,3 @@ async def get_code_from_paths(file_paths: FilePaths):
         return {"code": code_context}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-    
-
-    

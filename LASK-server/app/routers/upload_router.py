@@ -19,7 +19,7 @@ text_chunks_store = []  # Store text chunks for retrieval
 tokenized_chunks = []  # Tokenized chunks for BM25
 
 @router.post("/upload-file/")
-async def upload_file(file: UploadFile, project_name: str = Form(...)):
+async def upload_file(file: UploadFile, project_name: str = Form(...), user_id: str = Form(...)):
     content = await file.read()
     print(f"Received file: {file.filename} for project: {project_name}")
 
@@ -65,7 +65,7 @@ async def upload_file(file: UploadFile, project_name: str = Form(...)):
                         continue  # Skip files that can't be decoded
 
         # Ensure the project-specific folder exists
-        project_folder_path = f"./saved_embeddings/{project_name}"
+        project_folder_path = f"./saved_embeddings/{project_name}/{user_id}"
         os.makedirs(project_folder_path, exist_ok=True)
 
         # Save embeddings

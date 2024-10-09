@@ -22,7 +22,7 @@ async def initialize_project(
     # Define the path where the project will be stored
     project_dir = f"./project_contexts/{project_id}/{user_id}/{zip_file.filename}"
     os.makedirs(project_dir, exist_ok=True)
-
+    print("called")
     # Save the uploaded ZIP file
     zip_file_path = os.path.join(project_dir, zip_file.filename)
     with open(zip_file_path, "wb") as buffer:
