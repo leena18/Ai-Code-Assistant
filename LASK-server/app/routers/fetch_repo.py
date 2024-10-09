@@ -8,6 +8,8 @@ from fastapi import APIRouter
 router = APIRouter()
 allowed_extensions = [".java", ".xml",".php",".js",".py",".info.yml",".yml",".twig",".css",".js","libraries.yml",".po",".sql","composer.json","package.json",".html.twig",".install",".module",".ts",".test",".schema.yml"]
 
+
+
 @router.post("/fetch_repo_structure/")
 async def fetch_repo_structure_endpoint(repo_request: RepoRequest):
     try:
@@ -39,4 +41,7 @@ async def get_code_from_paths(file_paths: FilePaths):
         return {"code": code_context}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
+
     
