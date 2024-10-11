@@ -17,16 +17,19 @@ router = APIRouter()
 @router.post("/generate-code/")
 def ask_question(request: QuestionRequest):
     try:
-        print(request.question,request.project_name)
-        project_folder_path = f"./saved_embeddings/{request.project_name}/"
-        
-        
+        print(request.question,request.project_id)
+        print("curr file context:", request.curr_file_context)
+        project_folder_path = f"./saved_embeddings/{request.project_id}/{request.user_id}/"
+    
         context_folder_path = f"./project_contexts/{request.project_id}/{request.user_id}/"
+
         text_context_path = os.path.join(context_folder_path, "text_context.txt")
+
         # Create the directories if they don't exist
         os.makedirs(context_folder_path, exist_ok=True)
-        
-        answer = generate_code_response(request.question, project_folder_path, text_context_path)
+        curr_file_context = request.curr_file_context
+        answer = generate_code_response(request.question, project_folder_path, text_context_path, curr_file_context)
+
         answer = remove_language_markers(answer)
         
         return {"answer": answer}
@@ -77,17 +80,17 @@ def general_chat(request: QuestionRequest):
     """
     API endpoint to handle general chat about the project using the AI model.
     """
+    print("curr_file_context:", request.curr_file_context)
     try:
-        project_folder_path = f"./saved_embeddings/{request.project_name}/"
+        curr_file_context = request.curr_file_context
+        project_folder_path = f"./saved_embeddings/{request.project_id}/{request.user_id}/"
         # Generate the general chat response using hybrid search and Groq API
         context_folder_path = f"./project_contexts/{request.project_id}/{request.user_id}/"
         text_context_path = os.path.join(context_folder_path, "text_context.txt")
         # Create the directories if they don't exist
         os.makedirs(context_folder_path, exist_ok=True)
         
-        
-        
-        response = generate_general_chat_response(request.question, project_folder_path,[],text_context_path)
+        response = generate_general_chat_response(request.question, project_folder_path,[],text_context_path, curr_file_context)
         reponse  = markdown.markdown(response)
         return {"response": reponse}
     except Exception as e:

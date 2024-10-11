@@ -7,7 +7,7 @@ from fastapi import APIRouter
 
 
 router = APIRouter()
-allowed_extensions = [".java", ".xml",".php",".js",".py",".info.yml",".yml",".twig",".css",".js","libraries.yml",".po",".sql","composer.json","package.json",".html.twig",".install",".module",".ts",".test",".schema.yml"]
+allowed_extensions = [".java", ".xml",".php",".js",".py",".info.yml",".yml",".css",".js",".po",".sql","composer.json","package.json",".html.twig",".install",".module",".ts",".test",".schema.yml"]
 
 
 
@@ -44,6 +44,7 @@ async def get_code_from_paths(file_paths: FilePaths):
         projectid = file_paths.project_id
         ref_repo_name = file_paths.ref_repo_name
         json_path = f"./project_contexts/{projectid}/{userid}/{ref_repo_name}.json"
+        print(json_path)
         json_file = load_json_from_file(json_path)
         code_context = fetch_code_from_paths(json_file, file_paths.paths)
         

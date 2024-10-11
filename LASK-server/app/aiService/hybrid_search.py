@@ -106,7 +106,7 @@ def generate_groq_response(prompt_template):
 
 # Specific response generation for code, general chat, and project discussions
 
-def generate_code_response(question, directory,text_context_path):
+def generate_code_response(question, directory,text_context_path, curr_file_context):
     """Generate code response based on hybrid search context."""
     context = perform_hybrid_search(question, directory)
     print("context:" ,context)
@@ -124,6 +124,12 @@ def generate_code_response(question, directory,text_context_path):
       {question}
 
       ```
+      ```
+
+      ###Current_File_Code
+      {curr_file_context}
+
+      ```
 
       ###Context_Code: \n
 
@@ -134,12 +140,14 @@ def generate_code_response(question, directory,text_context_path):
       ```
 
       Instructions:
-      1. Carefully understand the programming task described in the ###User_Query.
-      2. Thoroughly assess the Context Code. Determine if it contains functions, structures, or logic that directly align with the ###User_Query.
+      1. Carefully understand the programming task described in the ###User_Query, and code written in ###Current_file_code.
+      2. Thoroughly assess the ###Current_file_code, Context Code. Determine if it contains functions, structures, or logic that directly align with the ###User_Query.
       3. If the ###Context_Code contains a function or class that already implements the desired functionality, your task is to use that function or class directly in your generated code.
          Do not create new implementations unless necessary.
       4. If the ###Context_Code has helpful parts that you can modify for the task, adapt and use those parts in your solution.
       5. If the ###Context_Code is irrelevant or insufficient, generate a new, complete code solution from scratch that fulfills the User Query
+      6. Make sure the new code aligns with the ###Current_file_code and ###User_Query.
+      7. Follow the coding practices followed in ###Current_file, only give the code that completes the currentFile Code. Do not repeat the ###Current_File_Code
       6. Output the code in backticks ``` code ```
       7. Do not include any explanations, comments, or extra text.
     
@@ -221,25 +229,24 @@ def generate_code_fix_response(instruction, faulty_code, directory):
     of the code in context.
     """
     # Perform hybrid search to retrieve the context from the project
-    context = perform_hybrid_search(faulty_code, directory)
 
-    if context:
-        prompt_template = f"""
-        You are an expert coding assistant. Based on the given code context, fix the faulty code provided.
+    prompt_template = f"""
+    You are an expert coding assistant, Expert at detecting errors in the given code. Fix the ###Faulty_Code given below.
+    
+    ###Faulty_Code:
         
-        Context: 
-        {context}
+    ```
+    
+    {faulty_code}
 
-        Faulty Code: 
-        {faulty_code}
+    ```
+    
+    1) Fix the ###faulty_code for syntax errors.  
+    2) Do not give any comments, or any explaination.
+    4) Only return the fix code that fill be replaced with faulty code.
+    """
+    return generate_groq_response(prompt_template)
 
-        {instruction}
-        Instructions: Fix the faulty code provided above. Ensure the fixed code adheres to the style and conventions of the code in the context. Return only the fixed code without any explanations or comments. 
-        Answer:
-        """
-        return generate_groq_response(prompt_template)
-    else:
-        return "No relevant context found to fix the code."
 
     
 def generate_code_auto_fix_response(faulty_code, directory):

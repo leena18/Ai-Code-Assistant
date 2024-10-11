@@ -45,7 +45,7 @@ def truncate_context(context):
     return context
 
 
-def generate_general_chat_response(question: str, directory: str, chat_history: List[Message],text_context_path) -> str:
+def generate_general_chat_response(question: str, directory: str, chat_history: List[Message],text_context_path, curr_file_context) -> str:
     """
     Generate a general chat response by first reformulating the question
     based on chat history, then using the hybrid search context to generate the final answer.
@@ -79,8 +79,17 @@ def generate_general_chat_response(question: str, directory: str, chat_history: 
       {question}
 
       ```
+      ###Current_File_Content \n
+      
+      ```
+      
+      {curr_file_context}
+      
+      
+      ```
 
-      ###Context_Code: \n
+
+      ###Reference_Context_Code: \n
 
       ```
 
@@ -90,11 +99,11 @@ def generate_general_chat_response(question: str, directory: str, chat_history: 
 
       Instructions:
       1. Carefully understand the programming, explaination task described in the ###User_Query.
-      2. Thoroughly assess the Context Code. Determine if it contains functions, structures, or logic that directly align with the ###User_Query.
-      3. If the ###Context_Code contains a function or class that already implements the desired functionality, your task is to use that function or class directly in your generated code.
+      2. Thoroughly assess the ###Current_file_Content, Context Code. Determine if it contains functions, structures, or logic that directly align with the ###User_Query.
+      3. If the ###Reference_Context_Code contains a function or class that already implements the desired functionality, your task is to use that function or class directly in your generated code.
          Do not create new implementations unless necessary.
-      4. If the ###Context_Code has helpful parts that you can modify for the task, adapt and use those parts in your solution.
-      5. If the ###Context_Code is irrelevant or insufficient, generate a new, complete code solution from scratch that fulfills the User Query.
+      4. If the ###Current_file_Content, ###Reference_Context_Code, has helpful parts that you can modify for the task, adapt and use those parts in your solution.
+      5. If the ###Current_file_Content, ###Reference_Context_Code, is irrelevant or insufficient, generate a new, complete code solution from scratch that fulfills the User Query.
       6. If the user is not asking for code, answer the user query.
     
     """

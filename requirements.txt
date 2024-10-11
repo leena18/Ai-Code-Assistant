@@ -26,5 +26,5 @@ PyPDF2
 motor
 pymongo[srv]
 
-
+openai
 tree-sitter
