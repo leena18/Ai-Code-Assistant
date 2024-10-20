@@ -1,11 +1,15 @@
 body {
     font-family: Segoe UI, sans-serif;
-    background-color: #1e1e1e;
+    background-color: var(-vscode-editor-background);
     color: #d4d4d4;
     padding:0;
     margin: 0;
+    height: 95vh;
 }
 
+.to-hide{
+    height: -webkit-fill-available;
+}
 
 .chat-header {
     display: flex;
@@ -18,7 +22,7 @@ body {
 }
 .navbar {
     display: flex;
-    background-color: #2d2d2d;
+    background-color: var(--vscode-activityBar-background);
     padding: 10px;
 }
 
@@ -86,9 +90,7 @@ body {
     background: #2a2a2a;
 }
 
-.dark-theme .content {
-    background: #2a2a2a;
-}
+
 
 .new-chat-btn {
     background: none;
@@ -125,23 +127,27 @@ body {
     flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
+    align-self: flex-end;
+    /* height: auto; */
+    padding: 15px;
 }
 
+
 .prompt-button {
-    background-color: #3c3c3c;
-    /* border-radius: 5px; */
-    padding: 10px;
+    background-color: #7f7f8429;;
+    border-radius: 10px;
+    padding: 5px 12px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    /* gap: 10px; */
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.prompt-button.active {
+/* .prompt-button.active {
     background-color: #007acc;
     color: #ffffff;
-}
+} */
 
 .prompt-button i {
     color: #d4d4d4;
@@ -159,6 +165,7 @@ body {
 .prompt-button strong {
     display: block;
     font-size: 14px;
+    color: #aba1a1;
 }
 
 .prompt-button p {
@@ -172,7 +179,7 @@ body {
     margin-bottom: 10px;
 }
 .at-button{
-    background: #444;
+    background: #4f494938;
     padding: 2px 4px;
     color: #fff;
     margin-right: 3px;
@@ -196,20 +203,23 @@ body {
     display: flex;
     align-items: center;
     margin-top: 10px;
-    background: #333;
+    background:var(--vscode-activityBar-background);
     padding: 10px;
     border-radius: 3px;
+    flex-direction: column;
+    align-self: end;
 }
 
 .ask-input {
     flex-grow: 1;
     padding: 8px;
-    background: #3c3c3c;
+    background: #645d5d57;;
     border: none;
     color: #d4d4d4;
     border-radius: 3px;
     font-size: 12px;
     margin-right: 5px;
+    width: 75vw;
 }
 
 .send-button {
@@ -224,7 +234,11 @@ body {
 .content {
     flex-grow: 1;
     /* padding: 16px; */
-    background-color: #1e1e1e;
+ 
+    display: grid;
+    flex-direction: column;
+    
+    height: -webkit-fill-available;
 }
 
 /* .action-button {
@@ -252,10 +266,14 @@ body {
 } */
 
 .bottom-tips {
-    background-color: #2d2d2d;
-    padding: 10px;
+    background: #4f494938;
+    /* padding: 10px; */
     font-size: 11px;
     margin-top: 10px;
+    width: -webkit-fill-available;
+    height: 35px;
+    border-radius: 5px;
+    padding-left: 10px;
 }
 
 .highlight {
@@ -287,4 +305,9 @@ body {
 
 .hidden {
     display: none;
+}
+
+.input-textbox-button{
+    display: flex;
+    width: -webkit-fill-available;
 }

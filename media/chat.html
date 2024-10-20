@@ -38,6 +38,9 @@
 
     <div class="to-hide">       
         <div class="content">
+            <div class="about-lask">
+                <h3>Improve your coding with LaskAI</h3>
+            </div>
             <div class="prompt-buttons">
                 <button class="prompt-button active">
                     <i class="fas fa-pencil-alt"></i>
@@ -84,18 +87,22 @@
             </div> -->
 
             <div class="input-container">
-                <button class="at-button">@</button>
-                <input type="text" id="ask-input" placeholder="Ask..." class="ask-input">
-                <button class="send-button">▶</button>
+                <div class="input-textbox-button">
+                    <button class="at-button">@</button>
+                    <input type="text" id="ask-input" placeholder="Ask..." class="ask-input">
+                    <button class="send-button">▶</button>
+                </div>
+                <div class="bottom-tips">
+                    <p>Type <span class="highlight">@</span> to add context to your chat</p>
+                </div>
             </div>
             <div id="dropdown" class="dropdown hidden">
                 <div class="dropdown-item" data-value="Files">Files →</div>
                 <div class="dropdown-item" data-value="Symbols">Symbols →</div>
                 <div class="dropdown-item" data-value="Web URLs">Web URLs →</div>
+                
             </div>
-            <div class="bottom-tips">
-                <p>Type <span class="highlight">@</span> to add context to your chat</p>
-            </div>
+            
     </div>
     
     <!-- <div class="messages" id="messages"></div>
