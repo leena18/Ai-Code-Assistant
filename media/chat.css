@@ -111,7 +111,61 @@ body {
     padding: 16px;
     border-bottom: 1px solid #333;
 }
+.prompt-library {
+    background-color: #2d2d2d;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+}
 
+
+
+.prompt-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.prompt-button {
+    background-color: #3c3c3c;
+    /* border-radius: 5px; */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.prompt-button.active {
+    background-color: #007acc;
+    color: #ffffff;
+}
+
+.prompt-button i {
+    color: #d4d4d4;
+    font-size: 18px;
+}
+
+.prompt-button.active i {
+    color: #ffffff;
+}
+
+.prompt-button div {
+    flex-grow: 1;
+}
+
+.prompt-button strong {
+    display: block;
+    font-size: 14px;
+}
+
+.prompt-button p {
+    font-size: 12px;
+    margin: 4px 0 0;
+    color: #a4a4a4;
+}
 .user-info {
     display: flex;
     align-items: center;
@@ -173,7 +227,7 @@ body {
     background-color: #1e1e1e;
 }
 
-.action-button {
+/* .action-button {
     background: #333;
     padding: 10px;
     margin-bottom: 26px;
@@ -195,7 +249,7 @@ body {
     font-size: 11px;
     margin: 0;
     color: #a4a4a4;
-}
+} */
 
 .bottom-tips {
     background-color: #2d2d2d;

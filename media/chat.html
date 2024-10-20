@@ -10,20 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<!-- 
-    <div class="header">
-        <span class="logo">
-            <img src="" alt="">LASK.ai</span>
-        <div class="icons">
-            <img src="https://i.pinimg.com/originals/07/66/d1/0766d183119ff92920403eb7ae566a85.png" alt="Profile" id="profileIcon" alt="Profile" class="icon" />
-            <img src="https://cdn-icons-png.flaticon.com/512/4873/4873245.png" alt="Info" class="icon" />
-        </div>
-    </div>
-
-    <div class="tabs">
-        <button class="tab active" id="chat-tab">Chat</button>
-        <button class="tab " id="context-tab">Add Context</button>
-    </div> -->
     <div class="navbar">
         <!-- Using radio inputs for tabs -->
         <input type="radio" id="tab-chat" name="tabGroup" class="tab" checked>
@@ -47,11 +33,42 @@
         </label>
     </div>
 
+   
     
 
     <div class="to-hide">       
         <div class="content">
-            <div class="action-button">
+            <div class="prompt-buttons">
+                <button class="prompt-button active">
+                    <i class="fas fa-pencil-alt"></i>
+                    <div>
+                        <strong>Edit Code</strong>
+                        <p>Run on a file or selection to modify code</p>
+                    </div>
+                </button>
+                <button class="prompt-button">
+                    <i class="fas fa-file-alt"></i>
+                    <div>
+                        <strong>Document Code</strong>
+                        <p>Add comments to file or selection</p>
+                    </div>
+                </button>
+                <button class="prompt-button">
+                    <i class="fas fa-search"></i>
+                    <div>
+                        <strong>Explain Code</strong>
+                        <p>Understand the open project or file better</p>
+                    </div>
+                </button>
+                <button class="prompt-button">
+                    <i class="fas fa-vial"></i>
+                    <div>
+                        <strong>Generate Unit Tests</strong>
+                        <p>Create tests for the open file or selected function</p>
+                    </div>
+                </button>
+            </div>
+            <!-- <div class="action-button">
                 <input type="radio" id="tab-user-profile" name="tabGroup" class="tab">
                 <button class="action-btn">Explain Code
                 <p>Run on a file or selection to modify code</p>
@@ -64,7 +81,7 @@
             <div class="action-button">
                 <button class="action-btn">Fix Code</button>
                 <p>Understand the open project or file better</p>
-            </div>
+            </div> -->
 
             <div class="input-container">
                 <button class="at-button">@</button>
