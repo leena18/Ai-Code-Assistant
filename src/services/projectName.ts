@@ -1,0 +1,1 @@
+export const project_Name= "BlogApp";

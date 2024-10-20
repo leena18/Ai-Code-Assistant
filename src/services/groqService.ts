@@ -6,7 +6,7 @@ dotenv.config();
 
 // Initialize the Groq API
 const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY || "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"
+    apiKey: process.env.GROQ_API_KEY || "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"
 });
 
 export async function groqChatAPI(userMessage: string, commandType: string): Promise<string> {

@@ -1,6 +1,6 @@
 {
   "name": "ai-chat",
-  "displayName": "AI Chat",
+  "displayName": "LASK AI",
   "version": "0.0.2",
   "description": "An AI chat interface inside VS Code",
   "engines": {
@@ -15,15 +15,17 @@
     "onCommand:aiChat.exploreCodebase",
     "onCommand:aiChatbot.addComments",
     "onCommand:aiChatbot.fixCode",
-    "onCommand:extension.removeComments"
+    "onCommand:extension.removeComments",
+    "onCommand:extension.startMonitoring"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    
     "viewsContainers": {
       "activitybar": [
         {
           "id": "aiChat",
-          "title": "AI Chat",
+          "title": "LASK AI",
           "icon": "resources/chat-icon.svg"
         }
       ]
@@ -32,7 +34,8 @@
       "aiChat": [
         {
           "id": "aiChat.chatPanel",
-          "name": "AI Chat Panel",
+          "name": "",
+          "icon":"resources/chat-icon.svg",
           "type": "webview"
         }
       ]
@@ -96,6 +99,10 @@
         "title": "Explain Code"
       },
       {
+        "command": "extension.startMonitoring",
+        "title": "Start Monitoring Directory"
+      },
+      {
         "command": "aiChat.fixCode",
         "title": "Fix Code"
       },
@@ -155,6 +162,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.2",
     "@types/highlight.js": "^10.1.0",
     "@types/marked": "^6.0.0",
     "@types/node": "20.x",
@@ -168,12 +176,15 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "archiver": "^7.0.1",
+    "axios": "^1.7.7",
+    "chokidar": "^4.0.1",
     "dotenv": "^16.4.5",
     "groq-sdk": "^0.7.0",
     "highlight.js": "^11.10.0",
-    "jszip": "^3.10.1",
     "marked": "^14.1.2",
     "vscode": "^1.1.37",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "prismjs": "^1.29.0"
   }
 }

@@ -1,145 +1,127 @@
-import WebSocket from 'ws';
+import * as vscode from 'vscode';
 
-interface QuestionRequest {
+
+
+export interface QuestionRequest {
     question: string;
     project_name: string;
+    project_id: string;
+    user_id:string,
+    curr_file_context:string
 }
 
-interface CommentRequest {
+export interface CommentRequest {
     code: string;
+    user_id: string;
+    project_id: string;
 }
 
-// Function to utilize the WebSocket API for generating code
-export async function generateCodeWebSocket(
-    projectName: string,
-    question: string,
-    onMessageCallback: (response: string) => void,
-    onErrorCallback?: (error: string) => void
-): Promise<void> {
-    const websocketUrl = "ws://127.0.0.1:8000/api/ws/generate-code/"; // WebSocket URL
 
-    // Create a new WebSocket connection
-    const socket = new WebSocket(websocketUrl);
+// Function to call the /general-chat/ API and return the response as a string
+export async function generalChat(question: string, projectName: string): Promise<string> {
+    const url = "http://127.0.0.1:8000/api/general-chat/";
 
-    // WebSocket event handlers
-
-    // When the WebSocket connection is open
-    socket.onopen = function () {
-        console.log("generate code WebSocket connection opened");
-
-        // Prepare and send the question request to the backend
-        const requestData = {
-            project_name: projectName,
-            question: question
-        };
-
-        socket.send(JSON.stringify(requestData));
-        console.log("Question sent:", requestData);
+    const curr_file_code = await getCurrentFileCode()
+    console.log(curr_file_code);
+    
+    // Create the request body based on the API's expected input
+    const requestBody: QuestionRequest = {
+        question: question,
+        project_name: projectName,
+        project_id: "project1",
+        user_id: "user1",
+        curr_file_context: curr_file_code
     };
 
-    // When a message is received from the server (AI response or errors)
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data.toString());
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody) // Convert the request body to JSON
+        });
 
-        // Check if there's an error
-        if (data.error) {
-            console.error("Error from server:", data.error);
-            if (onErrorCallback) {
-                onErrorCallback(data.error);
-            }
-        } else if (data.answer) {
-            // If there's a valid answer, handle it (call the callback function)
-            onMessageCallback(data.answer);
+        // Check if the response is OK (status 200-299)
+        if (!response.ok) {
+            const errorData:any = await response.json();
+            throw new Error(`Error: ${errorData.detail}`);
         }
-    };
-
-    // When the WebSocket connection is closed
-    socket.onclose = function () {
-        console.log("WebSocket connection closed");
-    };
-
-    // When a WebSocket error occurs
-    socket.onerror = function (error) {
-        console.error("WebSocket error:", error);
-        if (onErrorCallback) {
-            onErrorCallback("WebSocket connection error");
-        }
-    };
+        
+        
+        // Parse the response data
+        const data:any = await response.json();
+        
+        return data.response; // Extract the 'response' field from the API response
+    } catch (error:any) {
+        console.error("Error occurred while calling generalChat API:", error);
+        return `Error: ${error.message}`;
+    }
 }
 
-// Function to utilize the WebSocket API for general chat
-export async function generalChatWebSocket(
-    sessionId: string,
-    projectName: string,
-    question: string,
-    onMessageCallback: (response: string) => void,
-    onErrorCallback?: (error: string) => void
-): Promise<void> {
-    const websocketUrl = "ws://127.0.0.1:8000/api/ws/general-chat/"; // WebSocket URL
+async function getCurrentFileCode(): Promise<string> {
+    const editor = vscode.window.activeTextEditor; // Get the active text editor
 
-    // Create a new WebSocket connection
-    const socket = new WebSocket(websocketUrl);
-
-    // WebSocket event handlers
-
-    // When the WebSocket connection is open
-    socket.onopen = function () {
-        console.log("WebSocket connection opened");
-
-        // Send the initial data with session_id and project_name to the backend
-        const initialData = {
-            session_id: sessionId,
-            project_name: projectName
-        };
-        socket.send(JSON.stringify(initialData));
-        console.log("Initial data sent:", initialData);
-
-        // Send the user's question after establishing the connection
-        const questionData = {
-            question: question
-        };
-        socket.send(JSON.stringify(questionData));
-        console.log("Question sent:", questionData);
-    };
-
-    // When a message is received from the server (AI response or errors)
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data.toString());
-
-        // Check if there's an error
-        if (data.error) {
-            console.error("Error from server:", data.error);
-            if (onErrorCallback) {
-                onErrorCallback(data.error);
-            }
-        } else if (data.response) {
-            // If there's a valid response, handle it (call the callback function)
-            onMessageCallback(data.response);
-        }
-    };
-
-    // When the WebSocket connection is closed
-    socket.onclose = function () {
-        console.log("WebSocket connection closed");
-    };
-
-    // When a WebSocket error occurs
-    socket.onerror = function (error) {
-        console.error("WebSocket error:", error);
-        if (onErrorCallback) {
-            onErrorCallback("WebSocket connection error");
-        }
-    };
+    if (editor) {
+        const document = editor.document; // Get the document from the editor
+        const code = document.getText(); // Get the full text of the document
+        return code; // Return the code
+    } else {
+        vscode.window.showErrorMessage('No active editor is open.'); // Handle case when no editor is open
+        return ""; // Return undefined if no editor is active
+    }
 }
 
-// Regular API POST request for generating comments based on code
+
+export async function generateCode(question: string, projectName: string): Promise<string> {
+    const url = "http://127.0.0.1:8000/api/generate-code/";
+
+    const curr_file_code = await getCurrentFileCode()
+    console.log(curr_file_code);
+
+    // Create the request body based on the API's expected input
+    const requestBody: QuestionRequest = {
+        question: question,
+        project_name: projectName,
+        user_id:"user1",
+        project_id:"project1",
+        curr_file_context:curr_file_code
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody) // Convert the request body to JSON
+        });
+
+        // Check if the response is OK (status 200-299)
+        if (!response.ok) {
+            const errorData:any = await response.json();
+            throw new Error(`Error: ${errorData.detail}`);
+        }
+
+        // Parse the response data
+        const data:any = await response.json();
+        return data.answer; // Extract the 'response' field from the API response
+    } catch (error:any) {
+        console.error("Error occurred while calling generalChat API:", error);
+        return `Error: ${error.message}`;
+    }
+}
+
 export async function generateComments(code: string): Promise<string> {
     const url = "http://127.0.0.1:8000/api/generate-comments/"; // API endpoint
 
     // Create the request body based on the API's expected input
     const requestBody: CommentRequest = {
-        code: code
+        code: code,
+        user_id: "user1",
+        project_id: "project1"
     };
+
 
     try {
         const response = await fetch(url, {
@@ -155,6 +137,8 @@ export async function generateComments(code: string): Promise<string> {
             const errorData: any = await response.json();
             throw new Error(`Error: ${errorData.detail}`);
         }
+        console.log("AHHHHHHH#############################");
+        
 
         // Parse the response data
         const data: any = await response.json();

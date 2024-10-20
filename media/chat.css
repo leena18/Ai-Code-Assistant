@@ -1,229 +1,236 @@
 body {
-    font-family: 'Courier New', Courier, monospace; /* Monospace font for coder vibes */
-    background-color: #1e1e1e; /* Dark background */
-    color: #ffffff; /* White text color */
+    font-family: Segoe UI, sans-serif;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    padding:0;
+    margin: 0;
 }
 
-.chat-container {
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    background-color: #2d2d2d;
+    padding: 0px 10px 0px 10px;
+    border-bottom: 2px solid #333;
+}
+.navbar {
+    display: flex;
+    background-color: #2d2d2d;
+    padding: 10px;
+}
+
+.nav-tab {
+    cursor: pointer;
+    flex-grow: 1;
+    font-size: 12px;
+    padding: 0px 2px 0px 5px;
+    text-align: center;
+    position: relative;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+}
+
+.nav-tab:hover {
+    background-color: #ddd;
+}
+
+/* Hide radio buttons */
+.tab {
+    display: none;
+}
+
+/* Show content based on checked radio button */
+.tab__content {
+    display: none;
+}
+
+/* Active tab styles */
+.tab:checked + .nav-tab {
+    background-color: #2f2f2f; /* Background for active tab */
+    color: white; /* Text color for active tab */
+}
+
+.tab:checked + .nav-tab + .tab__content {
+    display: block; /* Show the content for the active tab */
+}
+
+.dark-theme {
+    background: #1e1e1e;
+    color: #ffffff;
+}
+
+.dark-theme .navbar {
+    background: #333333;
+}
+
+.dark-theme .nav-tab {
+    background: #444444;
+    border-color: #555555;
+}
+
+.dark-theme .nav-tab:hover {
+    background: #555555; /* Darker hover state in dark theme */
+}
+
+.dark-theme .nav-tab.active {
+    background: black;
+}
+
+.sidebar, .content {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-theme .sidebar {
+    background: #2a2a2a;
+}
+
+.dark-theme .content {
+    background: #2a2a2a;
+}
+
+.new-chat-btn {
+    background: none;
+    border: none;
+    color: #d4d4d4;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+.main-container {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Adjusted to fill the viewport */
+    height: 100vh;
 }
 
-.messages {
-    flex-grow: 1;
-    overflow-y: auto; /* Changed to auto for a better experience */
-    padding: 15px;
-    border: 1px solid #444; /* Darker border */
-    border-radius: 8px; /* Rounded corners */
-    background-color: #2a2a2a; /* Container background */
+.sidebar {
+    background-color: #252526;
+    padding: 16px;
+    border-bottom: 1px solid #333;
 }
 
-.message {
+.user-info {
+    display: flex;
+    align-items: center;
     margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 5px;
-    max-width: 80%;
-    word-wrap: break-word;
+}
+.at-button{
+    background: #444;
+    padding: 2px 4px;
+    color: #fff;
+    margin-right: 3px;
+    border-radius: 3px;
+  
+}
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #007acc;
+    margin-right: 10px;
 }
 
-/* Style for user messages */
-.user-message {
-    background-color: #189af18d;
-    color: white;
-    align-self: flex-end;
-    text-align: right;
-}
-
-/* Style for AI messages */
-.ai-message {
-    background-color: #363aba63;
-    color: #ffffff;
-    align-self: flex-start;
-    text-align: left;
-}
-
-/* Read More and Read Less button style */
-.read-more-button {
-    background: none;
-    color: #04faf6;
-    border: none;
+.user-name {
     font-size: 14px;
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
+    color: #d4d4d4;
 }
 
 .input-container {
     display: flex;
-    padding: 10px;
-    border-top: 1px solid #444; /* Darker border */
-}
-
-input[type="text"] {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #555; /* Darker border */
-    border-radius: 5px; /* Consistent border radius */
-    margin-right: 10px;
-    background-color: #2a2a2a; /* Input background */
-    color: #ffffff; /* Input text color */
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #007ACC; /* Accent color */
-    color: white;
-    border: none;
-    border-radius: 5px; /* Consistent border radius */
-    cursor: pointer;
-    transition: background-color 0.3s; /* Transition effect */
-}
-
-button:hover {
-    background-color: #005a9c; /* Darker shade on hover */
-}
-
-/* Unified Header Styles */
-.header {
-    width: 100%;
-    background-color: #2a2a2a;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #007ACC;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #007ACC; /* Accent color for logo */
-}
-
-.icons {
-    display: flex;
-}
-
-.icon {
-    width: 30px;
-    height: 30px;
-    margin-left: 15px;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.icon:hover {
-    transform: scale(1.1); /* Scale up on hover */
-}
-
-.tabs {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 10px 0;
-    background-color: #444; /* Tab background */
-}
-
-.tab {
-    flex: 1;
+    margin-top: 10px;
+    background: #333;
     padding: 10px;
-    background-color: #3a3a3a; /* Tab background */
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
+    border-radius: 3px;
 }
 
-.tab.active {
-    background-color: #007ACC; /* Active tab color */
-    border-bottom: 2px solid #fff;
-}
-
-.action-buttons {
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px 20px;
-}
-
-.action {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #555; /* Action button background */
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-.welcome-content {
-    padding: 20px;
-}
-
-.welcome-content h1 {
-    font-size: 1.25em;
-}
-
-.action-list {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-}
-
-.action-item {
-    margin: 5px 0;
-    padding: 10px;
-    background-color: #555; /* Action item background */
-    border: none;
-    color: #fff;
-    cursor: pointer;
-}
-
-.shortcut-buttons {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-}
-
-.shortcut {
-    margin: 0 5px;
-    padding: 5px;
-    background-color: #555; /* Shortcut button background */
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-/* Chat History Section */
-.chat-history {
-    background-color: #3a3a3a; /* History background */
-    border: 1px solid #444; /* Darker border */
-    border-radius: 8px; /* Rounded corners */
-    padding: 15px;
-    margin: 10px 0; /* Margin for spacing */
-    max-height: 300px; /* Limit height */
-    overflow-y: auto; /* Scroll if content exceeds */
-}
-
-.chat-history-title {
-    font-size: 18px; /* Title font size */
-    margin-bottom: 10px; /* Space below title */
-    color: #007ACC; /* Accent color for title */
-}
-
-.chat-history-list {
-    list-style: none; /* Remove default list styling */
-    padding: 0; /* Remove padding */
-    margin: 0; /* Remove margin */
-}
-
-.chat-history-item {
+.ask-input {
+    flex-grow: 1;
     padding: 8px;
-    margin-bottom: 5px;
-    background-color: #444; /* Background for history item */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor for hover effect */
-    transition: background-color 0.3s; /* Transition effect */
+    background: #3c3c3c;
+    border: none;
+    color: #d4d4d4;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-right: 5px;
 }
 
-.chat-history-item:hover {
-    background-color: #007ACC; /* Highlight on hover */
+.send-button {
+    background: #007acc;
+    border: none;
+    color: #fff;
+    padding: 6px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.content {
+    flex-grow: 1;
+    /* padding: 16px; */
+    background-color: #1e1e1e;
+}
+
+.action-button {
+    background: #333;
+    padding: 10px;
+    margin-bottom: 26px;
+}
+
+.action-btn {
+    background: #333;
+    border: none;
+    color: #fff;
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.action-button p {
+    font-size: 11px;
+    margin: 0;
+    color: #a4a4a4;
+}
+
+.bottom-tips {
+    background-color: #2d2d2d;
+    padding: 10px;
+    font-size: 11px;
+    margin-top: 10px;
+}
+
+.highlight {
+    background: #444;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.dropdown {
+    background: #3c3c3c;
+    border-radius: 4px;
+    margin-top: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    z-index: 1000;
+    width: calc(100% - 30px);
+}
+
+.dropdown-item {
+    padding: 8px;
+    cursor: pointer;
+    color: #d4d4d4;
+}
+
+.dropdown-item:hover {
+    background: #007acc;
+    color: #fff;
+}
+
+.hidden {
+    display: none;
 }
