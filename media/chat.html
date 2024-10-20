@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet"  href="chat.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
 </head>
 <body>
+
     <div class="navbar">
         <!-- Using radio inputs for tabs -->
         <input type="radio" id="tab-chat" name="tabGroup" class="tab" checked>
@@ -27,10 +33,10 @@
             <i class="fas fa-user"></i> Remote Context
         </label>
 
-        <input type="radio" id="tab-theme-toggle" name="tabGroup" class="tab">
+        <!-- <input type="radio" id="tab-theme-toggle" name="tabGroup" class="tab">
         <label for="tab-theme-toggle" class="nav-tab">
             <i class="fas fa-adjust"></i> Theme
-        </label>
+        </label> -->
     </div>
 
    
@@ -71,20 +77,8 @@
                     </div>
                 </button>
             </div>
-            <!-- <div class="action-button">
-                <input type="radio" id="tab-user-profile" name="tabGroup" class="tab">
-                <button class="action-btn">Explain Code
-                <p>Run on a file or selection to modify code</p>
-            </button>
-            </div>
-            <div class="action-button">
-                <button class="action-btn">Show vulnerabilities</button>
-                <p>Add comments to file or selection</p>
-            </div>
-            <div class="action-button">
-                <button class="action-btn">Fix Code</button>
-                <p>Understand the open project or file better</p>
-            </div> -->
+        </div>
+        
 
             <div class="input-container">
                 <div class="input-textbox-button">
@@ -100,100 +94,17 @@
                 <div class="dropdown-item" data-value="Files">Files →</div>
                 <div class="dropdown-item" data-value="Symbols">Symbols →</div>
                 <div class="dropdown-item" data-value="Web URLs">Web URLs →</div>
-                
             </div>
             
     </div>
-    
-    <!-- <div class="messages" id="messages"></div>
-    Chat Container
-    <div class="chat-container" id="chatContainer">
-       
-        <div class="input-container">
-            <textarea id="messageInput" placeholder="Ask me anything..."></textarea>     
-            <button id="sendButton">
-                <img src="https://cdn-icons-png.freepik.com/512/10023/10023342.png?ga=GA1.1.1597380606.1728277263" alt="Ask AI" />
-            </button>
-            <button id="generateCodeButton" class="send-buttons">Generate Code</button>
-        </div>
-    </div> -->
-    
-    <!-- Context Container -->
-    <div class="context-container" id="contextContainer" style="display:none;">
-        <!-- Context content goes here -->
-        <h1>Context View</h1>
-        <p>This is the context view where you can add context-related information.</p>
-        <!-- Additional context-related elements can be added here -->
-    </div>
 
-
-    
     
     <!-- code mirror -->
    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/meta.min.js"></script> <!-- For auto-detect -->
+  
     
-    <!-- Load marked.js -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Load highlight.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="chat.js" type="module"></script>
 
-    <script src="chat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
-
-    <!-- Inside chat.html -->
-<script>
-    const messageInput = document.getElementById('messageInput');
-    const commandSuggestions = document.getElementById('commandSuggestions');
-
-    // Show command suggestions when "/" is typed
-    messageInput.addEventListener('input', function () {
-        const text = messageInput.value;
-        if (text.startsWith('/')) {
-            commandSuggestions.style.display = 'block'; // Show suggestions
-            const commandList = ['explain', 'generateCode', 'fix']; // List of slash commands
-            const matchingCommands = commandList.filter(cmd => cmd.startsWith(text.slice(1)));
-            commandSuggestions.innerHTML = matchingCommands.map(cmd => `<li>${cmd}</li>`).join('');
-        } else {
-            commandSuggestions.style.display = 'none'; // Hide suggestions
-        }
-    });
-
-    // Handle suggestion click
-    commandSuggestions.addEventListener('click', function (event) {
-        const command = event.target.textContent;
-        messageInput.value = `/${command} `;
-        commandSuggestions.style.display = 'none'; // Hide suggestions
-    });
-
-    // Submit message (Slash command)
-    document.getElementById('sendMessageButton').addEventListener('click', function () {
-        const message = messageInput.value.trim();
-        if (message.startsWith('/')) {
-            const command = message.split(' ')[0].slice(1);
-            const args = message.split(' ').slice(1).join(' ');
-
-            // Post the slash command message to the extension
-            vscode.postMessage({
-                command: command,
-                args: args
-            });
-        } else {
-            // Normal chat message handling
-            vscode.postMessage({
-                command: 'sendMessage',
-                text: message
-            });
-        }
-        messageInput.value = '';
-    });
-</script>
-
-<ul id="commandSuggestions" style="display:none; position:absolute; background:#fff;">
-    <!-- Slash command suggestions appear here -->
-</ul>
 
 </body>
 </html>
