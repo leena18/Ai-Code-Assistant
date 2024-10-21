@@ -58,6 +58,12 @@
     },
     "keybindings": [
       {
+        "command": "extension.inlineChat",
+        "key": "ctrl+shift+i",
+        "mac": "cmd+shift+i",
+        "when": "editorTextFocus"
+      },
+      {
         "command": "aiChatbot.nlpGenerateCode",
         "key": "alt+b",
         "when": "editorTextFocus"
@@ -94,6 +100,10 @@
       }
     ],
     "commands": [
+      {
+        "command": "extension.inlineChat",
+        "title": "Inline Chat for Code Generation"
+      },
       {
         "command": "aiChat.explainCode",
         "title": "Explain Code"

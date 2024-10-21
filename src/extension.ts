@@ -22,6 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 
     const codeGenerator = new CodeGenerator(context.extensionUri);
+    context.subscriptions.push(
+        vscode.commands.registerCommand('extension.inlineChat', () => {
+            codeGenerator.inlineChat();
+        })
+    );
     activateCodeSuggestionListener();
 
     // Register commands

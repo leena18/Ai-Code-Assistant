@@ -297,3 +297,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+      window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('initLoader').style.display = 'none';
+                document.querySelector('.to-hide').style.display = 'grid';
+            }, 2000);
+        });
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'inline-block';
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        // Use these functions when sending/receiving messages
+        async function sendMessage() {
+            showTypingIndicator();
+            // Your code to send message
+            // const response = await getResponseFromAI();
+            hideTypingIndicator();
+            // Your code to display the response
+        }

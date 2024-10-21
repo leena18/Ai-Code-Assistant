@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
-import { groqChatAPI } from '../../services/groqService'; // Import the common Groq service
-import { SuggestionBox } from '../nlp/suggestion'; // Import the SuggestionBox class
+import { groqChatAPI } from '../../services/groqService';
+import { SuggestionBox } from '../nlp/suggestion';
 import baseURL from '../../baseURL';
 import { generateCode } from '../../services/apiSerivce';
-
 
 interface QuestionResponse {
     answer: string;
@@ -14,27 +13,69 @@ class CodeGenerator {
     private lastInsertedCodeRange: vscode.Range | null = null;
     private suggestions: string[] = [];
     private currentSuggestionIndex: number = 0;
-    private suggestionBox: SuggestionBox | undefined; // Add SuggestionBox instance
-    private activeEditor: vscode.TextEditor | undefined; // Active editor can be undefined
-
+    private suggestionBox: SuggestionBox | undefined;
+    private activeEditor: vscode.TextEditor | undefined;
 
     constructor(extensionUri: vscode.Uri) {
         this.extensionUri = extensionUri;
-  // Initialize active editor from window
-  this.activeEditor = vscode.window.activeTextEditor;
+        this.activeEditor = vscode.window.activeTextEditor;
 
-  // Check if active editor is defined
-  if (this.activeEditor) {
-      this.suggestionBox = new SuggestionBox(this.extensionUri, this.suggestions, this.activeEditor); // Initialize the SuggestionBox
-  } else {
-      vscode.window.showErrorMessage('No active editor is open. Suggestions cannot be initialized.');
-      return; // Exit if no active editor
-  }
+        if (this.activeEditor) {
+            this.suggestionBox = new SuggestionBox(this.extensionUri, this.suggestions, this.activeEditor);
+        } else {
+            vscode.window.showErrorMessage('No active editor is open. Suggestions cannot be initialized.');
+            return;
+        }
+
         vscode.commands.registerCommand('codeGenerator.acceptCode', () => this.acceptCode());
         vscode.commands.registerCommand('codeGenerator.nextSuggestion', () => this.nextSuggestion());
         vscode.commands.registerCommand('codeGenerator.previousSuggestion', () => this.previousSuggestion());
         vscode.commands.registerCommand('codeGenerator.openSuggestionBox', () => this.openSuggestionBox());
+        vscode.commands.registerCommand('codeGenerator.inlineChat', () => this.inlineChat());
     }
+
+    async inlineChat(): Promise<void> {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('No active editor found');
+            return;
+        }
+    
+        const inputBox = vscode.window.createInputBox();
+        inputBox.placeholder = 'Enter your code generation prompt';
+        inputBox.prompt = 'Generate a function to...';
+    
+        inputBox.onDidAccept(async () => {
+            const prompt = inputBox.value;
+            inputBox.hide();
+    
+            if (!prompt) {
+                return;
+            }
+    
+            try {
+                const suggestedCode = await generateCode(prompt, 'string');
+                
+                const position = editor.selection.active;
+                await editor.edit(editBuilder => {
+                    editBuilder.insert(position, suggestedCode);
+                });
+    
+                await vscode.commands.executeCommand('editor.action.formatDocument');
+                
+                this.suggestions = [suggestedCode];
+                this.currentSuggestionIndex = 0;
+                
+                this.showInformationMessage('Code inserted. Use Ctrl+Shift+A to accept, Alt+] for next, Alt+[ for previous suggestion.');
+            } catch (error) {
+                this.showErrorMessage('Failed to generate code: ' + (error as Error).message);
+            }
+        });
+    
+        inputBox.show();
+    }
+    
+
 
     async promptForCodeGeneration(): Promise<void> {
         const prompt = await this.getUserInput('Enter your NLP prompt for code generation');
@@ -48,12 +89,11 @@ class CodeGenerator {
 
     private async generateCode(prompt: string): Promise<void> {
         try {
-            
-            const suggestedCode =  await generateCode(prompt, 'string');
+            const suggestedCode = await generateCode(prompt, 'string');
 
-            console.log('Suggested Code from API:', suggestedCode); // Debug log to check API response
+            console.log('Suggested Code from API:', suggestedCode);
             this.suggestions[0] = suggestedCode;
-            console.log('Parsed Suggestions:', this.suggestions); // Debug log for parsed suggestions
+            console.log('Parsed Suggestions:', this.suggestions);
             this.currentSuggestionIndex = 0;
 
             if (this.suggestions.length > 0) {
