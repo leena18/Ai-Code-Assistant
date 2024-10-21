@@ -421,21 +421,64 @@ h3 {
 
 
 /* Dropdown container styling */
-#fileDropdown {
-    border: 1px solid #ccc;
+.file-dropdown-container {
+    position: relative;
+    width: 100%;
+}
+.file-dropdown {
+    bottom: 100%;
+    left: 0;
+    width: 97%;
+    max-height: 200px;
+    overflow: auto;
     background-color: var(--vscode-banner-background);
+    border: 1px solid var(--vscode-dropdown-border);
+    border-radius: 4px;
     position: absolute;
-    width: 200px;
-    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 1000;
-    left: 20px;
-    bottom: 90px;
 }
 
 .file-item {
-    margin: 5px 0;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.file-item:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.file-item input[type="checkbox"] {
+    margin-right: 8px;
 }
 
 .file-item label {
-    margin-left: 5px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: visible;
+    font-size: 13px;
+}
+
+/* Customizing scrollbar for webkit browsers */
+.file-dropdown::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.file-dropdown::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background);
+}
+
+.file-dropdown::-webkit-scrollbar-thumb {
+    background-color: var(--vscode-scrollbarSlider-hoverBackground);
+    border-radius: 4px;
+}
+
+/* For Firefox */
+.file-dropdown {
+    scrollbar-width: thin;
+    scrollbar-color: var(--vscode-scrollbarSlider-hoverBackground) var(--vscode-scrollbarSlider-background);
 }

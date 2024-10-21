@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to render the file list with checkboxes
     function renderDropdown(files) {
-        dropdown.innerHTML = ''; // Clear the previous content
+        const dropdown = document.getElementById('fileDropdown');
+        dropdown.innerHTML = '';
         files.forEach(file => {
             const fileItem = document.createElement('div');
             fileItem.classList.add('file-item');
@@ -23,13 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const label = document.createElement('label');
             label.htmlFor = file;
-            label.innerText = file;
+            label.title = file; // Add title for full path on hover
+            label.textContent = file;
             
             fileItem.appendChild(checkbox);
             fileItem.appendChild(label);
             dropdown.appendChild(fileItem);
         });
+        dropdown.style.display = 'block';
     }
+    
 
     // Toggle the dropdown visibility and request the file list when @ button is clicked
     atButton.addEventListener('click', function () {
