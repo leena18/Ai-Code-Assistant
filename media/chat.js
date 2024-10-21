@@ -153,3 +153,36 @@ document.getElementById('ask-input').addEventListener('keypress', function (e) {
         document.querySelector('.send-button').click();
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const remoteContextTab = document.getElementById('tab-user-profile');
+    const overlay = document.getElementById('remote-context-overlay');
+    const closeOverlay = document.getElementById('close-overlay');
+    const form = document.getElementById('remote-context-form');
+
+    remoteContextTab.addEventListener('change', () => {
+        if (remoteContextTab.checked) {
+            overlay.style.display = 'block';
+        }
+    });
+
+    closeOverlay.addEventListener('click', () => {
+        overlay.style.display = 'none';
+        remoteContextTab.checked = false;
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const repoUrl = document.getElementById('repo-url').value;
+        const accessToken = document.getElementById('access-token').value;
+        
+        // Here you can add the logic to handle the form submission
+        console.log('Repository URL:', repoUrl);
+        console.log('Access Token:', accessToken);
+
+        // Close the overlay after submission
+        overlay.style.display = 'none';
+        remoteContextTab.checked = false;
+    });
+});

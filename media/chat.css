@@ -8,7 +8,7 @@ body {
 }
 
 .to-hide {
-    height: 95vh;
+    height: 94vh;
     display: grid;
 }
 .about-lask{
@@ -26,21 +26,24 @@ body {
 .navbar {
     display: flex;
     background-color: var(--vscode-activityBar-background);
-    padding: 10px;
+    padding: 0px 5px 0px 10px;;
 }
 
 .nav-tab {
     cursor: pointer;
     flex-grow: 1;
-    font-size: 12px;
-    padding: 0px 2px 0px 5px;
+    font-size: 14px;
+    padding: 10px 15px;
     text-align: center;
     position: relative;
-    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 5px;
+    margin: 0 5px;
+    color: var(--vscode-activityBar-foreground);
 }
 
 .nav-tab:hover {
-    background-color: #ddd;
+    background-color: var(--vscode-activityBar-activeBackground);
 }
 
 /* Hide radio buttons */
@@ -48,62 +51,139 @@ body {
     display: none;
 }
 
-/* Show content based on checked radio button */
-.tab__content {
-    display: none;
-}
-
 /* Active tab styles */
 .tab:checked + .nav-tab {
-    background-color: #2f2f2f; /* Background for active tab */
-    color: white; /* Text color for active tab */
+    background-color: var(--vscode-activityBar-activeBackground);
+    color: var(--vscode-activityBarBadge-foreground);
+    font-weight: bold;
 }
 
-.tab:checked + .nav-tab + .tab__content {
-    display: block; /* Show the content for the active tab */
+.nav-tab i {
+    margin-right: 5px;
 }
 
-.dark-theme {
-    background: #1e1e1e;
+
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    padding: 25px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.overlay-content h2 {
+    margin-top: 0;
+    color: #ffffff;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.overlay-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.overlay-content label {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #b0b0b0;
+}
+
+.overlay-content input {
+    margin-top: 5px;
+    padding: 10px;
+    background-color: #3d3d3d;
+    border: 1px solid #4d4d4d;
+    color: #e0e0e0;
+    border-radius: 4px;
+}
+
+.overlay-content button[type="submit"] {
+    margin-top: 25px;
+    padding: 10px;
+    background-color: #007acc;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.overlay-content button[type="submit"]:hover {
+    background-color: #005999;
+}
+
+#close-overlay {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #b0b0b0;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#close-overlay:hover {
     color: #ffffff;
 }
 
-.dark-theme .navbar {
-    background: #333333;
+
+.welcome-container {
+    margin: 8px 8px 0px;
+    border-radius: -3px;
+    padding: 0px 16px;
+    max-width: 500px;
+    text-align: center;
 }
 
-.dark-theme .nav-tab {
-    background: #444444;
-    border-color: #555555;
+h2 {
+    color: var(--vscode-activityBarBadge-foreground);
+    font-size: 1.3rem;
+    margin-bottom: -11px;
 }
 
-.dark-theme .nav-tab:hover {
-    background: #555555; /* Darker hover state in dark theme */
+p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    line-height: 1.3;
 }
 
-.dark-theme .nav-tab.active {
-    background: black;
+.new-here a {
+    color: #3b82f6;
+    text-decoration: none;
 }
 
-.sidebar, .content {
-    transition: background-color 0.3s, color 0.3s;
+.new-here a:hover {
+    text-decoration: underline;
 }
 
-.dark-theme .sidebar {
-    background: #2a2a2a;
+h3 {
+    color: var(--vscode-activityBarBadge-foreground);
+    font-size: 1rem;
+    margin-bottom: 20px;
 }
 
-
-
-.new-chat-btn {
-    background: none;
-    border: none;
-    color: #d4d4d4;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 3px;
-}
 
 .main-container {
     display: flex;
@@ -128,23 +208,25 @@ body {
 .prompt-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 9px;
+    margin-bottom: 3px;
     align-self: flex-end;
     /* height: auto; */
-    padding: 15px;
+    padding: 10px 9px 0px 9px;
 }
 
 
 .prompt-button {
-    background-color: #7f7f8429;;
-    border-radius: 10px;
-    padding: 5px 12px;
+    background-color: var(--vscode-button-background);
+    border: none;
+    padding: 10px;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s;
     display: flex;
     align-items: center;
-    /* gap: 10px; */
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
 /* .prompt-button.active {
@@ -153,13 +235,9 @@ body {
 } */
 
 .prompt-button i {
-    color: #d4d4d4;
     font-size: 18px;
 }
 
-.prompt-button.active i {
-    color: #ffffff;
-}
 
 .prompt-button div {
     flex-grow: 1;
@@ -168,13 +246,13 @@ body {
 .prompt-button strong {
     display: block;
     font-size: 14px;
-    color: #aba1a1;
+
 }
 
 .prompt-button p {
     font-size: 12px;
     margin: 4px 0 0;
-    color: #a4a4a4;
+
 }
 .user-info {
     display: flex;
@@ -244,29 +322,6 @@ body {
     height: -webkit-fill-available;
 }
 
-/* .action-button {
-    background: #333;
-    padding: 10px;
-    margin-bottom: 26px;
-}
-
-.action-btn {
-    background: #333;
-    border: none;
-    color: #fff;
-    width: 100%;
-    padding: 10px;
-    text-align: left;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-bottom: 5px;
-}
-
-.action-button p {
-    font-size: 11px;
-    margin: 0;
-    color: #a4a4a4;
-} */
 
 .bottom-tips {
     background: #4f494938;
@@ -274,8 +329,8 @@ body {
     font-size: 11px;
     margin-top: 10px;
     width: -webkit-fill-available;
-    height: 35px;
-    border-radius: 5px;
+    /* height: 35px; */
+    /* border-radius: 5px; */
     padding-left: 10px;
 }
 
@@ -312,6 +367,7 @@ body {
 
 .input-textbox-button{
     display: flex;
+    padding: 10px 5px 0px 3px;
     width: -webkit-fill-available;
 }
 
