@@ -35,20 +35,27 @@
     </div>
     
 
-    <div id="remote-context-overlay" class="overlay">
-        <div class="overlay-content">
-            <h2>Remote Context</h2>
-            <form id="remote-context-form">
-                <label for="repo-url">Repository URL (GitHub or GitLab):</label>
-                <input type="url" id="repo-url" name="repo-url" required>
-                <label for="access-token">Access Token:</label>
-                <input type="password" id="access-token" name="access-token" required>
-                <button type="submit">Submit</button>
-            </form>
-            <button id="close-overlay">&times;</button>
+<!-- Replace the existing overlay content with this -->
+<div id="remote-context-overlay" class="overlay">
+    <div class="overlay-content">
+        <button id="close-overlay" class="close-icon">&times;</button>
+        <h2>Remote Context</h2>
+        <form id="remote-context-form">
+            <label for="repo-url">Repository URL:</label>
+            <input type="text" id="repo-url" name="repo-url" required>
+            <label for="access-token">Access Token:</label>
+            <input type="password" id="access-token" name="access-token" required>
+            <button type="submit">Fetch Repository</button>
+        </form>
+
+        <div id="file-list-container" style="display: none;">
+            <h3>Select Files for Context</h3>
+            <ul id="file-list"></ul>
+            <button id="use-context">Use as Context</button>
         </div>
     </div>
-    
+</div>
+
 
     <div class="to-hide">       
         <div class="content">

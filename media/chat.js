@@ -160,6 +160,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('remote-context-overlay');
     const closeOverlay = document.getElementById('close-overlay');
     const form = document.getElementById('remote-context-form');
+    const fileListContainer = document.getElementById('file-list-container');
+    const fileList = document.getElementById('file-list');
+    const useContextButton = document.getElementById('use-context');
+
+    let selectedFiles = JSON.parse(sessionStorage.getItem('selectedFiles')) || [];
 
     remoteContextTab.addEventListener('change', () => {
         if (remoteContextTab.checked) {
@@ -209,8 +214,37 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching repository structure:', error);
         }
 
+        function displayFileList(files) {
+            fileList.innerHTML = '';
+            files.forEach(file => {
+                const li = document.createElement('li');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = file;
+                checkbox.checked = selectedFiles.includes(file);
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        selectedFiles.push(file);
+                    } else {
+                        selectedFiles = selectedFiles.filter(f => f !== file);
+                    }
+                    sessionStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
+                });
+                li.appendChild(checkbox);
+                li.appendChild(document.createTextNode(file));
+                fileList.appendChild(li);
+            });
+            fileListContainer.style.display = 'block';
+        }
+    
+        useContextButton.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            remoteContextTab.checked = false;
+            // Here you can add code to update the chat interface with the selected files
+            console.log('Selected files:', selectedFiles);
         // Close the overlay after submission
         // overlay.style.display = 'none';
         // remoteContextTab.checked = false;
+        });
     });
 });
