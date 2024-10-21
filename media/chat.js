@@ -172,17 +172,45 @@ document.addEventListener('DOMContentLoaded', () => {
         remoteContextTab.checked = false;
     });
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         const repoUrl = document.getElementById('repo-url').value;
         const accessToken = document.getElementById('access-token').value;
-        
-        // Here you can add the logic to handle the form submission
-        console.log('Repository URL:', repoUrl);
-        console.log('Access Token:', accessToken);
+        const userId = "vb-heart"  // Assuming user ID is taken from the form or page
+        const projectId = "siddharth"  // Assuming project ID is taken from the form or page
+        const allowedExtensions = ['.js', '.py', '.html'];  // Define allowed file extensions
+
+        // Call the API using fetch
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/fetch_repo_structure/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    repo_url: repoUrl,
+                    access_token: accessToken,
+                    allowed_extensions: allowedExtensions,
+                    user_id: userId,
+                    project_id: projectId
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Repository Structure:', data.repository_structure);
+
+            // You can handle the received repository structure here
+        } catch (error) {
+            console.error('Error fetching repository structure:', error);
+        }
 
         // Close the overlay after submission
-        overlay.style.display = 'none';
-        remoteContextTab.checked = false;
+        // overlay.style.display = 'none';
+        // remoteContextTab.checked = false;
     });
 });
