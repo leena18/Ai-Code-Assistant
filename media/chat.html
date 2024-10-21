@@ -22,30 +22,48 @@
         <label for="tab-chat" class="nav-tab">
             <i class="fas fa-comments"></i> Chat
         </label>
-
+    
         <input type="radio" id="tab-user-guide" name="tabGroup" class="tab">
         <label for="tab-user-guide" class="nav-tab">
             <i class="fas fa-book"></i> User Guide
         </label>
-
+    
         <input type="radio" id="tab-user-profile" name="tabGroup" class="tab">
         <label for="tab-user-profile" class="nav-tab">
             <i class="fas fa-user"></i> Remote Context
         </label>
-
-        <!-- <input type="radio" id="tab-theme-toggle" name="tabGroup" class="tab">
-        <label for="tab-theme-toggle" class="nav-tab">
-            <i class="fas fa-adjust"></i> Theme
-        </label> -->
     </div>
-
-   
     
+
+<!-- Replace the existing overlay content with this -->
+<div id="remote-context-overlay" class="overlay">
+    <div class="overlay-content">
+        <button id="close-overlay" class="close-icon">&times;</button>
+        <h2>Remote Context</h2>
+        <form id="remote-context-form">
+            <label for="repo-url">Repository URL:</label>
+            <input type="text" id="repo-url" name="repo-url" required>
+            <label for="access-token">Access Token:</label>
+            <input type="password" id="access-token" name="access-token" required>
+            <button type="submit">Fetch Repository</button>
+        </form>
+
+        <div id="file-list-container" style="display: none;">
+            <h3>Select Files for Context</h3>
+            <ul id="file-list"></ul>
+            <button id="use-context">Use as Context</button>
+        </div>
+    </div>
+</div>
+
 
     <div class="to-hide">       
         <div class="content">
-            <div class="about-lask">
-                <h3>Improve your coding with LaskAI</h3>
+            <div class="welcome-container">
+                <h2>Welcome to Lask AI, your coding assistant!</h2>
+                <p>Select the code block you’re focusing on. Then, choose an action, enter your request in the prompt, or use "@" to quickly reference files in your repository.</p>
+                <p class="new-here">New here? <a href="#">Check out the user manual</a> for guidance.</p>
+                <h3>Discover the capabilities of Lask AI!</h3>        
             </div>
             <div class="prompt-buttons">
                 <button class="prompt-button active">

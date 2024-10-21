@@ -198,3 +198,98 @@ document.getElementById('ask-input').addEventListener('keypress', function (e) {
         document.querySelector('.send-button').click();
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const remoteContextTab = document.getElementById('tab-user-profile');
+    const overlay = document.getElementById('remote-context-overlay');
+    const closeOverlay = document.getElementById('close-overlay');
+    const form = document.getElementById('remote-context-form');
+    const fileListContainer = document.getElementById('file-list-container');
+    const fileList = document.getElementById('file-list');
+    const useContextButton = document.getElementById('use-context');
+
+    let selectedFiles = JSON.parse(sessionStorage.getItem('selectedFiles')) || [];
+
+    remoteContextTab.addEventListener('change', () => {
+        if (remoteContextTab.checked) {
+            overlay.style.display = 'block';
+        }
+    });
+
+    closeOverlay.addEventListener('click', () => {
+        overlay.style.display = 'none';
+        remoteContextTab.checked = false;
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const repoUrl = document.getElementById('repo-url').value;
+        const accessToken = document.getElementById('access-token').value;
+        const userId = "vb-heart"  // Assuming user ID is taken from the form or page
+        const projectId = "siddharth"  // Assuming project ID is taken from the form or page
+        const allowedExtensions = ['.js', '.py', '.html'];  // Define allowed file extensions
+
+        // Call the API using fetch
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/fetch_repo_structure/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    repo_url: repoUrl,
+                    access_token: accessToken,
+                    allowed_extensions: allowedExtensions,
+                    user_id: userId,
+                    project_id: projectId
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Repository Structure:', data.repository_structure);
+
+            // You can handle the received repository structure here
+        } catch (error) {
+            console.error('Error fetching repository structure:', error);
+        }
+
+        function displayFileList(files) {
+            fileList.innerHTML = '';
+            files.forEach(file => {
+                const li = document.createElement('li');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = file;
+                checkbox.checked = selectedFiles.includes(file);
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        selectedFiles.push(file);
+                    } else {
+                        selectedFiles = selectedFiles.filter(f => f !== file);
+                    }
+                    sessionStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
+                });
+                li.appendChild(checkbox);
+                li.appendChild(document.createTextNode(file));
+                fileList.appendChild(li);
+            });
+            fileListContainer.style.display = 'block';
+        }
+    
+        useContextButton.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            remoteContextTab.checked = false;
+            // Here you can add code to update the chat interface with the selected files
+            console.log('Selected files:', selectedFiles);
+        // Close the overlay after submission
+        // overlay.style.display = 'none';
+        // remoteContextTab.checked = false;
+        });
+    });
+});
