@@ -13,7 +13,6 @@ export function loadContextData(webview: vscode.Webview) {
         vscode.window.showErrorMessage('Context data file not found.');
     }
 }
-
 export function addContextData(fileListId: string, files: string[]) {
     const filePath = path.join(__dirname, 'contextFiles.json');
 

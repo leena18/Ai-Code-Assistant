@@ -30,7 +30,7 @@ export async function handleWebviewMessage(message: any, webviewView: vscode.Web
     } else if (message.command === 'addContext') {
         const { fileListId, files } = message;
         panel.addContextData(fileListId, files);
-    }
+    } 
 }
 function extractCodeFromResponse(response: string): string {
     const codeMatch = response.match(/[\s\S]*?/);

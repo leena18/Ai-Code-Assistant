@@ -80,21 +80,21 @@
         </div>
         
 
-            <div class="input-container">
-                <div class="input-textbox-button">
-                    <button class="at-button">@</button>
-                    <input type="text" id="ask-input" placeholder="Ask..." class="ask-input">
-                    <button class="send-button">▶</button>
-                </div>
-                <div class="bottom-tips">
-                    <p>Type <span class="highlight">@</span> to add context to your chat</p>
-                </div>
+        <div class="input-container">
+            <div class="dropdown" id="fileDropdown" style="display: none;">
+                <!-- This is where the file list will be rendered -->
             </div>
-            <div id="dropdown" class="dropdown hidden">
-                <div class="dropdown-item" data-value="Files">Files →</div>
-                <div class="dropdown-item" data-value="Symbols">Symbols →</div>
-                <div class="dropdown-item" data-value="Web URLs">Web URLs →</div>
+            <div class="input-textbox-button">
+                <button class="at-button" id="atButton">@</button>
+                <input type="text" id="ask-input" placeholder="Ask..." class="ask-input">
+                <button class="send-button">▶</button>
             </div>
+
+            <div class="bottom-tips">
+                <p>Type <span class="highlight">@</span> to add context to your chat</p>
+            </div>
+        </div>
+            
             
     </div>
 

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-
+import { getGlobalState, updateGlobalState } from '../extension';
 
 
 export interface QuestionRequest {
@@ -23,13 +23,13 @@ export async function generalChat(question: string, projectName: string): Promis
 
     const curr_file_code = await getCurrentFileCode()
     console.log(curr_file_code);
-    
+    const state = getGlobalState("lask")
     // Create the request body based on the API's expected input
     const requestBody: QuestionRequest = {
         question: question,
         project_name: projectName,
-        project_id: "project1",
-        user_id: "user1",
+        project_id: state["project_id"],
+        user_id: state["user_id"],
         curr_file_context: curr_file_code
     };
 
@@ -78,13 +78,13 @@ export async function generateCode(question: string, projectName: string): Promi
 
     const curr_file_code = await getCurrentFileCode()
     console.log(curr_file_code);
-
+    const state = getGlobalState("lask")
     // Create the request body based on the API's expected input
     const requestBody: QuestionRequest = {
         question: question,
         project_name: projectName,
-        user_id:"user1",
-        project_id:"project1",
+        user_id:state["user_id"],
+        project_id:state["project_id"],
         curr_file_context:curr_file_code
     };
 
@@ -115,11 +115,12 @@ export async function generateCode(question: string, projectName: string): Promi
 export async function generateComments(code: string): Promise<string> {
     const url = "http://127.0.0.1:8000/api/generate-comments/"; // API endpoint
 
+    const state = getGlobalState("lask")
     // Create the request body based on the API's expected input
     const requestBody: CommentRequest = {
         code: code,
-        user_id: "user1",
-        project_id: "project1"
+        user_id:state["user_id"],
+        project_id:state["project_id"],
     };
 
 

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { generateComments } from '../services/apiSerivce'; // Adjust the path to your API service file
 
+
 export async function handleAddCommentsCommand(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
 
@@ -9,7 +10,6 @@ export async function handleAddCommentsCommand(): Promise<void> {
 
         if (selectedText) {
             try {
-              
                 // Use the groqChatAPI service to generate code with comments
                 const commentedCode = await generateComments(selectedText);
 
@@ -20,22 +20,14 @@ export async function handleAddCommentsCommand(): Promise<void> {
 
                 const trimmedCommentedCode = lines.join('\n').trim();
 
-                // Show the commented code in a popup for the user to Accept or Reject
-                const action = await vscode.window.showInformationMessage(
-                    `Code with suggested comments:\n${trimmedCommentedCode}`,
-                    'Accept', 'Reject'
-                );
+                // Replace the selected code directly with the commented code
+                await editor.edit(editBuilder => {
+                    editBuilder.replace(editor.selection, trimmedCommentedCode);
+                });
 
-                if (action === 'Accept') {
-                    editor.edit(editBuilder => {
-                        editBuilder.replace(editor.selection, trimmedCommentedCode);
-                    });
-                    vscode.window.showInformationMessage('Comments added to code.');
-                } else {
-                    vscode.window.showInformationMessage('Comment suggestion rejected.');
-                }
+                vscode.window.showInformationMessage('Comments added to code.');
             } catch (error) {
-                vscode.window.showErrorMessage('Failed to get comments for code.');
+                vscode.window.showErrorMessage('Failed to get comments ');
                 console.error(error);
             }
         } else {
@@ -43,3 +35,4 @@ export async function handleAddCommentsCommand(): Promise<void> {
         }
     }
 }
+

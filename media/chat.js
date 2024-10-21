@@ -5,6 +5,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.querySelector('.send-button');
     const inputField = document.querySelector('#ask-input');
     const inputContainer = document.querySelector('.input-container');
+    const fileNames = ['file1.txt', 'file2.js', 'file3.html', 'file4.css', 'file5.java']; // Sample file names
+    const atButton = document.getElementById('atButton');
+    const dropdown = document.getElementById('fileDropdown');
+
+    // Function to render the file list with checkboxes
+    function renderDropdown(files) {
+        dropdown.innerHTML = ''; // Clear the previous content
+        files.forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.classList.add('file-item');
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = file;
+            checkbox.name = file;
+            
+            const label = document.createElement('label');
+            label.htmlFor = file;
+            label.innerText = file;
+            
+            fileItem.appendChild(checkbox);
+            fileItem.appendChild(label);
+            dropdown.appendChild(fileItem);
+        });
+    }
+
+    // Toggle the dropdown visibility and request the file list when @ button is clicked
+    atButton.addEventListener('click', function () {
+        if (dropdown.style.display === 'none') {
+            console.log("Fetching opened files from VS Code extension...");
+            vscode.postMessage({ command: 'getOpenedFiles' });
+        } else {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // Handle messages from the extension
+    window.addEventListener('message', event => {
+        const message = event.data;
+        if (message.command === 'fileList') {
+            renderDropdown(message.files); // Render the file list
+            dropdown.style.display = 'block';
+        }
+    });
+    
     
     // Create a chat container above the input box to display chat messages
     const chatContainer = document.createElement('div');
@@ -58,14 +103,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to send a message to the API
     async function sendMessageToAPI(message) {
         console.log('Sending message:', message);
-        
+
         const apiUrl = 'http://localhost:8000/api/general-chat/'; // Replace with your actual API URL
         const payload = {
             question: message,
             project_name: 'YourProjectName',
             user_id: 'currentUserId',
             project_id: 'currentProjectId',
-            curr_file_context: 'OptionalCurrentFileContext'
+            curr_file_context: "currentFileContext"
         };
 
         const response = await fetch(apiUrl, {

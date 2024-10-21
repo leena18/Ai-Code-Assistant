@@ -345,3 +345,24 @@ body {
     color: #721c24;
     text-align: center;
 }
+
+
+/* Dropdown container styling */
+#fileDropdown {
+    border: 1px solid #ccc;
+    background-color: var(--vscode-banner-background);
+    position: absolute;
+    width: 200px;
+    padding: 10px;
+    z-index: 1000;
+    left: 20px;
+    bottom: 90px;
+}
+
+.file-item {
+    margin: 5px 0;
+}
+
+.file-item label {
+    margin-left: 5px;
+}
