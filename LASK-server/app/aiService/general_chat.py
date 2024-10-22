@@ -52,6 +52,7 @@ def generate_general_chat_response(question: str, directory: str, chat_history: 
     """
 
     context = perform_hybrid_search(question, directory, top_k=3)
+    print("length of context:", len(context))
     if len(context)>MAX_CONTEXT_LENGTH:
         context = truncate_context(context)
     

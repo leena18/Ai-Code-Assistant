@@ -19,7 +19,7 @@ def ask_question(request: QuestionRequest):
     try:
         print(request.question,request.project_id)
         print("curr file context:", request.curr_file_context)
-        project_folder_path = f"./saved_embeddings/{request.project_id}/{request.user_id}/"
+        project_folder_path = f"./project_contexts/{request.project_id}/{request.user_id}/"
     
         context_folder_path = f"./project_contexts/{request.project_id}/{request.user_id}/"
 
@@ -83,7 +83,7 @@ def general_chat(request: QuestionRequest):
     print("curr_file_context:", request.curr_file_context)
     try:
         curr_file_context = request.curr_file_context
-        project_folder_path = f"./saved_embeddings/{request.project_id}/{request.user_id}/"
+        project_folder_path = f"./project_contexts/{request.project_id}/{request.user_id}/"
         # Generate the general chat response using hybrid search and Groq API
         context_folder_path = f"./project_contexts/{request.project_id}/{request.user_id}/"
         text_context_path = os.path.join(context_folder_path, "text_context.txt")
@@ -91,8 +91,8 @@ def general_chat(request: QuestionRequest):
         os.makedirs(context_folder_path, exist_ok=True)
         
         response = generate_general_chat_response(request.question, project_folder_path,[],text_context_path, curr_file_context)
-        reponse  = markdown.markdown(response)
-        return {"response": reponse}
+        # response  = markdown.markdown(response)
+        return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

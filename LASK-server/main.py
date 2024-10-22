@@ -1,6 +1,6 @@
 # main.py
 from fastapi import FastAPI
-from app.routers import question_router, upload_router , upload_doc_router, fetch_repo, initialize_project, sync_repo
+from app.routers import question_router, upload_router , upload_doc_router, fetch_repo, initialize_project, sync_repo, loadEmbeddings
 from app.mongo_db.database import startup_event
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,7 +25,7 @@ app.include_router(upload_doc_router.router, prefix="/api", tags=["Uploads Doc"]
 app.include_router(fetch_repo.router, prefix="/api", tags=["Fetch Repo"])
 app.include_router(initialize_project.router, prefix="/api", tags=["Initialize Project"])
 app.include_router(sync_repo.router, prefix="/api", tags=["Sync Repo"])
-
+app.include_router(loadEmbeddings.router, prefix="/api", tags=["load and sync embedding"])
 # Root endpoint
 @app.get("/")
 def read_root():

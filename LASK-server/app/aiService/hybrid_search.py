@@ -38,7 +38,7 @@ def load_tokenized_chunks(directory):
 # Hybrid search logic
 def perform_hybrid_search(question: str, directory: str, top_k: int = 3) -> str:
     """Perform hybrid search using BM25 and FAISS, and return the combined context."""
-    
+    print("Performing hybrid search...")
     # Load FAISS index and tokenized chunks
     try:
         index = load_faiss_index(directory)
@@ -46,36 +46,37 @@ def perform_hybrid_search(question: str, directory: str, top_k: int = 3) -> str:
     except FileNotFoundError as e:
         print(str(e))  # You may want to handle this more gracefully
         return ""
-
+    print("Loaded index and tokenized chunks")
     # Initialize BM25 with tokenized code chunks
     bm25 = BM25Okapi(tokenized_chunks)
-    
+    print("Initialized BM25")
     # Tokenize the question
     tokenized_query = question.split()
-    
+    print("Tokenized query")
     # Get BM25 scores
     bm25_scores = bm25.get_scores(tokenized_query)
+    print("Got BM25 scores")
     top_bm25_indices = np.argsort(bm25_scores)[::-1][:top_k]  # Top K BM25 results
-
+    print("Got top BM25 indices")
     # FAISS embedding-based search
     question_embedding = get_embedding(question)
-
+    print("Got question embedding")
     # Ensure embedding is a 2D array
     if question_embedding.ndim == 1:
         question_embedding = np.expand_dims(question_embedding, axis=0)
-
+    print("Expanded question embedding")
     _, faiss_indices = index.search(question_embedding, top_k)
-
+    print("Got FAISS indices")
     # Combine BM25 and FAISS results
     combined_indices = set(top_bm25_indices).union(set(faiss_indices[0]))
-
+    print("Combined indices")
     text_chunks_store = load_text_chunks_store(directory)
-
+    print("Loaded text chunks store")
     # Retrieve context for the combined indices
     context = ""
     for idx in sorted(combined_indices):  # Sort indices for consistency
         context += get_related_chunks(idx, text_chunks_store)
-
+        print("Got context")
     
     return context
 
