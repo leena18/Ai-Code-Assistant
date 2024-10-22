@@ -59,7 +59,7 @@ export async function generalChat(question: string, projectName: string): Promis
     }
 }
 
-async function getCurrentFileCode(): Promise<string> {
+export async function getCurrentFileCode(): Promise<string> {
     const editor = vscode.window.activeTextEditor; // Get the active text editor
 
     if (editor) {

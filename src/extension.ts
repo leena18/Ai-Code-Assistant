@@ -30,6 +30,11 @@ export function activate(context: vscode.ExtensionContext) {
     
 
     const codeGenerator = new CodeGenerator(context.extensionUri);
+    context.subscriptions.push(
+        vscode.commands.registerCommand('extension.inlineChat', () => {
+            codeGenerator.inlineChat();
+        })
+    );
     activateCodeSuggestionListener();
 
 
@@ -45,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
                 processQueue();
             });
         
-            vscode.workspace.onDidChangeTextDocument(async (event) => {
+            vscode.window.onDidChangeActiveTextEditor(async (event:any) => {
                 const document = event.document;
                 const filePath = document.uri.fsPath;
                 const content = document.getText();
@@ -55,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
                 await syncFileEmbedding(filePath, content, getGlobalState("lask")["user_id"], getGlobalState("lask")["project_id"]);
             });
         
-            startBackgroundEmbedding();
+            //startBackgroundEmbedding();
 
 
     // Register commands
@@ -119,9 +124,6 @@ export function activate(context: vscode.ExtensionContext) {
             });
         }
     });
-
-
-
 }
 
 // Function to get the global state outside activate

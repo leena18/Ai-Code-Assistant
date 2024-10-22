@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-
 import { loadHtml } from '../services/htmlLoader'; // Import HTML loader
-
-
+import { getGlobalState } from '../extension'; // Import your global state functions
+import { getCurrentFileCode } from '../services/apiSerivce';
 export class ChatPanel implements vscode.WebviewViewProvider {
     public static readonly viewType = 'aiChat.chatPanel';
     private _view?: vscode.WebviewView;
@@ -27,6 +26,18 @@ export class ChatPanel implements vscode.WebviewViewProvider {
 
         // Listen to messages from the webview
         webviewView.webview.onDidReceiveMessage(async (message) => {
+            if (message.command === 'getGlobalState') {
+                const value = getGlobalState(message.key);  // Get the requested global state value
+                const curr_file_code =await getCurrentFileCode()
+                // Send the value back to the webview
+                webviewView.webview.postMessage({
+                    command: 'globalState',
+                    key: message.key,
+                    value: value,
+                    curr_file_code:curr_file_code
+                });
+            }
+            
             if (message.command === 'getOpenedFiles') {
                 // Fetch the list of currently opened files in the editor
                 const openFiles = vscode.workspace.textDocuments.map(doc => doc.uri.fsPath);

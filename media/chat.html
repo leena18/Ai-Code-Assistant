@@ -5,63 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet"  href="chat.css">
-
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
 </head>
 <body>
+    <div id="initLoader" class="loader">
+        <div class="spinner"></div>
+        <p>Initializing AI-Code-Assistant...</p>
+    </div>
 
     <div class="navbar">
-        <!-- Using radio inputs for tabs -->
         <input type="radio" id="tab-chat" name="tabGroup" class="tab" checked>
         <label for="tab-chat" class="nav-tab">
             <i class="fas fa-comments"></i> Chat
         </label>
-    
         <input type="radio" id="tab-user-guide" name="tabGroup" class="tab">
         <label for="tab-user-guide" class="nav-tab">
             <i class="fas fa-book"></i> User Guide
         </label>
-    
         <input type="radio" id="tab-user-profile" name="tabGroup" class="tab">
         <label for="tab-user-profile" class="nav-tab">
             <i class="fas fa-user"></i> Remote Context
         </label>
     </div>
-    
 
-<!-- Replace the existing overlay content with this -->
-<div id="remote-context-overlay" class="overlay">
-    <div class="overlay-content">
-        <button id="close-overlay" class="close-icon">&times;</button>
-        <h2>Remote Context</h2>
-        <form id="remote-context-form">
-            <label for="repo-url">Repository URL:</label>
-            <input type="text" id="repo-url" name="repo-url" required>
-            <label for="access-token">Access Token:</label>
-            <input type="password" id="access-token" name="access-token" required>
-            <button type="submit">Fetch Repository</button>
-        </form>
-
-        <div id="file-list-container" style="display: none;">
-            <h3>Select Files for Context</h3>
-            <ul id="file-list"></ul>
-            <button id="use-context">Use as Context</button>
+    <div id="remote-context-overlay" class="overlay">
+        <div class="overlay-content">
+            <button id="close-overlay" class="close-icon">&times;</button>
+            <h2>Remote Context</h2>
+            <form id="remote-context-form">
+                <label for="repo-url">Repository URL:</label>
+                <input type="text" id="repo-url" name="repo-url" required>
+                <label for="access-token">Access Token:</label>
+                <input type="password" id="access-token" name="access-token" required>
+                <button type="submit">Fetch Repository</button>
+            </form>
+            <div id="file-list-container" style="display: none;">
+                <h3>Select Files for Context</h3>
+                <ul id="file-list"></ul>
+                <button id="use-context">Use as Context</button>
+            </div>
         </div>
     </div>
-</div>
-
 
     <div class="to-hide">       
         <div class="content">
             <div class="welcome-container">
                 <h2>Welcome to Lask AI, your coding assistant!</h2>
-                <p>Select the code block you’re focusing on. Then, choose an action, enter your request in the prompt, or use "@" to quickly reference files in your repository.</p>
+                <p>Select the code block you're focusing on. Then, choose an action, enter your request in the prompt, or use "@" to quickly reference files in your repository.</p>
                 <p class="new-here">New here? <a href="#">Check out the user manual</a> for guidance.</p>
                 <h3>Discover the capabilities of Lask AI!</h3>        
             </div>
@@ -97,32 +90,29 @@
             </div>
         </div>
         
-
         <div class="input-container">
-            <div class="dropdown" id="fileDropdown" style="display: none;">
-                <!-- This is where the file list will be rendered -->
+            <div class="file-dropdown-container">
+                <div id="fileDropdown" class="file-dropdown">
+                    <!-- File list will be populated here -->
+                </div>
             </div>
             <div class="input-textbox-button">
                 <button class="at-button" id="atButton">@</button>
                 <input type="text" id="ask-input" placeholder="Ask..." class="ask-input">
                 <button class="send-button">▶</button>
             </div>
-
             <div class="bottom-tips">
                 <p>Type <span class="highlight">@</span> to add context to your chat</p>
             </div>
         </div>
-            
-            
     </div>
 
-    
-    <!-- code mirror -->
-   
-  
+    <div id="typingIndicator" class="typing-indicator" style="display: none;">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
     
     <script src="chat.js" type="module"></script>
-
-
 </body>
 </html>

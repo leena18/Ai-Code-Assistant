@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to render the file list with checkboxes
     function renderDropdown(files) {
-        dropdown.innerHTML = ''; // Clear the previous content
+        const dropdown = document.getElementById('fileDropdown');
+        dropdown.innerHTML = '';
         files.forEach(file => {
             const fileItem = document.createElement('div');
             fileItem.classList.add('file-item');
@@ -23,13 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const label = document.createElement('label');
             label.htmlFor = file;
-            label.innerText = file;
+            label.title = file; // Add title for full path on hover
+            label.textContent = file;
             
             fileItem.appendChild(checkbox);
             fileItem.appendChild(label);
             dropdown.appendChild(fileItem);
         });
+        dropdown.style.display = 'block';
     }
+
+
+    
 
     // Toggle the dropdown visibility and request the file list when @ button is clicked
     atButton.addEventListener('click', function () {
@@ -60,26 +66,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // Send button click event listener
     sendButton.addEventListener('click', async () => {
         const userMessage = inputField.value.trim();
-        
+    
         // Don't proceed if input is empty
         if (!userMessage) return;
-
+    
         // Hide the initial content if it's not hidden already
         if (content.style.display !== 'none') {
             content.style.display = 'none';  // Hide the content section
             chatContainer.style.display = 'block'; // Show the chat container
         }
-
+    
         // Add user's message to the chat container
         addMessageToChat('user', userMessage);
-
+    
         // Clear the input field
         inputField.value = '';
-
+    
         try {
-            // Call the API to get the AI response
-            const responseMessage = await sendMessageToAPI(userMessage);
-
+            // Request userId and projectId from the extension
+            const data = await requestGlobalState('lask');
+            
+            console.log(data.value);
+           console.log(data.curr_file_code);
+           
+            // Call the API to get the AI response, and pass userId and projectId
+            const responseMessage = await sendMessageToAPI(userMessage, data.value['user_id'], data.value['project_id'],data.curr_file_code);
+    
             // Add the AI response to the chat container
             addMessageToChat('ai', formatResponse(responseMessage));
         } catch (error) {
@@ -87,7 +99,26 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessageToChat('error', 'Something went wrong. Please try again.');
         }
     });
-
+    
+    // Function to request global state from the extension
+    function requestGlobalState(key) {
+        return new Promise((resolve, reject) => {
+            window.addEventListener('message', event => {
+                const message = event.data;
+                console.log(message);
+                
+                if (message.command === 'globalState' && message.key === key) {
+                    resolve(message);
+                }
+            });
+    
+            // Send a message to the extension to request the global state
+            vscode.postMessage({
+                command: 'getGlobalState',
+                key: key
+            });
+        });
+    }
     // Function to add a message to the chat container
     function addMessageToChat(sender, message) {
         const messageElement = document.createElement('div');
@@ -101,16 +132,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to send a message to the API
-    async function sendMessageToAPI(message) {
+    async function sendMessageToAPI(message, userId, projectId, curr_file_code) {
         console.log('Sending message:', message);
 
         const apiUrl = 'http://localhost:8000/api/general-chat/'; // Replace with your actual API URL
         const payload = {
             question: message,
-            project_name: 'YourProjectName',
-            user_id: 'currentUserId',
-            project_id: 'currentProjectId',
-            curr_file_context: "currentFileContext"
+            project_name: projectId,
+            user_id: userId,
+            project_id: projectId,
+            curr_file_context: curr_file_code
         };
 
         const response = await fetch(apiUrl, {
@@ -293,3 +324,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+      window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('initLoader').style.display = 'none';
+                document.querySelector('.to-hide').style.display = 'grid';
+            }, 2000);
+        });
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'inline-block';
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        // Use these functions when sending/receiving messages
+        async function sendMessage() {
+            showTypingIndicator();
+            // Your code to send message
+            // const response = await getResponseFromAI();
+            hideTypingIndicator();
+            // Your code to display the response
+        }

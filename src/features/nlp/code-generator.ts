@@ -121,7 +121,7 @@ ${this.suggestions[0]}
             //     this.showErrorMessage('Failed to insert the suggestion into the editor.');
             // }
             
-            async function insertWithTypingEffect(editor: vscode.TextEditor, extraText: string | any[], delay = 100) {
+            async function insertWithTypingEffect(editor: vscode.TextEditor, extraText: string | any[], delay = 0) {
                 const position = editor.selection.active; // Get the current cursor position
             
                 for (let i = 0; i < extraText.length; i++) {
