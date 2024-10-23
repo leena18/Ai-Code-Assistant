@@ -96,11 +96,11 @@ class CodeGenerator {
     
             // Create the formatted instructions dynamically
             const extraText = `
-<<<<<<<<<<< Ctrl+Shift+A: Accept || Alt+] : Next suggestion | Alt+[ : Previous suggestion >>>>>>
+**************************************** alt+enter: Accept *****************************************************
     
 ${this.suggestions[0]}
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Alt+Shift+s: Open suggestion box >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*************************** alt+c: comment **************** alt+f: fix******************************************
     `;
     
             // const editSuccess = await editor.edit(editBuilder => {
@@ -254,7 +254,7 @@ ${this.suggestions[0]}
         const acceptedCode = lines.slice(1, -1).join('\n');
 
         editor.edit((editBuilder: string) => {
-            // Replace the selected text with an empty string
+            
             editBuilder.replace(selection, acceptedCode);
         })
         

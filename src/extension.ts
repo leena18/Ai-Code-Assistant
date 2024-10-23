@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
                 await syncFileEmbedding(filePath, content, getGlobalState("lask")["user_id"], getGlobalState("lask")["project_id"]);
             });
         
-            //startBackgroundEmbedding();
+            // startBackgroundEmbedding();
 
 
     // Register commands

@@ -53,6 +53,10 @@
         {
           "command": "extension.removeComments",
           "when": "editorHasSelection"
+        },
+        {
+          "command": "aiChatbot.nlpGenerateCode",
+          "when": "editorTextFocus"
         }
       ]
     },
@@ -69,18 +73,8 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "insertCodeSuggestion",
-        "key": "tab",
-        "when": "editorTextFocus"
-      },
-      {
-        "command": "insertCodeSuggestion",
-        "key": "tab",
-        "when": "editorTextFocus"
-      },
-      {
         "command": "codeGenerator.acceptCode",
-        "key": "ctrl+shift+a",
+        "key": "alt+enter",
         "when": "editorTextFocus"
       },
       {
@@ -97,6 +91,16 @@
         "command": "codeGenerator.openSuggestionBox",
         "key": "alt+shift+s",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "aiChatbot.addComments",
+        "key": "alt+c",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "aiChatbot.fixCode",
+        "key": "alt+f",
+        "when": "editorHasSelection"
       }
     ],
     "commands": [

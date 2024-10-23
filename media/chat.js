@@ -242,6 +242,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let selectedFiles = JSON.parse(sessionStorage.getItem('selectedFiles')) || [];
 
+    function requestGlobalState(key) {
+        return new Promise((resolve, reject) => {
+            window.addEventListener('message', event => {
+                const message = event.data;
+                console.log(message);
+                
+                if (message.command === 'globalState' && message.key === key) {
+                    resolve(message);
+                }
+            });
+    
+            // Send a message to the extension to request the global state
+            vscode.postMessage({
+                command: 'getGlobalState',
+                key: key
+            });
+        });
+    }
     remoteContextTab.addEventListener('change', () => {
         if (remoteContextTab.checked) {
             overlay.style.display = 'block';
@@ -253,16 +271,98 @@ document.addEventListener('DOMContentLoaded', () => {
         remoteContextTab.checked = false;
     });
 
+
+    // form.addEventListener('submit', async (e) => {
+    //     e.preventDefault();
+
+    //     const repoUrl = document.getElementById('repo-url').value;
+    //     const accessToken = document.getElementById('access-token').value;
+
+    //     const data = await requestGlobalState('lask');
+    //     const userId = data.value["user_id"];
+    //     const projectId = data.value["project_id"];
+    //     const allowedExtensions = ['.js', '.py', '.html'];  // Define allowed file extensions
+
+    //     // Call the API using fetch
+    //     try {
+    //         const response = await fetch('http://127.0.0.1:8000/api/fetch_repo_structure/', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 repo_url: repoUrl,
+    //                 access_token: accessToken,
+    //                 allowed_extensions: allowedExtensions,
+    //                 user_id: userId,
+    //                 project_id: projectId
+    //             })
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+
+    //         const responseData = await response.json();
+    //         console.log('Repository Structure:', responseData.repository_structure);
+
+    //         // Call displayFileList with the received repository structure
+    //         displayFileList(responseData.repository_structure);
+
+    //     } catch (error) {
+    //         console.error('Error fetching repository structure:', error);
+    //     }
+    // });
+
+    // function displayFileList(files) {
+    //     fileList.innerHTML = '';
+    //     files.forEach(file => {
+    //         const li = document.createElement('li');
+    //         const checkbox = document.createElement('input');
+    //         checkbox.type = 'checkbox';
+    //         checkbox.value = file;
+    //         checkbox.checked = selectedFiles.includes(file);
+    //         checkbox.addEventListener('change', () => {
+    //             if (checkbox.checked) {
+    //                 selectedFiles.push(file);
+    //             } else {
+    //                 selectedFiles = selectedFiles.filter(f => f !== file);
+    //             }
+    //             sessionStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
+    //         });
+    //         li.appendChild(checkbox);
+    //         li.appendChild(document.createTextNode(file));
+    //         fileList.appendChild(li);
+    //     });
+    //     fileListContainer.style.display = 'block';
+    // }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+    
         const repoUrl = document.getElementById('repo-url').value;
         const accessToken = document.getElementById('access-token').value;
-        const userId = "vb-heart"  // Assuming user ID is taken from the form or page
-        const projectId = "siddharth"  // Assuming project ID is taken from the form or page
+        const fileListContainer = document.getElementById('file-list-container');
+        const fileList = document.getElementById('file-list'); // UL element to display the file list
+    
+        const data = await requestGlobalState('lask');
+        const userId = data.value["user_id"];
+        const projectId = data.value["project_id"];
         const allowedExtensions = ['.js', '.py', '.html'];  // Define allowed file extensions
-
-        // Call the API using fetch
+    
+        // Create a loader element dynamically and place it above the file list container
+        const loaderElement = document.createElement('div');
+        loaderElement.id = 'loader';
+        loaderElement.classList.add('dots-loader');
+        loaderElement.innerHTML = `
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        `;
+        fileListContainer.parentNode.insertBefore(loaderElement, fileListContainer); // Insert loader above the fileListContainer
+    
+        fileListContainer.style.display = 'none';  // Hide the file list container while loading
+    
         try {
             const response = await fetch('http://127.0.0.1:8000/api/fetch_repo_structure/', {
                 method: 'POST',
@@ -277,53 +377,104 @@ document.addEventListener('DOMContentLoaded', () => {
                     project_id: projectId
                 })
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            const data = await response.json();
-            console.log('Repository Structure:', data.repository_structure);
-
-            // You can handle the received repository structure here
+    
+            const responseData = await response.json();
+            console.log('Repository Structure:', responseData.repository_structure);
+    
+            // Remove the loader and display the file list
+            loaderElement.remove();  // Remove loader after data is fetched
+            displayFileList(responseData.repository_structure);  // Display the file list
+            fileListContainer.style.display = 'block';  // Show the file list container
+    
         } catch (error) {
             console.error('Error fetching repository structure:', error);
+            loaderElement.remove();  // Remove loader in case of error
         }
-
-        function displayFileList(files) {
-            fileList.innerHTML = '';
-            files.forEach(file => {
-                const li = document.createElement('li');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.value = file;
-                checkbox.checked = selectedFiles.includes(file);
-                checkbox.addEventListener('change', () => {
-                    if (checkbox.checked) {
-                        selectedFiles.push(file);
-                    } else {
-                        selectedFiles = selectedFiles.filter(f => f !== file);
-                    }
-                    sessionStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
-                });
-                li.appendChild(checkbox);
-                li.appendChild(document.createTextNode(file));
-                fileList.appendChild(li);
+    });
+    
+    function displayFileList(files) {
+        const fileList = document.getElementById('file-list'); // UL element to display the file list
+        let selectedFiles = JSON.parse(sessionStorage.getItem('selectedFiles')) || [];
+    
+        fileList.innerHTML = '';  // Clear any previous content
+    
+        files.forEach(file => {
+            const li = document.createElement('li');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = file;
+            checkbox.checked = selectedFiles.includes(file);
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    selectedFiles.push(file);
+                } else {
+                    selectedFiles = selectedFiles.filter(f => f !== file);
+                }
+                sessionStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
             });
-            fileListContainer.style.display = 'block';
+            li.appendChild(checkbox);
+            li.appendChild(document.createTextNode(file));
+            fileList.appendChild(li);
+        });
+    
+        const fileListContainer = document.getElementById('file-list-container');
+        fileListContainer.style.display = 'block';
+    }
+    
+
+    useContextButton.addEventListener('click', async () => {
+        overlay.style.display = 'none';
+        remoteContextTab.checked = false;
+    
+        // Collect necessary data
+        const data = await requestGlobalState('lask');
+        const userId = data.value["user_id"];
+        const projectId = data.value["project_id"];
+        const refRepoName = 'your-repo-name'; // Assuming this is fetched from elsewhere or can be set manually
+    
+        // Retrieve selected files
+        const selectedFiles = JSON.parse(sessionStorage.getItem('selectedFiles')) || [];
+    
+        // Check if there are selected files
+        if (selectedFiles.length === 0) {
+            console.log('No files selected.');
+            return;
         }
     
-        useContextButton.addEventListener('click', () => {
-            overlay.style.display = 'none';
-            remoteContextTab.checked = false;
-            // Here you can add code to update the chat interface with the selected files
-            console.log('Selected files:', selectedFiles);
-        // Close the overlay after submission
-        // overlay.style.display = 'none';
-        // remoteContextTab.checked = false;
-        });
+        // Call the API to fetch code from the selected file paths
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/fetch-code/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    paths: selectedFiles,
+                    user_id: userId,
+                    project_id: projectId,
+                    ref_repo_name: refRepoName
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const responseData = await response.json();
+            console.log('Code Context:', responseData.code);
+    
+            // Here you can handle the fetched code and update the UI as needed
+    
+        } catch (error) {
+            console.error('Error fetching code from paths:', error);
+        }
     });
 });
+
 
       window.addEventListener('load', () => {
             setTimeout(() => {
