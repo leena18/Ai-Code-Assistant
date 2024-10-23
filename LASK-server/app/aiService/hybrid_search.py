@@ -244,7 +244,8 @@ def generate_code_fix_response(instruction, faulty_code, directory):
     
     1) Fix the ###faulty_code for syntax errors.  
     2) Do not give any comments, or any explaination.
-    4) Only return the fix code that fill be replaced with faulty code.
+    3) Only return the fix code that fill be replaced with faulty code.
+    4) do not emit any extra characters like ```  ```
     """
     return generate_groq_response(prompt_template)
 

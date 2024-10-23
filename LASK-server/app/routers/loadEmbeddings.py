@@ -96,13 +96,39 @@ def split_text(text: str, chunk_size: int = 1000, chunk_overlap: int = 100) -> L
     """Split text into overlapping chunks."""
     return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size - chunk_overlap)]
 
+import os
+import pickle
+import faiss
+
 def save_embeddings():
-    """Save FAISS index and text chunks to disk."""
+    """Save FAISS index and text chunks to disk, ensuring directories exist."""
+    
+    # Ensure directory for INDEX_FILE_PATH exists
+    index_dir = os.path.dirname(INDEX_FILE_PATH)
+    if not os.path.exists(index_dir):
+        os.makedirs(index_dir)
+    
+    # Save FAISS index
     faiss.write_index(index, INDEX_FILE_PATH)
+    
+    # Ensure directory for TEXT_CHUNKS_STORE_PATH exists
+    text_chunks_store_dir = os.path.dirname(TEXT_CHUNKS_STORE_PATH)
+    if not os.path.exists(text_chunks_store_dir):
+        os.makedirs(text_chunks_store_dir)
+    
+    # Save text chunks store
     with open(TEXT_CHUNKS_STORE_PATH, 'wb') as f:
         pickle.dump(text_chunks_store, f)
+    
+    # Ensure directory for TOKENIZED_CHUNKS_PATH exists
+    tokenized_chunks_dir = os.path.dirname(TOKENIZED_CHUNKS_PATH)
+    if not os.path.exists(tokenized_chunks_dir):
+        os.makedirs(tokenized_chunks_dir)
+    
+    # Save tokenized chunks
     with open(TOKENIZED_CHUNKS_PATH, 'wb') as f:
         pickle.dump(tokenized_chunks, f)
+
 
 async def process_embeddings(file_path: str, contents: str):
     """Process the embeddings."""

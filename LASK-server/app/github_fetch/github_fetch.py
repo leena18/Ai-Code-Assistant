@@ -3,6 +3,7 @@ import requests
 import json
 import os
 
+# Function to fetch repository structure using GitHub API v3
 def get_repo_structure(api_url, headers, allowed_extensions):
     try:
         # Send a request to the GitHub API to get the directory contents
@@ -31,22 +32,23 @@ def get_repo_structure(api_url, headers, allowed_extensions):
         print(f"Failed to fetch repository contents: {e}")
         return {}
 
-
+# Main function to fetch the repository structure from GitHub
 def fetch_github_repo_structure(repo_url, access_token=None, allowed_extensions=None, user_id=None, project_id=None):
-    # Extract the owner and repository name from the repo URL
-    reponame = ""
-    if "github.com" in repo_url:
-        repo_url_parts = repo_url.rstrip('/').split('/')
-        owner = repo_url_parts[-2]
-        repo = repo_url_parts[-1]
-        reponame = repo
-    else:
+    if "github.com" not in repo_url:
         raise HTTPException(status_code=400, detail="Invalid GitHub URL.")
 
-    # GitHub API URL to get repository contents
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents"
+    # Extract owner and repo from URL
+    repo_url_parts = repo_url.rstrip('/').split('/')
+    owner = repo_url_parts[-2]
+    repo = repo_url_parts[-1]
+    reponame = repo
 
-    headers = {}
+    # GitHub API URL to get repository contents at the root
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/"
+
+    headers = {
+        'X-GitHub-Api-Version': '2022-11-28'
+    }
     if access_token:
         headers['Authorization'] = f'token {access_token}'
 
@@ -58,27 +60,29 @@ def fetch_github_repo_structure(repo_url, access_token=None, allowed_extensions=
 
     return get_files(repo_structure)
 
-def save_structure_to_file(structure, project_id, user_id,reponame):
-    # Create the directory path
+# Function to save repository structure to a file
+def save_structure_to_file(structure, project_id, user_id, reponame):
+    # Create directory path
     relative_path = f"./project_contexts/{project_id}/{user_id}"
     os.makedirs(relative_path, exist_ok=True)  # Create directories if they do not exist
 
-    # Save the structure to a JSON file
-    file_path = os.path.join(relative_path, f"{reponame}.json")
+    # Save structure as JSON
+    file_path = os.path.join(relative_path, f"remote.json")
     with open(file_path, "w") as json_file:
         json.dump(structure, json_file, indent=4)
-        
 
+# Function to get files from the JSON structure
 def get_files(json_obj, current_path=""):
     file_list = []
     for key, value in json_obj.items():
         new_path = os.path.join(current_path, key)
-        if isinstance(value, dict):  # It's a folder
+        if isinstance(value, dict):  # Folder
             file_list.extend(get_files(value, new_path))
-        else:  # It's a file
+        else:  # File
             file_list.append(new_path)
     return file_list
 
+# Load JSON from file
 def load_json_from_file(file_path):
     with open(file_path, 'r') as file:
         return json.load(file)

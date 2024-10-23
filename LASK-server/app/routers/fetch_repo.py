@@ -13,6 +13,7 @@ allowed_extensions = [".java", ".xml",".php",".js",".py",".info.yml",".yml",".cs
 
 @router.post("/fetch_repo_structure/")
 async def fetch_repo_structure_endpoint(repo_request: RepoRequest):
+    print("fetching repo structure")
     try:
         if "gitlab.valuebound.net" in repo_request.repo_url:
             repo_structure = fetch_gitlab_repo_structure(
@@ -43,7 +44,7 @@ async def get_code_from_paths(file_paths: FilePaths):
         userid = file_paths.user_id
         projectid = file_paths.project_id
         ref_repo_name = file_paths.ref_repo_name
-        json_path = f"./project_contexts/{projectid}/{userid}/{ref_repo_name}.json"
+        json_path = f"./project_contexts/{projectid}/{userid}/remote.json"
         print(json_path)
         json_file = load_json_from_file(json_path)
         code_context = fetch_code_from_paths(json_file, file_paths.paths)

@@ -80,7 +80,7 @@ def generate_general_chat_response(question: str, directory: str, chat_history: 
       {question}
 
       ```
-      ###Current_File_Content \n
+      ###Current_File_Content starts\n
       
       ```
       
@@ -88,9 +88,10 @@ def generate_general_chat_response(question: str, directory: str, chat_history: 
       
       
       ```
+      ###Current_File_Content ends
 
 
-      ###Reference_Context_Code: \n
+      ###Remote_Code starts: \n
 
       ```
 
@@ -98,14 +99,17 @@ def generate_general_chat_response(question: str, directory: str, chat_history: 
 
       ```
 
+      ###Remote_Code ends
+      
       Instructions:
       1. Carefully understand the programming, explaination task described in the ###User_Query.
       2. Thoroughly assess the ###Current_file_Content, Context Code. Determine if it contains functions, structures, or logic that directly align with the ###User_Query.
-      3. If the ###Reference_Context_Code contains a function or class that already implements the desired functionality, your task is to use that function or class directly in your generated code.
+      3. If the ###Remote_Code contains a function or class that already implements the desired functionality, your task is to use that function or class directly in your generated code.
          Do not create new implementations unless necessary.
-      4. If the ###Current_file_Content, ###Reference_Context_Code, has helpful parts that you can modify for the task, adapt and use those parts in your solution.
-      5. If the ###Current_file_Content, ###Reference_Context_Code, is irrelevant or insufficient, generate a new, complete code solution from scratch that fulfills the User Query.
-      6. If the user is not asking for code, answer the user query.
+      4. If the ###Current_file_Content, ###Remote_Code, has helpful parts that you can modify for the task, adapt and use those parts in your solution.
+      5. If the ###Current_file_Content, ###Remote_Code, is irrelevant or insufficient, generate a new, complete code solution from scratch that fulfills the User Query.
+      6. The User Query maybe related to the ###Current_file_Content, ###Remote_Code, or both, analyse which one to use to answer the User Query.
+      7. If the user is not asking for code, answer the user query.
     
     """
     return generate_groq_response(prompt_template)
