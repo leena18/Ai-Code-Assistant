@@ -132,21 +132,21 @@ def generate_code_response(question, directory,text_context_path, curr_file_cont
 
       ```
 
-      ###Context_Code: \n
+      ###Remote_Context: \n
 
       ```
       {text_context}
-      \n  
+     
 
-      ```
+      ```\n
 
       Instructions:
       1. Carefully understand the programming task described in the ###User_Query, and code written in ###Current_file_code.
       2. Thoroughly assess the ###Current_file_code, Context Code. Determine if it contains functions, structures, or logic that directly align with the ###User_Query.
-      3. If the ###Context_Code contains a function or class that already implements the desired functionality, your task is to use that function or class directly in your generated code.
+      3. If the ###Remote_Context contains a function or class that already implements the desired functionality, your task is to use that function or class directly in your generated code.
          Do not create new implementations unless necessary.
-      4. If the ###Context_Code has helpful parts that you can modify for the task, adapt and use those parts in your solution.
-      5. If the ###Context_Code is irrelevant or insufficient, generate a new, complete code solution from scratch that fulfills the User Query
+      4. If the ###Remote_Context has helpful parts that you can modify for the task, adapt and use those parts in your solution.
+      5. If the ###Remote_Context is irrelevant or insufficient, generate a new, complete code solution from scratch that fulfills the User Query
       6. Make sure the new code aligns with the ###Current_file_code and ###User_Query.
       7. Follow the coding practices followed in ###Current_file, only give the code that completes the currentFile Code. Do not repeat the ###Current_File_Code
       6. Output the code in backticks ``` code ```
